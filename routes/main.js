@@ -68,7 +68,14 @@ router.post('/destroy', function (res, req) {
 
 router.post('/update', function (res,req){
     //응답을 받는 것이므로 res.body 를 사용해야 함.
-    let q = "UPDATE `diary` SET `text` = "+ res.body.text +" WHERE (`diary_pid` = '" + res.body.destroy_id + "');";
+    let q = "UPDATE `diary` SET `text` = '"+ base64.encode(utf8.encode(res.body.text)) +"' WHERE (`diary_pid` = '" + res.body.update_id + "');";
+    client.query(q, function (err, row) {
+        if (err) {
+            console.log(q + ":" + err);
+            throw err;
+        }
+    });
+    req.redirect("back");
 });
 
 module.exports = router;
