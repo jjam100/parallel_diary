@@ -1,0 +1,111 @@
+<!-- <table border="1">
+    <tr>
+        <td>날짜</td>
+        <td>이미지</td>
+        <td>내용</td>
+        <td>작성유저</td>
+    </tr>
+    <% for(var i in row) { %>
+    <tr>
+        <td><%= row[i].date.toISOString().slice(0,10) %></td>
+        <td><img src='<%= row[i].img_url %>' /></td>
+        <td><%= row[i].text %></td>
+        <td><%= row[i].user_pid %></td>
+    </tr>
+    <% } %>
+</table> -->
+
+<!-- 일기 본체 시작 -->
+<div class="row">
+    <!-- 자신의 일기 시작 -->
+    <div class="col s12 m6">
+        <!-- 작성칸 시작 -->
+        <div class="container" style="padding:20px;">
+            <form action="./create" method="post">
+                <h2><%= new Date().toLocaleString().slice(0,10) %></h2>
+                <div class="input-field">
+                    <textarea id="textarea1" class="materialize-textarea" name="text"></textarea>
+                    <div class="file-field input-field">
+                        <div class="btn">
+                            <span>이미지 업로드</span>
+                            <input type="file" name="img_url">
+                        </div>
+                        <div class="file-path-wrapper">
+                            <input class="file-path validate" type="text">
+                        </div>
+                    </div>
+                    <label for="textarea1">작성칸</label>
+                    <button class="btn-large waves-effect waves-light" type="submit">기록
+                        <i class="material-icons right">send</i>
+                    </button>
+                </div>
+            </form>
+        </div>
+        <!-- 작성칸 끝 -->
+        <div class="container">
+            <%
+                for(var item in row.reverse()) {
+                    if(!row[item].is_deleted) {
+                        
+            %>
+            <div class="card hoverable ">
+                    <% if(row[item].img_url != '') { %>
+                <div class="card-image">
+                    <img src="<%=row[item].img_url%>" />
+                </div>
+                    <% } %>
+                <!-- READ CONTENT 시작 : R + pid -->
+                <div id="R<%=row[item].diary_pid%>">
+                    <div class="card-content">
+                        <span class="card-title"><%= row[item].date.toISOString().slice(0,10) %></span>
+                        <p><%=row[item].user_pid%></p>
+                        <p style="white-space: pre-wrap;"><%=row[item].text%></p>
+                    </div>
+                    <div class="card-action">
+                        <form action="./destroy" method="post" style="display:inline;">
+                            <input type="hidden" name="destroy_id" value="<%=row[item].diary_pid%>"/>
+                            <button class="btn waves-effect waves-light" type="submit">삭제</button>
+                        </form>
+                        <button onclick="toggleUpdateForm(<%=row[item].diary_pid%>);" class="btn waves-effect waves-light" type="submit">수정</button>
+                    </div>
+                </div>
+                <!-- READ CONTENT 끝 -->
+                <!-- UPDATE폼 시작 : U + pid -->
+                <div id="<%='U' + row[item].diary_pid%>" style="display:none;">
+                    <div class="card-content" style="display:block">
+                        <form action="./update" method="POST">
+                            <div class="input-field">
+                                <textarea id="textarea1" class="materialize-textarea" name="text"></textarea>
+                                <div class="file-field input-field">
+                                    <div class="btn">
+                                        <span>이미지 업로드</span>
+                                        <input type="file" name="img_url">
+                                    </div>
+                                    <div class="file-path-wrapper">
+                                        <input class="file-path validate" type="text">
+                                    </div>
+                                </div>
+                                <label for="textarea1">작성칸</label>
+                            </div>
+                            <input type="hidden" name="update_id" value="<%=row[item].diary_pid%>"/>
+                    </div>
+                    <div class="card-action">
+                        <button class="btn waves-effect waves-light" type="submit">수정
+                            <i class="material-icons right">send</i>
+                        </button>
+                        </form> 
+                        <button onclick="toggleUpdateForm(<%=row[item].diary_pid%>);" class="btn waves-effect waves-light">취소
+                            <i class="material-icons right">send</i>
+                        </button>
+                    </div>
+                </div>
+                <!-- UPDATE폼 끝 -->
+            </div> <!--/.card-->
+            <%
+                    }
+                }
+            %> 
+        </div>
+    </div> <!--/.col .s6-->
+    <!-- 자신의 일기 끝 -->
+

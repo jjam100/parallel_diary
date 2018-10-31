@@ -1,0 +1,147 @@
+@import url('https://fonts.googleapis.com/css?family=Noto+Sans+KR');
+@import url('https://fonts.googleapis.com/css?family=Gugi');
+@import url('https://fonts.googleapis.com/css?family=Poor+Story');
+
+/* 노토 산스 폰트 */
+.noto-sans {
+    font-family: 'Noto Sans KR', sans-serif;
+}
+/* 푸어스토리 */
+.poor-story {
+    font-family: 'Poor Story', cursive;
+}
+/* 구기 */
+.gugi{
+    font-family: 'Gugi', cursive;
+}
+
+/* 색상 */
+.c1 { background-color: #8D3AC1; }
+.c2 { background-color: #9B46E8; }
+.c3 { background-color: #804DFF; }
+.c4 { background-color: #5646C9; }
+.c5 { background-color: #5F47A3; }
+
+
+p { font-size:18px; }
+.sidenav{width:200px !important;}
+div.row{
+    margin-top : 0px !important;
+    margin-bottom: 0px
+}
+.brand-logo {
+    /*  폰트 두껍게  */
+    font-weight: 600;
+    /*  자간 늘리기  */
+    letter-spacing: 5px;
+    /*  font color  */
+    color : white;
+}
+#left_side, #right_side {
+    padding:0px;
+}
+.stretch{
+    /* 애니메이션 */
+    animation-name : stretch_ani;
+    animation-duration: 1s;
+}
+#mobile-demo > li > a {
+    color:white;
+    font-size:15px;
+}
+
+@keyframes stretch_ani {
+    0%      {letter-spacing: 0px}
+    50%     {letter-spacing: 9px}
+    /* 100%    {letter-spacing: 0px} */
+}
+
+.front-main { height:70vh; }
+#index_01 {
+    margin-top:50px;
+    margin-bottom : 15px;
+}
+#index_02 {
+    min-height: 650px;
+    position: relative;
+    
+    /* 우르릉쾅쾅 우주 애니메이션 */
+    animation-name: universe;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+
+    background: -ms-linear-gradient(top, #5646C9 1%, #4A459C 50%, #9B46E8 100%);
+    background: -moz-linear-gradient(top, #5646C9 1%, #4A459C 50%, #9B46E8 100%);
+    background: -o-linear-gradient(top, #5646C9 1%, #4A459C 50%, #9B46E8 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(1, #5646C9), color-stop(50, #4A459C), color-stop(100, #9B46E8));
+    background: -webkit-linear-gradient(top, #5646C9 1%, #4A459C 50%, #9B46E8 100%);
+    background: linear-gradient(to bottom, #5646C9 1%, #4A459C 50%, #9B46E8 100%);
+
+}
+
+@keyframes universe {
+    from{
+        background: -ms-linear-gradient(top, #5646C9 1%, #4A459C 50%, #9B46E8 100%);
+        background: -moz-linear-gradient(top, #5646C9 1%, #4A459C 50%, #9B46E8 100%);
+        background: -o-linear-gradient(top, #5646C9 1%, #4A459C 50%, #9B46E8 100%);
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(1, #5646C9), color-stop(50, #4A459C), color-stop(100, #9B46E8));
+        background: -webkit-linear-gradient(top, #5646C9 1%, #4A459C 50%, #9B46E8 100%);
+        background: linear-gradient(to bottom, #5646C9 1%, #4A459C 50%, #9B46E8 100%);
+    }
+    to {
+        background: -ms-linear-gradient(top, #5646C9 1%, #4A459C 50%, #9B46E8 100%);
+    background: -moz-linear-gradient(top, #5646C9 1%, #4A459C 50%, #9B46E8 100%);
+    background: -o-linear-gradient(top, #5646C9 1%, #4A459C 50%, #9B46E8 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(1, #5646C9), color-stop(50, #4A459C), color-stop(100, #9B46E8));
+    background: -webkit-linear-gradient(top, #5646C9 1%, #4A459C 50%, #9B46E8 100%);
+    background: linear-gradient(to bottom, #5646C9 1%, #4A459C 50%, #9B46E8 100%);
+    }
+}
+@media only screen and (max-width: 380px) {
+    #your_name {
+        width:250px;
+    }
+}
+
+#catch {
+    margin-top:-100px !important;
+    line-height: 40px;
+}
+
+.card{
+    z-index: 1;
+}
+
+#cat{
+    position: absolute;
+    z-index: 0;
+    bottom:0;
+    left : calc(50% - 130px);
+}
+
+.h-100{
+    top:0;
+    bottom:0;
+    display: absolute !important;
+    min-height: calc(100vh - 64px) !important;
+}
+
+#dvJoin{
+    padding-left:5%;
+    padding-right:5%;
+    position : relative;
+}
+.input-text{
+    box-sizing: border-box!important;
+    display: block;
+    width: 100%!important;
+    padding: 0 17px!important;
+    margin-bottom: 7px!important;
+    height: 46px!important;
+    line-height: 45px;
+    font-size: 13px!important;
+    color: #fff!important;
+    background: #fff;
+    border: 1px solid #e4e4e4!important;
+    outline: none!important;
+}
