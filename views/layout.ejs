@@ -29,7 +29,7 @@
     <link rel="apple-touch-icon" sizes="144x144" href="/icons/apple-icon-144x144.png">
     <link rel="apple-touch-icon" sizes="152x152" href="/icons/apple-icon-152x152.png">
     <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-icon-180x180.png">
-    <link rel="icon" type="image/png" sizes="192x192"  href="/icons/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/icons/android-icon-192x192.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="96x96" href="/icons/favicon-96x96.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png">
@@ -82,16 +82,19 @@
             M.textareaAutoResize($('#textarea1'));
         });
 
+        $(document).ready(function () {
+            $('select').formSelect();
+        });
+
         // 수정폼 토글 스크립트
-        var toggleUpdateForm = function(pid) {
-            let U_target = document.getElementById('U'+pid).style;
-            let R_target = document.getElementById('R'+pid).style;
-            if(U_target.display == "none") { //수정폼을 연다.
+        var toggleUpdateForm = function (pid) {
+            let U_target = document.getElementById('U' + pid).style;
+            let R_target = document.getElementById('R' + pid).style;
+            if (U_target.display == "none") { //수정폼을 연다.
                 U_target.display = "block";
                 R_target.display = "none";
-            }
-            else {
-                if(R_target.display == "none") {
+            } else {
+                if (R_target.display == "none") {
                     U_target.display = "none";
                     R_target.display = "block";
                 }
