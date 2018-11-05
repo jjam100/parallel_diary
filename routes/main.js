@@ -6,7 +6,26 @@ var moment = require('moment');
 var utf8 = require('utf8');
 var base64 = require('base-64');
 var sha256 = require('sha256');
+var session = require('express-session');
+
+//세션 설정
+app.use(session({
+    secret: '@#$%fjdfghjkdlsayuiqefc@$#%', //랜덤 키보드캣(세션 변조)
+    resave: false,
+    saveUninitialized: true
+  }));
+  
+
 app.use(require('body-parser').json());
+
+//세션 설정
+// sess = req.session; 으로 접근
+// app.use(session({
+//     secret: '@#$%fjdfghjkdlsayuiqefc@$#%', //랜덤 키보드캣(세션 변조)
+//     resave: false,
+//     saveUninitialized: true
+//   }));
+
 
 // 서울 시간 설정
 require('moment-timezone');
@@ -23,21 +42,36 @@ var client = mysql.createConnection({
 client.connect();
 
 router.get('/', function (req, res, next) {
+    //session
+    sess = req.session;
+    console.log(sess);
+    //redirect
     res.redirect("main/list");
 });
 
 router.get('/list', function (req, res, next) {
-    client.query('SELECT * FROM Diary', function (err, row) {
-        if (err) throw err;
-        var base64 = require('base-64');
-        row.forEach(e => {
-            e.text = utf8.decode(base64.decode(e.text));
-        });
-        res.render('main/list', {
-            title: "일기",
-            row: row
-        });
-    })
+    //session
+    var sess = req.session;
+    console.log(sess);
+
+    if (sess.nickname != null) {
+        //main code
+        client.query('SELECT * FROM Diary', function (err, row) {
+            if (err) throw err;
+            var base64 = require('base-64');
+            row.forEach(e => {
+                e.text = utf8.decode(base64.decode(e.text));
+            });
+            res.render('main/list', {
+                title: "일기",
+                row: row,
+                nickname: utf8.decode(base64.decode(req.session.nickname))
+            });
+        })
+    }
+    else {
+        res.redirect('../users/login');
+    }
 });
 router.post('/create', function (res, req) {
     //응답을 받는 것이므로 res.body 를 사용해야 함.
@@ -66,9 +100,9 @@ router.post('/destroy', function (res, req) {
     req.redirect("back");
 })
 
-router.post('/update', function (res,req){
+router.post('/update', function (res, req) {
     //응답을 받는 것이므로 res.body 를 사용해야 함.
-    let q = "UPDATE `diary` SET `text` = '"+ base64.encode(utf8.encode(res.body.text)) +"' WHERE (`diary_pid` = '" + res.body.update_id + "');";
+    let q = "UPDATE `diary` SET `text` = '" + base64.encode(utf8.encode(res.body.text)) + "' WHERE (`diary_pid` = '" + res.body.update_id + "');";
     client.query(q, function (err, row) {
         if (err) {
             console.log(q + ":" + err);

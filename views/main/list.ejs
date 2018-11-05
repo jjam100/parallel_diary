@@ -23,6 +23,7 @@
         <div class="container" style="padding:20px;">
             <form action="./create" method="post">
                 <h2><%= new Date().toLocaleString().slice(0,10) %></h2>
+                <h3><%=nickname%></h3>
                 <div class="input-field">
                     <label for="textarea1">작성칸</label>
                     <textarea id="textarea1" class="materialize-textarea" name="text"></textarea>
@@ -46,7 +47,6 @@
             <%
                 for(var item in row.reverse()) {
                     if(!row[item].is_deleted) {
-                        
             %>
             <div class="card hoverable ">
                     <% if(row[item].img_url != '') { %>

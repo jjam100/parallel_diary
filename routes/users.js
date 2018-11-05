@@ -6,7 +6,16 @@ var moment = require('moment');
 var utf8 = require('utf8');
 var base64 = require('base-64');
 var sha256 = require('sha256');
+var session = require('express-session');
 app.use(require('body-parser').json());
+
+// //세션 설정
+// // sess = req.session; 으로 접근
+// app.use(session({
+//   secret: '@#$%fjdfghjkdlsayuiqefc@$#%', //랜덤 키보드캣(세션 변조)
+//   resave: false,
+//   saveUninitialized: true
+// }));
 
 // MYSQL 연결설정
 var client = mysql.createConnection({
@@ -18,13 +27,13 @@ var client = mysql.createConnection({
 });
 client.connect();
 
-
 /* GET users listing. */
 router.get('/', function (req, res, next) {
-  res.send('respond with a resource');
+  console.log(req.session);
 });
 
 router.get('/signup', function (req, res, next) {
+  console.log(req.session);
   res.render('users/signup');
 });
 
@@ -56,7 +65,7 @@ router.post('/register', function (res, req) {
     `answer1`,`answer2`,`answer3`\
     )VALUES(\
   ";
-    
+
   q += "\'" + info.nickname + "\',";
   q += "\'" + info.password + "\',";
   q += "\'" + info.e_mail + "\',";
@@ -74,22 +83,51 @@ router.post('/register', function (res, req) {
 })
 
 
+
 router.get('/login', function (req, res, next) {
+  //render
   res.render('users/login');
 });
-router.post('/check', function (req, res) {
-  console.log(req.body);
+router.post('/check', function (req, res, next) {
   let q = "SELECT * FROM `my_db`.`user` WHERE nickname = \'" + base64.encode(utf8.encode(req.body.nickname)) + "\'";
-  console.log(q);
-  client.query(q,function(err,row) {
-    console.log(row[0].password +" \n "+sha256(req.body.password));
-    if(row[0].password == sha256(req.body.password)) {
+  client.query(q, function (err, row) {
+    //로그인 변수 설정
+    let nickInParams = base64.encode(utf8.encode(req.body.nickname));
+    let nickInDB = row[0].nickname;
+    let pwInDB = row[0].password;
+    let pwInParams = sha256(req.body.password);
+
+    //로그인 체크 영역
+    if (pwInDB == pwInParams) {
+
+      // 세션에 로그인 정보 동적 추가.
+      req.session.nickname = nickInDB;
+
+      //main code
       console.log("로그인 성공");
+      console.log(req.session);
+      res.redirect('../main/list');
+      // next();
+    } else {
+      console.log("로그인 실패");
+      res.redirect('./login');
     }
-    else console.log("로그인 실패");
-    if(err) throw err;
   });
-  res.redirect("/");
 });
+
+router.get('/logout', function (req, res) {
+  if (req.session.nickname) {
+    req.session.destroy(function (err) {
+      if (err)
+        console.log("session error");
+      else
+        res.redirect('./login');
+    })
+  } 
+  else
+    res.redirect('./login');
+
+});
+
 
 module.exports = router;
