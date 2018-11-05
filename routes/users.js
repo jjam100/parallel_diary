@@ -12,7 +12,7 @@ app.use(require('body-parser').json());
 var client = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: '',
+  password: 'hong1128.',
   port: 3306,
   database: 'my_db'
 });
@@ -23,9 +23,7 @@ client.connect();
 router.get('/', function (req, res, next) {
   res.send('respond with a resource');
 });
-router.get('/login', function (req, res, next) {
 
-});
 router.get('/signup', function (req, res, next) {
   res.render('users/signup');
 });
@@ -70,9 +68,28 @@ router.post('/register', function (res, req) {
   q += "\'" + info.answer[2] + "\')";
 
   client.query(q, function (err, row) {
-    if (err) throw err;
+    if (err) res.send("alert('잘못된 입력입니다.')");
   });
   req.redirect('/');
 })
+
+
+router.get('/login', function (req, res, next) {
+  res.render('users/login');
+});
+router.post('/check', function (req, res) {
+  console.log(req.body);
+  let q = "SELECT * FROM `my_db`.`user` WHERE nickname = \'" + base64.encode(utf8.encode(req.body.nickname)) + "\'";
+  console.log(q);
+  client.query(q,function(err,row) {
+    console.log(row[0].password +" \n "+sha256(req.body.password));
+    if(row[0].password == sha256(req.body.password)) {
+      console.log("로그인 성공");
+    }
+    else console.log("로그인 실패");
+    if(err) throw err;
+  });
+  res.redirect("/");
+});
 
 module.exports = router;
