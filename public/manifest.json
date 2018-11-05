@@ -5,8 +5,8 @@
     "lang" : "ko-KR",
     "start_url" : "/",
     "display" : "standalone",
-    "theme_color": "#E6E6FA",
-    "background_color": "#E6E6FA",
+    "theme_color": "#E3E3FD",
+    "background_color": "#E3E3FD",
     "gcm_sender_id": "103953800507",
 
     "icons": [

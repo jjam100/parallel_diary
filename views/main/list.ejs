@@ -46,7 +46,7 @@
         <div class="container">
             <%
                 for(var item in row.reverse()) {
-                    if(!row[item].is_deleted) {
+                    if(!row[item].is_deleted) {      
             %>
             <div class="card hoverable ">
                     <% if(row[item].img_url != '') { %>
@@ -201,12 +201,13 @@
     <!-- 다른 사람의 일기 끝 -->
 </div>
 
+<!--    FIREBASE SCRIPT     -->
 <script>
     // Initialize Firebase
     var config = {
     };
     firebase.initializeApp(config);
-    // 메시지 설정 코드
+    // FCM 메시지 설정 코드
     var messaging = firebase.messaging();
     messaging.requestPermission()
         .then(function(){
@@ -215,6 +216,18 @@
         })
         .then(function(token){
             console.log('fcm token: ', token);
+            $.ajax({
+                type: "POST",
+                url: "/main/updateToken",
+                data: token,
+                dataType: "TEXT",
+                success: function(text){
+                    console.log('전송성공');
+                },
+                error: function(xhr, status, error){
+                    console.log(error);
+                }
+            });
         })
         .catch(function(e){
             console.log('메세징 권한 획득 중 에러', e);

@@ -21,7 +21,7 @@ app.use(require('body-parser').json());
 var client = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: 'hong1128.',
+  password: '',
   port: 3306,
   database: 'my_db'
 });
@@ -32,6 +32,7 @@ router.get('/', function (req, res, next) {
   console.log(req.session);
 });
 
+// 회원가입
 router.get('/signup', function (req, res, next) {
   console.log(req.session);
   res.render('users/signup');
@@ -65,7 +66,7 @@ router.post('/register', function (res, req) {
     `answer1`,`answer2`,`answer3`\
     )VALUES(\
   ";
-
+    
   q += "\'" + info.nickname + "\',";
   q += "\'" + info.password + "\',";
   q += "\'" + info.e_mail + "\',";
@@ -82,8 +83,7 @@ router.post('/register', function (res, req) {
   req.redirect('/');
 })
 
-
-
+// 로그인
 router.get('/login', function (req, res, next) {
   //render
   res.render('users/login');
