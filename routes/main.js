@@ -35,7 +35,7 @@ moment.tz.setDefault("Asia/Seoul");
 var client = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'hong1128.',
+    password: '',
     port: 3306,
     database: 'my_db'
 });
@@ -57,8 +57,8 @@ router.get('/list', function (req, res, next) {
     console.log("유저번호 : " + user_pid);
     if (nickname) {
         //main code
-        
-        let q = "SELECT DISTINCT \
+
+        let q = "SELECT DISTINCT\
         `user`.`nickname`,\
         `diary`.`diary_pid`,\
         `diary`.`date`,\
@@ -67,10 +67,14 @@ router.get('/list', function (req, res, next) {
         `diary`.`is_deleted`,\
         `diary`.`user_pid`,\
         `diary`.`time`\
-        FROM `my_db`.`diary`, `my_db`.`user`\
-        WHERE (`diary`.`user_pid`=\'"+ user_pid +"\'\
-        AND `user`.`user_pid`=\'"+ user_pid +"\')\
-        OR `diary`.`user_pid` = `user`.`match`;";
+        FROM\
+            `my_db`.`diary`,\
+            `my_db`.`user`\
+        WHERE\
+            (`diary`.`user_pid` = `user`.`user_pid`\
+                AND (`user`.`user_pid` =" + user_pid + "\
+                OR `user`.`user_pid` = (SELECT `match` FROM (SELECT `match` FROM `my_db`.`user` WHERE `user_pid` =" + user_pid + ") tmp)))";
+
 
 
 
@@ -137,8 +141,14 @@ router.post('/update', function (res, req) {
 
 // 유저 토큰값 추가
 router.post('/updateToken', function (req, res, next) {
+    //session
+    var sess = req.session;
     console.log('userToken:', Object.keys(req.body)[0]);
     var token = Object.keys(req.body)[0];
+    let q = "SELECT * FROM `my_db`.`user` WHERE token = \'" + token + "\'";
+    client.query(q, function (err, row) {
+        console.log(row[0]);
+    });
     // var tokenRef = db.collection('Users');
     // var query = tokenRef.where('token', '==', token).get()
     //     .then(snapshot => {
