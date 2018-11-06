@@ -113,42 +113,20 @@
     <!-- 자신의 일기 끝 -->
     <!-- 다른 사람의 일기 시작 -->
     <div class="col s12 m6">
-            <!-- 작성칸 시작 -->
-            <div class="container" style="padding:20px;">
-                <form action="./create" method="post">
-                    <h2><%= new Date().toLocaleString().slice(0,10) %></h2>
-                    <div class="input-field">
-                        <label for="textarea1">작성칸</label>
-                        <textarea id="textarea1" class="materialize-textarea" name="text"></textarea>
-                        <div class="file-field input-field">
-                            <div class="btn">
-                                <span>이미지 업로드</span>
-                                <input type="file" name="img_url">
-                            </div>
-                            <div class="file-path-wrapper">
-                                <input class="file-path validate" type="text">
-                            </div>
-                        </div>
-                        <button class="btn-large waves-effect waves-light" type="submit">기록
-                            <i class="material-icons right">send</i>
-                        </button>
-                    </div>
-                </form>
-            </div>
-            <!-- 작성칸 끝 -->
+            
             <div class="container">
                 <%
                     for(var item in row) {
+                        //MATCH 에 해당하는 사람의 글이 뜸
                         if(row[item].user_pid != user_pid) {
                             if(!row[item].is_deleted) {
-                            
                 %>
                 <div class="card hoverable ">
-                        <% if(row[item].img_url != '') { %>
+                                <% if(row[item].img_url != '') { %>
                     <div class="card-image">
                         <img src="<%=row[item].img_url%>" />
                     </div>
-                        <% } %>
+                                <% } %>
                     <!-- READ CONTENT 시작 : R + pid -->
                     <div id="R<%=row[item].diary_pid%>">
                         <div class="card-content">

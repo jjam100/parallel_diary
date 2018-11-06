@@ -35,7 +35,7 @@ moment.tz.setDefault("Asia/Seoul");
 var client = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: '',
+    password: 'hong1128.',
     port: 3306,
     database: 'my_db'
 });
@@ -58,8 +58,9 @@ router.get('/list', function (req, res, next) {
     if (nickname) {
         //main code
         
-        let q = "SELECT \
+        let q = "SELECT DISTINCT \
         `user`.`nickname`,\
+        `diary`.`diary_pid`,\
         `diary`.`date`,\
         `diary`.`text`,\
         `diary`.`img_url`,\
@@ -67,13 +68,16 @@ router.get('/list', function (req, res, next) {
         `diary`.`user_pid`,\
         `diary`.`time`\
         FROM `my_db`.`diary`, `my_db`.`user`\
-        WHERE `diary`.`user_pid`=\'"+ user_pid +"\'\
-        AND `user`.`user_pid`=\'"+ user_pid +"\'\
+        WHERE (`diary`.`user_pid`=\'"+ user_pid +"\'\
+        AND `user`.`user_pid`=\'"+ user_pid +"\')\
         OR `diary`.`user_pid` = `user`.`match`;";
 
-        console.log(q);
+
+
         client.query(q, function (err, row) {
             if (err) throw err;
+            //왜 글이 중복해서 뜨는거지??? : 홍진백
+            console.log(row);
             var base64 = require('base-64');
             row.forEach(e => {
                 e.text = utf8.decode(base64.decode(e.text));
