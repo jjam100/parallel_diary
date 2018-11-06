@@ -36,6 +36,7 @@
                             <input class="file-path validate" type="text">
                         </div>
                     </div>
+                    <input name="user_pid" type="text" value="<%=user_pid%>" hidden>
                     <button class="btn-large waves-effect waves-light" type="submit">기록
                         <i class="material-icons right">send</i>
                     </button>
@@ -46,7 +47,8 @@
         <div class="container">
             <%
                 for(var item in row.reverse()) {
-                    if(!row[item].is_deleted) {      
+                    if(row[item].user_pid == user_pid) {
+                        if(!row[item].is_deleted) {      
             %>
             <div class="card hoverable ">
                     <% if(row[item].img_url != '') { %>
@@ -102,6 +104,7 @@
                 <!-- UPDATE폼 끝 -->
             </div> <!--/.card-->
             <%
+                        }
                     }
                 }
             %> 
@@ -136,7 +139,8 @@
             <div class="container">
                 <%
                     for(var item in row) {
-                        if(!row[item].is_deleted) {
+                        if(row[item].user_pid != user_pid) {
+                            if(!row[item].is_deleted) {
                             
                 %>
                 <div class="card hoverable ">
@@ -193,6 +197,7 @@
                     <!-- UPDATE폼 끝 -->
                 </div> <!--/.card-->
                 <%
+                            }
                         }
                     }
                 %> 

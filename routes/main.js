@@ -13,8 +13,8 @@ app.use(session({
     secret: '@#$%fjdfghjkdlsayuiqefc@$#%', //랜덤 키보드캣(세션 변조)
     resave: false,
     saveUninitialized: true
-  }));
-  
+}));
+
 
 app.use(require('body-parser').json());
 
@@ -52,11 +52,27 @@ router.get('/', function (req, res, next) {
 router.get('/list', function (req, res, next) {
     //session
     var sess = req.session;
-    console.log(sess);
-
-    if (sess.nickname != null) {
+    var nickname = sess.nickname;
+    var user_pid = sess.user_pid;
+    console.log("유저번호 : " + user_pid);
+    if (nickname) {
         //main code
-        client.query('SELECT * FROM Diary', function (err, row) {
+        
+        let q = "SELECT \
+        `user`.`nickname`,\
+        `diary`.`date`,\
+        `diary`.`text`,\
+        `diary`.`img_url`,\
+        `diary`.`is_deleted`,\
+        `diary`.`user_pid`,\
+        `diary`.`time`\
+        FROM `my_db`.`diary`, `my_db`.`user`\
+        WHERE `diary`.`user_pid`=\'"+ user_pid +"\'\
+        AND `user`.`user_pid`=\'"+ user_pid +"\'\
+        OR `diary`.`user_pid` = `user`.`match`;";
+
+        console.log(q);
+        client.query(q, function (err, row) {
             if (err) throw err;
             var base64 = require('base-64');
             row.forEach(e => {
@@ -65,11 +81,11 @@ router.get('/list', function (req, res, next) {
             res.render('main/list', {
                 title: "일기",
                 row: row,
-                nickname: utf8.decode(base64.decode(req.session.nickname))
+                nickname: utf8.decode(base64.decode(req.session.nickname)),
+                user_pid: req.session.user_pid
             });
         })
-    }
-    else {
+    } else {
         res.redirect('../users/login');
     }
 });
@@ -82,14 +98,13 @@ router.post('/create', function (res, req) {
     q += moment().format('YYYYMMDD') + ",'";
     q += base64.encode(utf8.encode(res.body.text)) + "','";
     q += res.body.img_url + "',";
-    q += "1";
+    q += res.body.user_pid;
     q += ")";
     console.log(q);
     client.query(q, function (err, row) {
         if (err) throw err;
-        else console.log("결과 : " + row);
     });
-    req.redirect("back");
+    req.redirect("./list");
 })
 
 // 일기 삭제
@@ -117,7 +132,7 @@ router.post('/update', function (res, req) {
 });
 
 // 유저 토큰값 추가
-router.post('/updateToken', function(req, res, next){
+router.post('/updateToken', function (req, res, next) {
     console.log('userToken:', Object.keys(req.body)[0]);
     var token = Object.keys(req.body)[0];
     // var tokenRef = db.collection('Users');
@@ -150,61 +165,63 @@ router.post('/updateToken', function(req, res, next){
 });
 
 // 커플 요청
-router.get('/coupleReq', function(req, res, next){
-  res.render('main/coupleReq', {title: '커플요청'});
+router.get('/coupleReq', function (req, res, next) {
+    res.render('main/coupleReq', {
+        title: '커플요청'
+    });
 })
 
 // 커플 요청 푸시알람
-router.post('/coupleMsg', function(req, res, next){
-  const coupleEmai = req.body.coupleEmail;
-  const msgTitle = req.body.userName + '으로부터의 커플 요청이 도착했습니다.';
-  const msg = req.body.userName + '님이 회원님을 커플로 등록하기를 요청했습니다. 수락하시겠습니까?';
-  //console.log('잠깐 이거 뭐가 문제야: ', req.body.userName);
-  var coupleUser = null;
-  var coupleRef = db.collection('Users');
-  var query = coupleRef.where('email', '==', coupleEmai).get()
-      .then(snapshot => {
-          snapshot.forEach(doc => {
-              db.collection('Users').doc(doc.id).get()
-                  .then(doc => {
-                      if(!doc.exists) {
-                          console.log('No such document!');
-                          res.redirect('coupleReq');
-                      } else {
-                          coupleUser = doc.data()['token'];
-                          console.log('커플 토큰값: ', coupleUser);
-                          const payload = {
-                              notification: {
-                                  title: msgTitle,
-                                  body: msg,
-                                  sound: 'default',
-                                  click_action: 'http://127.0.0.1:52273',
-                                  icon: '\/icons/android-icon-192x192.png'
-                              }
-                          };
-                          admin.messaging().sendToDevice(coupleUser, payload).then(response => {
-                              response.results.forEach((result, index) => {
-                                  const error = result.error;
-                                  if(error) {
-                                      console.error('FCM 실패 : ', error.code);
-                                  } else{
-                                      console.log('FCM 성공');
-                                  }
-                              });
-                          });
-                          res.redirect('coupleReq');
-                      }
-                  })
-                  .catch(err => {
-                      console.log('Error getting documents', err);
-                      res.redirect('coupleReq');
-                  });
-          });
-      })
-      .catch(err => {
-          console.log('Error getting documents', err);
-          res.redirect('coupleReq');
-      });
+router.post('/coupleMsg', function (req, res, next) {
+    const coupleEmai = req.body.coupleEmail;
+    const msgTitle = req.body.userName + '으로부터의 커플 요청이 도착했습니다.';
+    const msg = req.body.userName + '님이 회원님을 커플로 등록하기를 요청했습니다. 수락하시겠습니까?';
+    //console.log('잠깐 이거 뭐가 문제야: ', req.body.userName);
+    var coupleUser = null;
+    var coupleRef = db.collection('Users');
+    var query = coupleRef.where('email', '==', coupleEmai).get()
+        .then(snapshot => {
+            snapshot.forEach(doc => {
+                db.collection('Users').doc(doc.id).get()
+                    .then(doc => {
+                        if (!doc.exists) {
+                            console.log('No such document!');
+                            res.redirect('coupleReq');
+                        } else {
+                            coupleUser = doc.data()['token'];
+                            console.log('커플 토큰값: ', coupleUser);
+                            const payload = {
+                                notification: {
+                                    title: msgTitle,
+                                    body: msg,
+                                    sound: 'default',
+                                    click_action: 'http://127.0.0.1:52273',
+                                    icon: '\/icons/android-icon-192x192.png'
+                                }
+                            };
+                            admin.messaging().sendToDevice(coupleUser, payload).then(response => {
+                                response.results.forEach((result, index) => {
+                                    const error = result.error;
+                                    if (error) {
+                                        console.error('FCM 실패 : ', error.code);
+                                    } else {
+                                        console.log('FCM 성공');
+                                    }
+                                });
+                            });
+                            res.redirect('coupleReq');
+                        }
+                    })
+                    .catch(err => {
+                        console.log('Error getting documents', err);
+                        res.redirect('coupleReq');
+                    });
+            });
+        })
+        .catch(err => {
+            console.log('Error getting documents', err);
+            res.redirect('coupleReq');
+        });
 });
 
 module.exports = router;

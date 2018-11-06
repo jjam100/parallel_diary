@@ -92,7 +92,7 @@ router.post('/check', function (req, res, next) {
   let q = "SELECT * FROM `my_db`.`user` WHERE nickname = \'" + base64.encode(utf8.encode(req.body.nickname)) + "\'";
   client.query(q, function (err, row) {
     //로그인 변수 설정
-    let nickInParams = base64.encode(utf8.encode(req.body.nickname));
+    let user_pid = row[0].user_pid;
     let nickInDB = row[0].nickname;
     let pwInDB = row[0].password;
     let pwInParams = sha256(req.body.password);
@@ -102,6 +102,7 @@ router.post('/check', function (req, res, next) {
 
       // 세션에 로그인 정보 동적 추가.
       req.session.nickname = nickInDB;
+      req.session.user_pid = user_pid;
 
       //main code
       console.log("로그인 성공");
