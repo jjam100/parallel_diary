@@ -3,8 +3,11 @@
 // 캐싱할 모든 파일 리스트를 생성
 var cacheName = 'paralleldiary';
 var appShellFiles = [
+  '/',
   '/css/materialize.css',
   '/css/base.css',
+  '/js/materialize.js',
+  '/js/jquery-3.3.1.min.js',
   '/icons/apple-icon-57x57.png',
   '/icons/apple-icon-60x60.png',
   '/icons/apple-icon-72x72.png',
@@ -64,6 +67,25 @@ self.addEventListener('fetch', function(event) {
     })
   );
 });
+// self.addEventListener('fetch', function(event) {
+//   event.respondWith(
+//     // Try the cache
+//     caches.match(event.request).then(function(response) {
+//       if (response) {
+//         return response;
+//       }
+//       return fetch(event.request).then(function(response) {
+//         if (response.status === 404) {
+//           return caches.match('pages/404.html');
+//         }
+//         return response
+//       });
+//     }).catch(function() {
+//       // If both fail, show a generic fallback:
+//       return caches.match('/offline.html');
+//     })
+//   );
+// });
 
 // 페이지가 fire되었을떄 일어나는 이벤트. 서비스 워커에게 오프라인 페이지를 업데이트하도록 한다.
 self.addEventListener('refreshOffline', function(response) {

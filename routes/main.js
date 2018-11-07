@@ -145,9 +145,24 @@ router.post('/updateToken', function (req, res, next) {
     var sess = req.session;
     console.log('userToken:', Object.keys(req.body)[0]);
     var token = Object.keys(req.body)[0];
-    let q = "SELECT * FROM `my_db`.`user` WHERE token = \'" + token + "\'";
+    let q = "UPDATE `my_db`.`user`\
+    SET `token` = NULL\
+    WHERE `user_pid` = (\
+    SELECT `user_pid`\
+    FROM (\
+    SELECT `user_pid`\
+    FROM `my_db`.`user`\
+    WHERE `token` = \'" + token + "\') tmp)"
     client.query(q, function (err, row) {
-        console.log(row[0]);
+        let p = "UPDATE `my_db`.`user` SET `token` = \'" + token + "\' WHERE `user_pid` =" + sess.user_pid;
+        client.query(p,function(err,row){
+            if(err) {
+                console.log(err);
+                throw err;
+            }
+            console.log("성공!!" + p);
+        });
+        console.log("성공 : " + q);
     });
     // var tokenRef = db.collection('Users');
     // var query = tokenRef.where('token', '==', token).get()
