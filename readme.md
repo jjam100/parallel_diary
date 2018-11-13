@@ -15,3 +15,19 @@
 + 홍진백
 + 이창재
 + 장종진
+
+## 처음 이용시 유의사항
+* 이용하기 전에 초기 설정이 필요합니다.
+    * routes/main.js
+        * Firebase Admin 설정
+        * MySQL 연결 설정
+    * routes/user.js
+        * MySQL 연결 설정
+    * views/main/list.ejs
+        * Firebase 설정
+    * public/firebase-messaging-sw.js
+        * FCM Sender ID 설정
+    * routes/path
+        * serviceAccountKey.json 파일 추가 필요
+
+* 개발자분들은 push하시기 전에 위 설정 및 파일을 모두 지우고 push하시기 바랍니다.
