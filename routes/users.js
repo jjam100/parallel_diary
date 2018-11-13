@@ -21,7 +21,7 @@ app.use(require('body-parser').json());
 var client = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: 'hong1128.',
+  password: '',
   port: 3306,
   database: 'my_db'
 });
@@ -94,6 +94,7 @@ router.post('/check', function (req, res, next) {
     //로그인 변수 설정
     let user_pid = row[0].user_pid;
     let nickInDB = row[0].nickname;
+    let match = row[0].match;
     let pwInDB = row[0].password;
     let pwInParams = sha256(req.body.password);
 
@@ -103,6 +104,7 @@ router.post('/check', function (req, res, next) {
       // 세션에 로그인 정보 동적 추가.
       req.session.nickname = nickInDB;
       req.session.user_pid = user_pid;
+      req.session.couple_pid = match;
 
       //main code
       console.log("로그인 성공");

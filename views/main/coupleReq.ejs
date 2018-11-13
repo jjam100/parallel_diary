@@ -5,11 +5,10 @@
                 <form class="card-content white-text" name="coupleMsg" action="coupleMsg" method="POST">
                     <div id="dvJoin">
                         <h5>커플 요청</h5>
-                        <input type="hidden" id="userName" name="userName">
-                        <input type="text" id="coupleEmail" name="coupleEmail" class="input-text" placeholder="이메일">
+                        <input type="text" id="couplePid" name="couplePid" class="input-text" placeholder="유저번호">
                         <div class="row">
                             <div class="col s12 center">
-                                <button id="liEmailJoinSubmit" class="btn waves-effect waves-light poor-story" type="submit" name="action">
+                                <button id="liCoupleJoinSubmit" class="btn waves-effect waves-light poor-story" type="submit" name="action">
                                     <a href="#" onclick="coupleMsg.submit()"></a>요청 보내기<i class="material-icons right">send</i></a>
                                 </button>
                             </div>      
@@ -23,3 +22,13 @@
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var error = <%- error %>;
+        if(error == 1)
+            alert("자기자신과 커플을 맺을 수는 없습니다.");
+        else if (error == 2)
+            alert("상대방이 알림 서비스를 이용하지 않아 알림을 전송할 수 없습니다.\n커플 등록을 직접 요청해 주세요.");
+    });
+</script>

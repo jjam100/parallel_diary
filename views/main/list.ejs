@@ -48,7 +48,7 @@
             <%
                 for(var item in row.reverse()) {
                     if(row[item].user_pid == user_pid) {
-                        if(!row[item].is_deleted) {      
+                        if(!row[item].is_deleted) {
             %>
             <div class="card hoverable ">
                     <% if(row[item].img_url != '') { %>
@@ -113,7 +113,7 @@
     <!-- 자신의 일기 끝 -->
     <!-- 다른 사람의 일기 시작 -->
     <div class="col s12 m6">
-            
+
             <div class="container">
                 <%
                     for(var item in row) {
@@ -122,11 +122,11 @@
                             if(!row[item].is_deleted) {
                 %>
                 <div class="card hoverable ">
-                                <% if(row[item].img_url != '') { %>
+                        <% if(row[item].img_url != '') { %>
                     <div class="card-image">
                         <img src="<%=row[item].img_url%>" />
                     </div>
-                                <% } %>
+                        <% } %>
                     <!-- READ CONTENT 시작 : R + pid -->
                     <div id="R<%=row[item].diary_pid%>">
                         <div class="card-content">
