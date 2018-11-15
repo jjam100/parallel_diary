@@ -21,7 +21,7 @@ app.use(require('body-parser').json());
 var client = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: 'hong1128.',
+  password: '',
   port: 3306,
   database: 'my_db'
 });
@@ -34,6 +34,7 @@ router.get('/', function (req, res, next) {
 
 // 회원가입
 router.get('/signup', function (req, res, next) {
+  console.log(req.session);
   res.render('users/signup');
 });
 
@@ -94,6 +95,7 @@ router.post('/check', function (req, res, next) {
     let user_pid = row[0].user_pid;
     let nickInDB = row[0].nickname;
     let match = row[0].match;
+    let is_coupled = row[0].is_coupled;
     let pwInDB = row[0].password;
     let pwInParams = sha256(req.body.password);
 
@@ -108,8 +110,15 @@ router.post('/check', function (req, res, next) {
       //main code
       console.log("로그인 성공");
       console.log(req.session);
-      res.redirect('../main/list');
-      // next();
+      if (is_coupled == null) {
+        res.redirect('../main/coupleReq');
+      } else if (is_coupled == 0) {
+        res.redirect('../main/coupleAcpt')
+      } else if (is_coupled == 2) {
+        res.redirect('../main/coupleProg')
+      } else {
+        res.redirect('../main/list');
+      }
     } else {
       console.log("로그인 실패");
       res.redirect('./login');
