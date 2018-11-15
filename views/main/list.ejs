@@ -21,9 +21,9 @@
     <div class="col s12 m6">
         <!-- 작성칸 시작 -->
         <div class="container" style="padding:20px;">
-            <form action="./create" method="post">
+            <form action="./create" method="post" enctype="multipart/form-data">
                 <h2><%= new Date().toLocaleString().slice(0,10) %></h2>
-                <h3><%=nickname%></h3>
+                <h3><%= nickname %></h3>
                 <div class="input-field">
                     <label for="textarea1">작성칸</label>
                     <textarea id="textarea1" class="materialize-textarea" name="text"></textarea>

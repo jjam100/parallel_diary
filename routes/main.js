@@ -4,17 +4,35 @@ var mysql = require('mysql');
 var app = express();
 var moment = require('moment');
 var utf8 = require('utf8');
+var multer = require('multer');
 var base64 = require('base-64');
 var sha256 = require('sha256');
 var session = require('express-session');
 const functions = require('firebase-functions');
 var admin = require('firebase-admin');
+var path = require('path');
 
-var serviceAccount = require("./path/serviceAccountKey.json")
+var upload = multer({
+    storage : multer.diskStorage({
+        destination: function (req, file, cb) {
+
+            cb(null, './public/images/uploads');
+          },
+        filename: function (req, file, cb) {
+            //이미지 파일명은 "파일이름-날짜" 텍스트를 sha256 으로 암호화
+            //패턴화된 이미지 파일명은 자칫하면 제3자에 의해 탈취될 가능성이 있음.
+            let img_file_name = sha256(file.fieldname + '-' + Date.now());
+            cb(null, img_file_name + path.extname(file.originalname))
+        }
+    })
+  });
+
+
+// var serviceAccount = require("./path/serviceAccountKey.json")
 
 // firebase admin 설정 초기화
-admin.initializeApp({
-  });
+// admin.initializeApp({
+//   });
 
 //세션 설정
 app.use(session({
@@ -33,7 +51,7 @@ moment.tz.setDefault("Asia/Seoul");
 var client = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: '',
+    password: 'hong1128.',
     port: 3306,
     database: 'my_db'
 });
@@ -73,10 +91,6 @@ router.get('/list', function (req, res, next) {
             (`diary`.`user_pid` = `user`.`user_pid`\
                 AND (`user`.`user_pid` =" + user_pid + "\
                 OR `user`.`user_pid` = (SELECT `match` FROM (SELECT `match` FROM `my_db`.`user` WHERE `user_pid` =" + user_pid + ") tmp)))";
-
-
-
-
         client.query(q, function (err, row) {
             if (err) throw err;
             console.log(row);
@@ -97,22 +111,26 @@ router.get('/list', function (req, res, next) {
 });
 
 // 일기 작성
-router.post('/create', function (req, res) {
+router.post('/create', upload.single('img_url'), function (req, res) {
     //응답을 받는 것이므로 res.body 를 사용해야 함.
     // 필수값 : user_pid, text, date
     var sess = req.session;
-    console.log(sess);
-
-    console.log()
     var couplePid = sess.couple_pid;
     var coupleUser = null;
     const msgTitle = utf8.decode(base64.decode(sess.nickname)) + '님이 새로운 글을 등록했습니다!';
     const msg = utf8.decode(base64.decode(sess.nickname)) + '님이 다이어리에 새로운 글을 등록했습니다. 확인해보세요!';
     console.log(couplePid + "  " + msgTitle + "  " + msg);
+    
+    //이미지 쿼리 처리 분기문
+    let file_q;
+    if(req.file) 
+        file_q = '/images/uploads/' + req.file.filename;
+    else 
+        file_q = '';
     let q = "INSERT INTO `my_db`.`diary` (`date`, `text`, `img_url`, `user_pid`)VALUES(";
     q += moment().format('YYYYMMDD') + ",'";
     q += base64.encode(utf8.encode(req.body.text)) + "','";
-    q += req.body.img_url + "',";
+    q += file_q + "',";
     q += req.body.user_pid;
     q += ")";
     console.log(q);
@@ -270,7 +288,7 @@ router.post('/coupleMsg', function (req, res, next) {
                 });
                 res.redirect('coupleReq');
             }
-        });
+        }); 
     }
 });
 

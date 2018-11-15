@@ -21,7 +21,7 @@ app.use(require('body-parser').json());
 var client = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: '',
+  password: 'hong1128.',
   port: 3306,
   database: 'my_db'
 });
@@ -34,7 +34,6 @@ router.get('/', function (req, res, next) {
 
 // 회원가입
 router.get('/signup', function (req, res, next) {
-  console.log(req.session);
   res.render('users/signup');
 });
 
