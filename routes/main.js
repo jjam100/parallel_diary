@@ -29,6 +29,7 @@ var upload = multer({
 
 // firebase admin 설정 초기화
 admin.initializeApp({
+    
 });
 
 //세션 설정
@@ -48,7 +49,7 @@ moment.tz.setDefault("Asia/Seoul");
 var client = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: '',
+    password: 'hong1128.',
     port: 3306,
     database: 'my_db',
     multipleStatements: true
@@ -189,9 +190,20 @@ router.post('/destroy', function (res, req) {
 })
 
 // 일기 수정
-router.post('/update', function (res, req) {
-    //응답을 받는 것이므로 res.body 를 사용해야 함.
-    let q = "UPDATE `diary` SET `text` = '" + base64.encode(utf8.encode(res.body.text)) + "' WHERE (`diary_pid` = '" + res.body.update_id + "');";
+router.post('/update',upload.single('img_url'), function (res, req) {
+    //req,res 역순????
+    //이미지 처리 분기문
+    let file_q;
+    if(res.file) 
+        file_q = '/images/uploads/' + res.file.filename;
+    else 
+        file_q = '';
+
+    //쿼리
+    let q = "UPDATE `diary` SET \
+    `img_url` = '"+ file_q +"', \
+    `text` = '" + base64.encode(utf8.encode(res.body.text)) + "' WHERE (`diary_pid` = '" + res.body.update_id + "');";
+    
     client.query(q, function (err, row) {
         if (err) {
             console.log(q + ":" + err);

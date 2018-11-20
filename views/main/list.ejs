@@ -1,20 +1,3 @@
-<!-- <table border="1">
-    <tr>
-        <td>날짜</td>
-        <td>이미지</td>
-        <td>내용</td>
-        <td>작성유저</td>
-    </tr>
-    <% for(var i in row) { %>
-    <tr>
-        <td><%= row[i].date.toISOString().slice(0,10) %></td>
-        <td><img src='<%= row[i].img_url %>' /></td>
-        <td><%= row[i].text %></td>
-        <td><%= row[i].user_pid %></td>
-    </tr>
-    <% } %>
-</table> -->
-
 <!-- 일기 본체 시작 -->
 <div class="row">
     <!-- 자신의 일기 시작 -->
@@ -75,7 +58,7 @@
                 <!-- UPDATE폼 시작 : U + pid -->
                 <div id="<%='U' + row[item].diary_pid%>" style="display:none;">
                     <div class="card-content" style="display:block">
-                        <form action="./update" method="POST">
+                        <form action="./update" method="POST" enctype="multipart/form-data">
                             <div class="input-field">
                                 <label for="textarea1">작성칸</label>
                                 <textarea id="textarea1" class="materialize-textarea" name="text"><%=row[item].text%></textarea>
