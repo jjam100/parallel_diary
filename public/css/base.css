@@ -22,7 +22,10 @@
 .c4 { background-color: #5646C9; }
 .c5 { background-color: #5F47A3; }
 
-.d4 { background-color: rgba(10,20,20,1); }
+.man { background-color: rgb(137,171,227); }
+.dk { background-color: #263238; }
+.cm { background-color: #ea9e9f; }
+.woman { background-color: rgb(247,202,201); }
 .m4 { background-color: #F26978; }
 
 
@@ -72,32 +75,46 @@ div.row{
     animation-duration: 1s;
     animation-iteration-count: infinite;
 
+    background: -ms-linear-gradient(top, #ea9e9f 1%, #FFAAAB 50%, #FFAAAB 100%);
+    background: -moz-linear-gradient(top, #ea9e9f 1%, #FFAAAB 50%, #FFAAAB 100%);
+    background: -o-linear-gradient(top, #ea9e9f 1%, #FFAAAB 50%, #FFAAAB 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(1, #ea9e9f), color-stop(50, #FFAAAB), color-stop(100, #FFAAAB));
+    background: -webkit-linear-gradient(top, #ea9e9f 1%, #FFAAAB 50%, #FFAAAB 100%);
+    background: linear-gradient(to bottom, #ea9e9f 1%, #FFAAAB 50%, #FFAAAB 100%);
+}
+
+@keyframes universe {
+    from{
+        background: -ms-linear-gradient(top, #ea9e9f 1%, #FFAAAB 50%, #FFAAAB 100%);
+        background: -moz-linear-gradient(top, #ea9e9f 1%, #FFAAAB 50%, #FFAAAB 100%);
+        background: -o-linear-gradient(top, #ea9e9f 1%, #FFAAAB 50%, #FFAAAB 100%);
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(1, #ea9e9f), color-stop(50, #FFAAAB), color-stop(100, #FFAAAB));
+        background: -webkit-linear-gradient(top, #ea9e9f 1%, #FFAAAB 50%, #FFAAAB 100%);
+        background: linear-gradient(to bottom, #ea9e9f 1%, #FFAAAB 50%, #FFAAAB 100%);
+    }
+    to {
+        background: -ms-linear-gradient(top, #ea9e9f 1%, #FFAAAB 50%, #FFAAAB 100%);
+        background: -moz-linear-gradient(top, #ea9e9f 1%, #FFAAAB 50%, #FFAAAB 100%);
+        background: -o-linear-gradient(top, #ea9e9f 1%, #FFAAAB 50%, #FFAAAB 100%);
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(1, #ea9e9f), color-stop(50, #FFAAAB), color-stop(100, #FFAAAB));
+        background: -webkit-linear-gradient(top, #ea9e9f 1%, #FFAAAB 50%, #FFAAAB 100%);
+        background: linear-gradient(to bottom, #ea9e9f 1%, #FFAAAB 50%, #FFAAAB 100%);
+    }
+}
+
+#index_03 {
+    min-height: 650px;
+    position: relative;
+
     background: -ms-linear-gradient(top, #5646C9 1%, #4A459C 50%, #9B46E8 100%);
     background: -moz-linear-gradient(top, #5646C9 1%, #4A459C 50%, #9B46E8 100%);
     background: -o-linear-gradient(top, #5646C9 1%, #4A459C 50%, #9B46E8 100%);
     background: -webkit-gradient(linear, left top, left bottom, color-stop(1, #5646C9), color-stop(50, #4A459C), color-stop(100, #9B46E8));
     background: -webkit-linear-gradient(top, #5646C9 1%, #4A459C 50%, #9B46E8 100%);
     background: linear-gradient(to bottom, #5646C9 1%, #4A459C 50%, #9B46E8 100%);
+
 }
 
-@keyframes universe {
-    from{
-        background: -ms-linear-gradient(top, #5646C9 1%, #4A459C 50%, #9B46E8 100%);
-        background: -moz-linear-gradient(top, #5646C9 1%, #4A459C 50%, #9B46E8 100%);
-        background: -o-linear-gradient(top, #5646C9 1%, #4A459C 50%, #9B46E8 100%);
-        background: -webkit-gradient(linear, left top, left bottom, color-stop(1, #5646C9), color-stop(50, #4A459C), color-stop(100, #9B46E8));
-        background: -webkit-linear-gradient(top, #5646C9 1%, #4A459C 50%, #9B46E8 100%);
-        background: linear-gradient(to bottom, #5646C9 1%, #4A459C 50%, #9B46E8 100%);
-    }
-    to {
-        background: -ms-linear-gradient(top, #5646C9 1%, #4A459C 50%, #9B46E8 100%);
-        background: -moz-linear-gradient(top, #5646C9 1%, #4A459C 50%, #9B46E8 100%);
-        background: -o-linear-gradient(top, #5646C9 1%, #4A459C 50%, #9B46E8 100%);
-        background: -webkit-gradient(linear, left top, left bottom, color-stop(1, #5646C9), color-stop(50, #4A459C), color-stop(100, #9B46E8));
-        background: -webkit-linear-gradient(top, #5646C9 1%, #4A459C 50%, #9B46E8 100%);
-        background: linear-gradient(to bottom, #5646C9 1%, #4A459C 50%, #9B46E8 100%);
-    }
-}
 @media only screen and (max-width: 380px) {
     #your_name {
         width:250px;
