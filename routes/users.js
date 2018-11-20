@@ -13,7 +13,7 @@ app.use(require('body-parser').json());
 var client = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: 'hong1128.',
+  password: '',
   port: 3306,
   database: 'my_db'
 });
@@ -131,6 +131,35 @@ router.get('/logout', function (req, res) {
     res.redirect('./login');
 
 });
+
+// 유저설정
+router.get('/usersetting', function (req, res, next) {
+  var sess = req.session;
+  var nickname = sess.nickname;
+  var user_pid = sess.user_pid;
+  var match = null;
+  // if (nickname) {
+  //     let q = "SELECT `match`, `is_coupled` FROM `my_db`.`user` WHERE `user_pid` =" + user_pid;
+  //     client.query(q, function (err, row) {
+  //         if (err) throw err;
+  //         if (row[0].is_coupled != 2) {
+  //             res.redirect('/');
+  //         } else {
+  //             match = row[0].match;
+  //             res.render('main/coupleProg', {
+  //                 title: '요청중',
+  //                 match: match,
+  //                 error : 0
+  //             });
+  //         }
+  //     });
+  // } else {
+  //     res.redirect('../users/login');
+  // }
+  res.render('users/usersetting', {
+    title: '설정'
+  });
+})
 
 
 module.exports = router;

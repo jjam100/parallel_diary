@@ -29,7 +29,6 @@ var upload = multer({
 
 // firebase admin 설정 초기화
 admin.initializeApp({
-    
 });
 
 //세션 설정
@@ -49,7 +48,7 @@ moment.tz.setDefault("Asia/Seoul");
 var client = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'hong1128.',
+    password: '',
     port: 3306,
     database: 'my_db',
     multipleStatements: true
@@ -443,6 +442,7 @@ router.post('/coupleRej', function (req, res, next) {
     const msgTitle = utf8.decode(base64.decode(sess.nickname)) + '님이 커플요청을 거절하였습니다.';
     const msg = utf8.decode(base64.decode(sess.nickname)) + '님이 회원님의 커플요청을 거절하였습니다. 다시 시작해 보세요.';
     console.log(msgTitle + "  " + msg);
+    console.log("CouplePid : " + couplePid);
     let q = "SELECT `token` FROM `my_db`.`user` WHERE `user_pid` =" + couplePid;
     client.query(q, function (err, row) {
         if (err) throw err;

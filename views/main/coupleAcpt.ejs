@@ -5,16 +5,17 @@
                 <div class="card-content white-text">
                     <div id="dvJoin">
                         <p><i class="medium material-icons">person_add</i></p>
-                        <input type="hidden" id="couplePid" name="couplePid" value=<%- couplePid %>>
                         <h5><%- couple_nickname %>님으로부터 커플요청을 받으셨습니다. <br/>수락하시겠습니까?</h5><br/><br/>
                         <div class="row">
                             <div class="col s12 center">
                                 <form name="coupleAcpt" action="coupleAcpt" method="POST" style="display: contents;">
+                                    <input type="hidden" id="couplePid" name="couplePid" value=<%- couplePid %>>
                                     <button id="liCoupleAcceptSubmit" class="btn waves-effect waves-light poor-story" type="submit" name="action">
                                         <a href="#" onclick="coupleAcpt.submit()"></a>수락합니다<i class="material-icons left">check</i></a>
                                     </button>
                                 </form>
                                 <form name="coupleRej" action="coupleRej" method="POST" style="display: contents;">
+                                    <input type="hidden" id="couplePid" name="couplePid" value=<%- couplePid %>>
                                     <button id="liCoupleRejectSubmit" class="btn waves-effect waves-light red poor-story" type="submit" name="action">
                                         <a href="#" onclick="coupleRej.submit()"></a>거절합니다<i class="material-icons left">close</i></a>
                                     </button>
