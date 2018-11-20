@@ -29,6 +29,7 @@ var upload = multer({
 
 // firebase admin 설정 초기화
 admin.initializeApp({
+
 });
 
 //세션 설정
@@ -59,7 +60,6 @@ client.connect();
 router.get('/', function (req, res, next) {
     //session
     sess = req.session;
-    console.log(sess);
     //redirect
     res.redirect("main/list");
 });
@@ -81,9 +81,11 @@ router.get('/list', function (req, res, next) {
             } else if (row[0].is_coupled == 2) {
                 res.redirect('../main/coupleProg')
             } else {
-                //main code
+                //내부 쿼리 
+                //`user`.`match`추가
                 let p = "SELECT DISTINCT\
                 `user`.`nickname`,\
+                `user`.`match`,\
                 `diary`.`diary_pid`,\
                 `diary`.`date`,\
                 `diary`.`text`,\
@@ -100,17 +102,25 @@ router.get('/list', function (req, res, next) {
                         OR `user`.`user_pid` = (SELECT `match` FROM (SELECT `match` FROM `my_db`.`user` WHERE `user_pid` =" + user_pid + ") tmp)))";
                 client.query(p, function (err, row) {
                     if (err) throw err;
-                    console.log(row);
                     var base64 = require('base-64');
                     row.forEach(e => {
                         e.text = utf8.decode(base64.decode(e.text));
                     });
-                    res.render('main/list', {
-                        title: "일기",
-                        row: row,
-                        nickname: utf8.decode(base64.decode(req.session.nickname)),
-                        user_pid: req.session.user_pid
+                    // 삼중쿼리..... 후덜덜...
+                    // 커플 닉네임을 받기위해서 쿼리 추가 : 홍진백
+                    let r = "SELECT `nickname` FROM my_db.user WHERE `match` = '"+sess.user_pid+"';";
+                    client.query(r, function (err, row2) {
+                        let c_n = utf8.decode(base64.decode(row2[0].nickname));
+                        res.render('main/list', {
+                            title: "일기",
+                            today:moment().format('YYYY-MM-DD'),
+                            row: row,
+                            couple: c_n,
+                            nickname: utf8.decode(base64.decode(req.session.nickname)),
+                            user_pid: req.session.user_pid
+                        });
                     });
+                    
                 })
             }
         });
@@ -132,12 +142,15 @@ router.post('/create', upload.single('img_url'), function (req, res) {
     
     //이미지 쿼리 처리 분기문
     let file_q;
-    if(req.file) 
+    if(req.file) {
         file_q = '/images/uploads/' + req.file.filename;
-    else 
+    }
+    else {
         file_q = '';
-    let q = "INSERT INTO `my_db`.`diary` (`date`, `text`, `img_url`, `user_pid`)VALUES(";
-    q += moment().format('YYYYMMDD') + ",'";
+    }
+
+    let q = "INSERT INTO `my_db`.`diary` (`date`, `text`, `img_url`, `user_pid`)VALUES('";
+    q += moment().format('YYYY-MM-DD') + "','";
     q += base64.encode(utf8.encode(req.body.text)) + "','";
     q += file_q + "',";
     q += req.body.user_pid;

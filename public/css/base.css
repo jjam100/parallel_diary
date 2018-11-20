@@ -1,18 +1,34 @@
 @import url('https://fonts.googleapis.com/css?family=Noto+Sans+KR');
 @import url('https://fonts.googleapis.com/css?family=Gugi');
 @import url('https://fonts.googleapis.com/css?family=Poor+Story');
+@import url('http://fonts.googleapis.com/earlyaccess/jejugothic.css');
+
+/* 전체 페이지 강제 맞춤 */
+html {
+    width: 100% !important;
+}
 
 /* 노토 산스 폰트 */
 .noto-sans {
     font-family: 'Noto Sans KR', sans-serif;
 }
-/* 푸어스토리 */
-.poor-story {
-    font-family: 'Poor Story', cursive;
+/* 제주고딕 */
+.jeju {
+    font-family: 'Jeju Gothic', cursive;
 }
 /* 구기 */
 .gugi{
     font-family: 'Gugi', cursive;
+}
+
+/* 폼 내의 폰트 고정 */
+textarea, input, button, label {
+    font-family: 'Jeju Gothic', cursive;
+}
+
+/* 숨기기 */
+.hidden_elem{
+    display: none;
 }
 
 /* 색상 */
@@ -26,8 +42,13 @@
 .dk { background-color: #263238; }
 .cm { background-color: #ea9e9f; }
 .woman { background-color: rgb(247,202,201); }
-.m4 { background-color: #F26978; }
+.mm4 { background-color: #F26978; }
+.middle {background-color: #bab9d7;}
 
+/* h5 폰트 키우기 */
+h5{
+    font-size: 2em;
+}
 
 p { font-size:18px; }
 div.row{
@@ -61,7 +82,7 @@ div.row{
     /* 100%    {letter-spacing: 0px} */
 }
 
-.front-main { height:70vh; }
+.front-main { height:50vh; }
 #index_01 {
     margin-top:50px;
     margin-bottom : 15px;
@@ -144,6 +165,7 @@ div.row{
     min-height: calc(100vh - 64px) !important;
 }
 
+
 #dvJoin{
     padding-left:5%;
     padding-right:5%;
@@ -165,4 +187,12 @@ div.row{
 }
 .page-footer {
     padding-top : 0px;
+}
+
+#date_pick_btn{
+    margin: auto auto;
+}
+
+#parallel_wrap {
+    min-height: 50vh;
 }
