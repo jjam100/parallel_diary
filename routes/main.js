@@ -29,7 +29,7 @@ var upload = multer({
 
 // firebase admin 설정 초기화
 admin.initializeApp({
-  });
+});
 
 //세션 설정
 app.use(session({
@@ -74,8 +74,12 @@ router.get('/list', function (req, res, next) {
         let q = "SELECT `is_coupled` FROM `my_db`.`user` WHERE `user_pid` =" + user_pid;
         client.query(q, function (err, row) {
             if (err) throw err;
-            if (row[0].is_coupled != 1) {
-                res.redirect('/');
+            if (row[0].is_coupled == null) {
+                res.redirect('../main/coupleReq');
+            } else if (row[0].is_coupled == 0) {
+                res.redirect('../main/coupleAcpt')
+            } else if (row[0].is_coupled == 2) {
+                res.redirect('../main/coupleProg')
             } else {
                 //main code
                 let p = "SELECT DISTINCT\
@@ -298,6 +302,7 @@ router.post('/coupleMsg', function (req, res, next) {
                         if (coupleUser == null) {
                             res.render('main/coupleProg', {
                                 title: '요청중',
+                                match: couplePid,
                                 error : 1
                             });
                         } else {
@@ -306,7 +311,7 @@ router.post('/coupleMsg', function (req, res, next) {
                                     title: msgTitle,
                                     body: msg,
                                     sound: 'default',
-                                    click_action: 'http://127.0.0.1:52273',
+                                    click_action: 'http://127.0.0.1:52273/users/login',
                                     icon: '\/icons/android-icon-192x192.png'
                                 }
                             };
@@ -322,6 +327,7 @@ router.post('/coupleMsg', function (req, res, next) {
                             });
                             res.render('main/coupleProg', {
                                 title: '요청중',
+                                match: couplePid,
                                 error : 1
                             });
                         }      
@@ -330,19 +336,143 @@ router.post('/coupleMsg', function (req, res, next) {
             }
         });
     }
-});
+})
 
 // 커플 요청 수락
 router.get('/coupleAcpt', function (req, res, next) {
     var sess = req.session;
     var nickname = sess.nickname;
     var user_pid = sess.user_pid;
-    console.log("유저번호 : " + user_pid);
+    var couple_pid = null;
+    var couple_nickname = null;
     if (nickname) {
-        res.render('main/coupleAcpt', { title: '요청수락' });
+        let q = "SELECT `match`, `is_coupled` FROM `my_db`.`user` WHERE `user_pid` =" + user_pid;
+        client.query(q, function (err, row) {
+            if (err) throw err;
+            if (row[0].is_coupled != 0) {
+                res.redirect('/');
+            } else {
+                couple_pid = row[0].match;
+                let p = "SELECT `nickname` FROM `my_db`.`user` WHERE `user_pid` =" + couple_pid;
+                client.query(p, function (err, row) {
+                    if (err) throw err;
+                    var base64 = require('base-64');
+                    couple_nickname = row[0].nickname;
+                    res.render('main/coupleAcpt', {
+                        title: '요청수락',
+                        couplePid: couple_pid,
+                        couple_nickname: utf8.decode(base64.decode(couple_nickname))
+                    });
+                });
+            }
+        });
     } else {
         res.redirect('../users/login');
     }
+})
+
+// 커플 요청 수락 처리
+router.post('/coupleAcpt', function (req, res, next) {
+    //session
+    var sess = req.session;
+    const couplePid = req.body.couplePid;
+    const msgTitle = utf8.decode(base64.decode(sess.nickname)) + '님이 커플요청을 수락하였습니다!';
+    const msg = utf8.decode(base64.decode(sess.nickname)) + '님이 회원님의 커플요청을 수락하였습니다. 평행일기를 시작해 보세요!';
+    console.log(msgTitle + "  " + msg);
+    let q = "SELECT `token` FROM `my_db`.`user` WHERE `user_pid` =" + couplePid;
+    client.query(q, function (err, row) {
+        if (err) throw err;
+        console.log('상대 토큰 : ' + row[0].token);
+        coupleUser = row[0].token;
+        console.log('\n나의 pid : ' + sess.user_pid + '   커플 pid : ' + couplePid);
+        let p = "UPDATE `my_db`.`user`\
+        SET `is_coupled` = 1\
+        WHERE `user_pid` ="+ sess.user_pid +";" + 
+        "UPDATE `my_db`.`user`\
+        SET `is_coupled` = 1\
+        WHERE `user_pid` = "+ couplePid +";"  
+        client.query(p, function (err, row) {
+            if (err) throw err;
+            if (coupleUser == null) {
+                // 수락 완료했다고 alert만들어야....
+                res.redirect('../main/list');
+            } else {
+                const payload = {
+                    notification: {
+                        title: msgTitle,
+                        body: msg,
+                        sound: 'default',
+                        click_action: 'http://127.0.0.1:52273/main/list',
+                        icon: '\/icons/android-icon-192x192.png'
+                    }
+                };
+                admin.messaging().sendToDevice(coupleUser, payload).then(response => {
+                    response.results.forEach((result, index) => {
+                        const error = result.error;
+                        if (error) {
+                            console.error('FCM 실패 : ', error.code);
+                        } else {
+                            console.log('FCM 성공');
+                        }
+                    });
+                });
+                // 수락 완료했다고 alert만들어야....
+                res.redirect('../main/list');
+            }      
+        });        
+    });
+})
+
+// 커플 요청 거절 처리
+router.post('/coupleRej', function (req, res, next) {
+    //session
+    var sess = req.session;
+    const couplePid = req.body.couplePid;
+    const msgTitle = utf8.decode(base64.decode(sess.nickname)) + '님이 커플요청을 거절하였습니다.';
+    const msg = utf8.decode(base64.decode(sess.nickname)) + '님이 회원님의 커플요청을 거절하였습니다. 다시 시작해 보세요.';
+    console.log(msgTitle + "  " + msg);
+    let q = "SELECT `token` FROM `my_db`.`user` WHERE `user_pid` =" + couplePid;
+    client.query(q, function (err, row) {
+        if (err) throw err;
+        console.log('상대 토큰 : ' + row[0].token);
+        coupleUser = row[0].token;
+        console.log('\n나의 pid : ' + sess.user_pid + '   커플 pid : ' + couplePid);
+        let p = "UPDATE `my_db`.`user`\
+        SET `match` = NULL, `is_coupled` = NULL\
+        WHERE `user_pid` ="+ sess.user_pid +";" + 
+        "UPDATE `my_db`.`user`\
+        SET `match` = NULL, `is_coupled` = NULL\
+        WHERE `user_pid` = "+ couplePid +";"  
+        client.query(p, function (err, row) {
+            if (err) throw err;
+            if (coupleUser == null) {
+                // 거절 완료했다고 alert만들어야....
+                res.redirect('/');
+            } else {
+                const payload = {
+                    notification: {
+                        title: msgTitle,
+                        body: msg,
+                        sound: 'default',
+                        click_action: 'http://127.0.0.1:52273',
+                        icon: '\/icons/android-icon-192x192.png'
+                    }
+                };
+                admin.messaging().sendToDevice(coupleUser, payload).then(response => {
+                    response.results.forEach((result, index) => {
+                        const error = result.error;
+                        if (error) {
+                            console.error('FCM 실패 : ', error.code);
+                        } else {
+                            console.log('FCM 성공');
+                        }
+                    });
+                });
+                // 거절 완료했다고 alert만들어야....
+                res.redirect('/');
+            }      
+        });        
+    });
 })
 
 // 커플 요청 중
@@ -350,15 +480,43 @@ router.get('/coupleProg', function (req, res, next) {
     var sess = req.session;
     var nickname = sess.nickname;
     var user_pid = sess.user_pid;
-    console.log("유저번호 : " + user_pid);
+    var match = null;
     if (nickname) {
-        res.render('main/coupleProg', { 
-            title: '요청중',
-            error: 0
+        let q = "SELECT `match`, `is_coupled` FROM `my_db`.`user` WHERE `user_pid` =" + user_pid;
+        client.query(q, function (err, row) {
+            if (err) throw err;
+            if (row[0].is_coupled != 2) {
+                res.redirect('/');
+            } else {
+                match = row[0].match;
+                res.render('main/coupleProg', {
+                    title: '요청중',
+                    match: match,
+                    error : 0
+                });
+            }
         });
     } else {
         res.redirect('../users/login');
     }
+})
+
+// 커플 요청 취소 처리
+router.post('/coupleCnl', function (req, res, next) {
+    //session
+    var sess = req.session;
+    const couplePid = req.body.couplePid;
+    console.log('\n나의 pid : ' + sess.user_pid + '   커플 pid : ' + couplePid);
+    let p = "UPDATE `my_db`.`user`\
+    SET `match` = NULL, `is_coupled` = NULL\
+    WHERE `user_pid` ="+ sess.user_pid +";" + 
+    "UPDATE `my_db`.`user`\
+    SET `match` = NULL, `is_coupled` = NULL\
+    WHERE `user_pid` = "+ couplePid +";"  
+    client.query(p, function (err, row) {
+        if (err) throw err;
+        res.redirect('/');      
+    });
 })
 
 module.exports = router;

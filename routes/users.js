@@ -9,14 +9,6 @@ var sha256 = require('sha256');
 var session = require('express-session');
 app.use(require('body-parser').json());
 
-// //세션 설정
-// // sess = req.session; 으로 접근
-// app.use(session({
-//   secret: '@#$%fjdfghjkdlsayuiqefc@$#%', //랜덤 키보드캣(세션 변조)
-//   resave: false,
-//   saveUninitialized: true
-// }));
-
 // MYSQL 연결설정
 var client = mysql.createConnection({
   host: 'localhost',

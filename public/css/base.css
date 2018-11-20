@@ -24,7 +24,6 @@
 
 
 p { font-size:18px; }
-.sidenav{width:200px !important;}
 div.row{
     margin-top : 0px !important;
     margin-bottom: 0px
@@ -144,4 +143,7 @@ div.row{
     background: #fff;
     border: 1px solid #e4e4e4!important;
     outline: none!important;
+}
+.page-footer {
+    padding-top : 0px;
 }

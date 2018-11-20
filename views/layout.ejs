@@ -49,12 +49,15 @@
     <!--    
             메인 페이지 레이아웃 작성
             2018.09.17. 14109388 홍진백
+
+            메인 페이지 레이아웃 보강
+            2018.11.01  14109362 이창재
         -->
 
     <!--   NAVIGATION BAR     -->
-    <nav>
-        <div class="nav-wrapper blue darken-2">
-            <a href="/" class="brand-logo center poor-story">
+    <nav class="blue darken-2">
+        <div class="container nav-wrapper blue darken-2">
+            <a href="/" class="brand-logo poor-story">
                 <%=(typeof title != "undefined" ? title : "평행일기")%></a>
             <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
             <ul class="right hide-on-med-and-down">
@@ -68,11 +71,23 @@
     </nav>
 
     <ul class="sidenav blue lighten-1" id="mobile-demo">
-        <li><a href="/">메인</a></li>
-        <li><a href="/main">일기쓰기</a></li>
-        <li><a href="/users/login">로그인</a></li>
-        <li><a href="/users/signup">회원가입</a></li>
-        <li><a href="/users/logout">로그아웃</a></li>   
+        <li><div class="user-view">
+            <div class="background">
+            <img src="images/userback.png">
+            </div>
+            <a href="#user"><img class="circle" src="images/Profile.jpg"></a>
+            <a href="#name"><span class="white-text name">Rena</span></a>
+            <a href="#email"><span class="white-text email">rena@parallel.com</span></a>
+        </div></li>
+        <li><a href="#!"><i class="material-icons">cloud</i>First Link With Icon</a></li>
+        <li><a href="#!">Second Link</a></li>
+        <li><div class="divider"></div></li>
+        <li><a class="subheader">Subheader</a></li>
+        <li><a class="waves-effect" href="/">메인</a></li>
+        <li><a class="waves-effect" href="/main">일기쓰기</a></li>
+        <li><a class="waves-effect" href="/users/login">로그인</a></li>
+        <li><a class="waves-effect" href="/users/signup">회원가입</a></li>
+        <li><a class="waves-effect" href="/users/logout">로그아웃</a></li>   
     </ul>
     <!--    CONTENT START    -->
     <%- body %>
@@ -113,5 +128,12 @@
         });    
     </script>
 </body>
-
+<footer class="page-footer blue darken-2">
+    <div class="footer-copyright blue darken-2">
+        <div class="container">
+        © 2018 Parallel Diary, All rights reserved. 
+        <a class="grey-text text-lighten-4 right" href="#!"></a>
+        </div>
+    </div>
+</footer>
 </html>
