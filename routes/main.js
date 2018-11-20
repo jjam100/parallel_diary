@@ -29,7 +29,12 @@ var upload = multer({
 
 // firebase admin 설정 초기화
 admin.initializeApp({
-
+    apiKey: "AIzaSyBuJuuw6DvZOvxxYr-CooW7hMoxBy80Nd8",
+    authDomain: "parallel-diary.firebaseapp.com",
+    databaseURL: "https://parallel-diary.firebaseio.com",
+    projectId: "parallel-diary",
+    storageBucket: "parallel-diary.appspot.com",
+    messagingSenderId: "1068220114920"
 });
 
 //세션 설정
@@ -49,7 +54,7 @@ moment.tz.setDefault("Asia/Seoul");
 var client = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: '',
+    password: 'hong1128.',
     port: 3306,
     database: 'my_db',
     multipleStatements: true
