@@ -1,3 +1,17 @@
-<h1><%= message %></h1>
-<h2><%= error.status %></h2>
-<pre><%= error.stack %></pre>
+<div class="row cm">
+    <div class="col m2"></div>
+    <div class="col s12 m8">
+        <h1>
+            <i class="material-icons large">broken_image</i>
+            <%= message %>
+        </h1>
+        <p>문제가 지속될 시 에러상태를 첨부하여 다음 지원처로 문의주시기 바랍니다.
+           <br/>지원처 : <a href="mailto:paralleldiary14@gmail.com">paralleldiary14@gmail.com</a>
+        </p>
+        <h2>
+            <%= error.status %>
+        </h2>
+        <p><%= error.stack %></p> 
+    </div>
+    <div class="col m2"></div>
+</div>

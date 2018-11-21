@@ -46,8 +46,15 @@ moment.tz.setDefault("Asia/Seoul");
 
 // MYSQL 연결설정
 var client = mysql.createConnection({
-});
-client.connect();
+    host: 'localhost',
+    user: 'root',
+    password: 'password',
+    port: 3306,
+    database: 'my_db',
+    multipleStatements: true
+  });
+  client.connect();
+  
 
 // 메인페이지
 router.get('/', function (req, res, next) {

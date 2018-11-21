@@ -3,11 +3,11 @@
     <div class="container" style="padding:5%;">
         <form action="./create" method="post" enctype="multipart/form-data">
             <div class="input-field">
-                <label for="textarea1">작성칸</label>
+                <label for="textarea1">작성칸<small>(write form)</small></label>
                 <textarea id="textarea1" class="materialize-textarea" name="text"></textarea>
                 <div class="file-field input-field">
                     <div class="btn">
-                        <span>이미지 업로드</span>
+                        <span>이미지 업로드<small>(image upload)</small></span>
                         <input type="file" name="img_url">
                     </div>
                     <div class="file-path-wrapper">
@@ -15,7 +15,7 @@
                     </div>
                 </div>
                 <input name="user_pid" type="text" value="<%=user_pid%>" hidden>
-                <button class="btn-large waves-effect waves-light" type="submit">기록
+                <button class="btn-large waves-effect waves-light" type="submit">기록<small>(write)</small>
                     <i class="material-icons right">send</i>
                 </button>
             </div>
@@ -27,7 +27,7 @@
 <!-- 날짜 표지 시작 -->
 <div class="row middle">
     <div class="col s12">
-        <h4 id="today_diary" class="gugi center-align" style="color: rgb(50,50,50);">오늘의 일기</h4>
+        <h4 id="today_diary" class="gugi center-align" style="color: rgb(50,50,50);">오늘의 일기<small>(today's diary)</small></h4>
     </div>
 </div>
 <!-- 날짜 표지 끝 -->
@@ -57,7 +57,7 @@
                     <div class="card-action">
                         <form action="./destroy" method="post" style="display:inline;">
                             <input type="hidden" name="destroy_id" value="<%=row[item].diary_pid%>"/>
-                            <button class="btn waves-effect waves-light man" type="submit"><span style="color:black">삭제</span></button>
+                            <button class="btn waves-effect waves-light man" type="submit"><span style="color:black">삭제<small>(delete)</small></span></button>
                         </form>
                         <button onclick="toggleUpdateForm(<%=row[item].diary_pid%>);" class="btn waves-effect waves-light woman" type="submit"><span style="color:black">수정</span></button>
                     </div>
@@ -68,11 +68,11 @@
                     <div class="card-content jeju" style="display:block">
                         <form action="./update" method="POST" enctype="multipart/form-data">
                             <div class="input-field">
-                                <label for="textarea1">작성칸</label>
+                                <label for="textarea1">작성칸<small>(write form)</small></label>
                                 <textarea id="textarea1" class="materialize-textarea" name="text"><%=row[item].text%></textarea>
                                 <div class="file-field input-field">
                                     <div class="btn">
-                                        <span>이미지 업로드</span>
+                                        <span>이미지 업로드<small>(image upload)</small></span>
                                         <input type="file" name="img_url">
                                     </div>
                                     <div class="file-path-wrapper">
@@ -83,9 +83,9 @@
                             <input type="hidden" name="update_id" value="<%=row[item].diary_pid%>"/>
                     </div>  
                     <div class="card-action">
-                        <button id="update_btn" class="btn waves-effect waves-light man" type="submit"><span style="color:black">수정</span><i class="material-icons right">send</i></button>
+                        <button id="update_btn" class="btn waves-effect waves-light man" type="submit"><span style="color:black">수정<small>(modification)</small></span><i class="material-icons right">send</i></button>
                         </form> 
-                        <button onclick="toggleUpdateForm(<%=row[item].diary_pid%>);" class="btn waves-effect waves-light woman"><span style="color:black">취소</span>
+                        <button onclick="toggleUpdateForm(<%=row[item].diary_pid%>);" class="btn waves-effect waves-light woman"><span style="color:black">취소<small>(cancel)</small></span>
                             <i class="material-icons right">send</i>
                         </button>
                     </div>
@@ -141,11 +141,11 @@
     <div class="col s6 m4">
         <div class="card-panel">
             <div class="input-field">
-                <label for="date_pick">날짜 선택</label>
+                <label for="date_pick">날짜 선택<small>(choose date)</small></label>
                 <input id="date_pick" type="text" class="datepicker" value="<%=today%>" />
             </div>
             <div class="card-action center-align">
-                <button class="btn waves-effect waves-light" id="date_pick_btn">이 날짜 일기로!</button>
+                <button class="btn waves-effect waves-light" id="date_pick_btn">이 날짜 일기로!</button><small>(this day!)</small>
             </div>
         </div>
     </div>
