@@ -27,7 +27,7 @@
 <!-- 날짜 표지 시작 -->
 <div class="row middle">
     <div class="col s12">
-        <h4 id="today_diary" class="gugi center-align">오늘의 일기</h4>
+        <h4 id="today_diary" class="gugi center-align" style="color: rgb(50,50,50);">오늘의 일기</h4>
     </div>
 </div>
 <!-- 날짜 표지 끝 -->
@@ -36,7 +36,7 @@
     <!-- 자신의 일기 시작 -->
     <div id="parallel_wrap" class="col s12 m6 man">
         <div class="container">
-            <h5 class="jeju center-align"><%=nickname%></h5>
+            <h5 class="jeju center-align" style="color: rgb(240,240,240);"><%=nickname%></h5>
             <%
                 for(var item in row.reverse()) {
                     if(row[item].user_pid == user_pid) {
@@ -102,7 +102,7 @@
     <!-- 자신의 일기 끝 -->
     <!-- 다른 사람의 일기 시작 -->
     <div id="parallel_wrap" class="col s12 m6 woman">
-            <h5 class="jeju center-align"><%=couple%></h5>
+            <h5 class="jeju center-align" style="color: rgb(240,240,240);"><%=couple%></h5>
             <div class="container">
                 <%
                     for(var item in row) {

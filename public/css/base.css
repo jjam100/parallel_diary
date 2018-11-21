@@ -3,11 +3,6 @@
 @import url('https://fonts.googleapis.com/css?family=Poor+Story');
 @import url('http://fonts.googleapis.com/earlyaccess/jejugothic.css');
 
-/* 전체 페이지 강제 맞춤 */
-html {
-    width: 100% !important;
-}
-
 /* 노토 산스 폰트 */
 .noto-sans {
     font-family: 'Noto Sans KR', sans-serif;
@@ -16,20 +11,20 @@ html {
 .jeju {
     font-family: 'Jeju Gothic', cursive;
 }
+/* 푸어스토리 */
+.poor-story {
+    font-family: 'Poor Story', cursive;
+}
 /* 구기 */
 .gugi{
     font-family: 'Gugi', cursive;
 }
 
 /* 폼 내의 폰트 고정 */
-textarea, input, button, label {
+textarea {
     font-family: 'Jeju Gothic', cursive;
 }
 
-/* 숨기기 */
-.hidden_elem{
-    display: none;
-}
 
 /* 색상 */
 .c1 { background-color: #8D3AC1; }
@@ -43,7 +38,7 @@ textarea, input, button, label {
 .cm { background-color: #ea9e9f; }
 .woman { background-color: rgb(247,202,201); }
 .mm4 { background-color: #F26978; }
-.middle {background-color: #bab9d7;}
+.middle {background-color: rgb(200,215,245);}
 
 /* h5 폰트 키우기 */
 h5{

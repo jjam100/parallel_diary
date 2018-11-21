@@ -13,9 +13,10 @@ app.use(require('body-parser').json());
 var client = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: 'hong1128.',
+  password: '1q2w3e4r?',
   port: 3306,
-  database: 'my_db'
+  database: 'my_db',
+  multipleStatements: true
 });
 client.connect();
 
