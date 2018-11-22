@@ -116,57 +116,6 @@
             });
             M.textareaAutoResize($('#textarea1'));
             $('select').formSelect();
-            // 데이트 피커 설정
-            // $('.datepicker').datepicker();
-            $('.datepicker').datepicker({
-                firstDay: true,
-                format: 'yyyy-mm-dd',
-                i18n: {
-                    months: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
-                    monthsShort: ["1/", "2/", "3/", "4/", "5/", "6/", "7/", "8/", "9/", "10/", "11/",
-                        "12/"
-                    ],
-                    weekdays: ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"],
-                    weekdaysShort: ["일", "월", "화", "수", "목", "금", "토"],
-                    weekdaysAbbrev: ["일", "월", "화", "수", "목", "금", "토"]
-                },
-                maxDate: new Date()
-            });
-
-            //오늘 보여주는 포스팅 보이기
-            var date_post = $('.date-post').toArray();
-            var date_pick = $('#date_pick').val();
-            if (date_post != 'undefined') {
-                $('.card').css('display', 'none');
-                for (let i = 0; i < date_post.length; i++) {
-                    if (date_post[i].innerText == date_pick) {
-                        date_post[i].parentNode.parentNode.parentNode.style.display = "block";
-                    }
-                }
-            }
-
-            // 다른 날짜를 선택했을 경우
-            $('button#date_pick_btn').on('click', function (e) {
-                // 버블링 금지
-                e.stopPropagation();
-                //날짜 표지 변경
-                $('#today_diary').text("");
-                // 순회하여 해당날짜 드러내기
-                $('.card').css('display', 'none');
-                date_pick = $('#date_pick').val();
-                let count_p = 0; //카운팅용 변수
-                for (i = 0; i < date_post.length; i++) {
-                    if (date_post[i].innerText == date_pick) {
-                        date_post[i].parentNode.parentNode.parentNode.style.display = "block";
-                        count_p++;
-                    }
-                }
-                if(count_p == 0) { //일기가 없는 경우
-                    alert('해당 날짜에 작성한 일기가 없습니다!');
-                }
-                
-                
-            });
         });
 
         // 수정폼 토글 스크립트 : 순수 JS

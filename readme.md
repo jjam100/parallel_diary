@@ -24,6 +24,9 @@
     * routes/user.js
         * MySQL 연결 설정
     * views/main/list.ejs
+    * views/main/coupleAcpt.ejs
+    * views/main/coupleProg.ejs
+    * views/main/coupleReq.ejs
         * Firebase 설정
     * public/firebase-messaging-sw.js
         * FCM Sender ID 설정
