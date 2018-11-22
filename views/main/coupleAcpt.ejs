@@ -1,4 +1,4 @@
-<div id="index_03" class="row h-100 poor-story">
+<div id="index_03" class="row h-100 jeju">
     <div class="row">
         <div class="col l4 offset-l4 m8 offset-m2 s12" style="margin-top:10vh;">
             <div class="card c5">
@@ -10,13 +10,13 @@
                             <div class="col s12 center">
                                 <form name="coupleAcpt" action="coupleAcpt" method="POST" style="display: contents;">
                                     <input type="hidden" id="couplePid" name="couplePid" value=<%- couplePid %>>
-                                    <button id="liCoupleAcceptSubmit" class="btn waves-effect waves-light poor-story" type="submit" name="action">
+                                    <button id="liCoupleAcceptSubmit" class="btn waves-effect waves-light jeju" type="submit" name="action">
                                         <a href="#" onclick="coupleAcpt.submit()"></a>수락합니다<i class="material-icons left">check</i></a>
                                     </button>
                                 </form>
                                 <form name="coupleRej" action="coupleRej" method="POST" style="display: contents;">
                                     <input type="hidden" id="couplePid" name="couplePid" value=<%- couplePid %>>
-                                    <button id="liCoupleRejectSubmit" class="btn waves-effect waves-light red poor-story" type="submit" name="action">
+                                    <button id="liCoupleRejectSubmit" class="btn waves-effect waves-light red jeju" type="submit" name="action">
                                         <a href="#" onclick="coupleRej.submit()"></a>거절합니다<i class="material-icons left">close</i></a>
                                     </button>
                                 </form>
@@ -33,6 +33,35 @@
 </div>
 
 <script type="text/javascript">
+    // Initialize Firebase
+    var config = {
+    };
+    firebase.initializeApp(config);
+    // FCM 메시지 설정 코드
+    var messaging = firebase.messaging();
+    messaging.requestPermission()
+        .then(function(){
+            console.log('메세징 권한 획득');
+            return messaging.getToken();
+        })
+        .then(function(token){
+            console.log('fcm token: ', token);
+            $.ajax({
+                type: "POST",
+                url: "/main/updateToken",
+                data: token,
+                dataType: "TEXT",
+                success: function(text){
+                    console.log('전송성공');
+                },
+                error: function(xhr, status, error){
+                    console.log(error);
+                }
+            });
+        })
+        .catch(function(e){
+            console.log('메세징 권한 획득 중 에러', e);
+        });
     $(document).ready(function () {
     });
 </script>
