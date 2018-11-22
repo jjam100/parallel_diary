@@ -1,4 +1,4 @@
-<div id="index_03" class="row h-100 poor-story">
+<div id="index_03" class="row h-100 jeju">
     <div class="row">
         <div class="col l4 offset-l4 m8 offset-m2 s12" style="margin-top:10vh;">
             <div class="card c5">
@@ -8,7 +8,7 @@
                         <input type="text" id="couplePid" name="couplePid" class="input-text" placeholder="유저번호">
                         <div class="row">
                             <div class="col s12 center">
-                                <button id="liCoupleJoinSubmit" class="btn waves-effect waves-light poor-story" type="submit" name="action">
+                                <button id="liCoupleJoinSubmit" class="btn waves-effect waves-light jeju" type="submit" name="action">
                                     <a href="#" onclick="coupleMsg.submit()"></a>요청 보내기<i class="material-icons right">send</i></a>
                                 </button>
                             </div>      
@@ -24,6 +24,35 @@
 </div>
 
 <script type="text/javascript">
+    // Initialize Firebase
+    var config = {
+    };
+    firebase.initializeApp(config);
+    // FCM 메시지 설정 코드
+    var messaging = firebase.messaging();
+    messaging.requestPermission()
+        .then(function(){
+            console.log('메세징 권한 획득');
+            return messaging.getToken();
+        })
+        .then(function(token){
+            console.log('fcm token: ', token);
+            $.ajax({
+                type: "POST",
+                url: "/main/updateToken",
+                data: token,
+                dataType: "TEXT",
+                success: function(text){
+                    console.log('전송성공');
+                },
+                error: function(xhr, status, error){
+                    console.log(error);
+                }
+            });
+        })
+        .catch(function(e){
+            console.log('메세징 권한 획득 중 에러', e);
+        });
     $(document).ready(function () {
         var error = <%- error %>;
         if(error == 1)
