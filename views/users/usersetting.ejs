@@ -1,0 +1,169 @@
+<div class="backcol jeju">
+    <div class="ac-banner white-text col-12">
+        <div class="row sub-banner">
+            <div class="container">
+                <div class="col s12 m6 acinfo">
+                    <h4 class="userinfo"><b>Rena</b></h4>
+                    <p class="userinfo subinfo">rena@parallel.com</p>
+                    <p class="userinfo subinfo">유저번호 : 8</p>
+                </div>
+                <div class="col s12 m6 sbinfo">
+                    <div class="row">
+                        <div class="col s12 m6 acminfo">
+                            <p class="userinfo midinfo"><i class="material-icons">favorite</i><br/><b>연인 닉네임</b></p>
+                            <p class="userinfo subinfo">Luna</p>
+                        </div>
+                        <div class="col s12 m6 acminfo">
+                            <p class="userinfo midinfo"><i class="material-icons">book</i><br/><b>작성 일기수</b></p>
+                            <p class="userinfo subinfo">30</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row h-100">
+        <div class="container">
+            <div class="innerinfo">
+                <div class="col s12 m4">
+                    <h6 class="innerheader"><b>보안</b></h6>
+                    <div class="card hoverable">
+                        <div class="contentplus">
+                            <div class="center"><img id="security" class="cardimg" src="/images/security.png" /></div>
+                            <div class="center contentsubtit"><b>비밀번호 업데이트</b></div>
+                            <div class="contenttxt">암호를 잊어버렸거나 해킹이 의심되는 경우 최신정보로 업데이트해주세요!</div>
+                        </div>
+                        <div class="card-action center">
+                            <a href="#" style="color: #0067b8; margin-right: 0px;"><b>업데이트&nbsp;〉</b></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col s12 m4">
+                    <h6 class="innerheader"><b>이별</b></h6>
+                    <div class="card hoverable">
+                        <div class="contentplus">
+                            <div class="center"><img id="borken" class="cardimg" src="/images/broken.png" /></div>
+                            <div class="center contentsubtit"><b>이별 신청</b></div>
+                            <div class="contenttxt">지금까지의 모든 추억들이 정말로 삭제됩니다. 정말 이별을 통보하실건가요?</div>
+                        </div>
+                        <div class="card-action center">
+                            <a href="#" style="color: #0067b8; margin-right: 0px;"><b>이별 신청&nbsp;〉</b></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col s12 m4">
+                    <h6 class="innerheader"><b>Coming Soon</b></h6>
+                    <div class="card hoverable">
+                        <div class="contentplus">
+                            <div class="center"><img id="borken" class="cardimg" src="/images/develop.png" /></div>
+                            <div class="center contentsubtit"><b>Coming Soon!</b></div>
+                            <div class="contenttxt">여러분들을 위해서 더 많은 서비스를 개발하고 있습니다. 조만간 찾아갑니다!</div>
+                        </div>
+                        <div class="card-action center">
+                            <div style="color: #0067b8; margin-right: 0px;"><b>Coming Soon</b></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* 전체 배경 */
+    .backcol {
+        background-color: #f2f2f2;
+    }
+    /* 상단 배너관련 css */
+    .ac-banner {
+        background: linear-gradient(to bottom,#0078d7 0%,#09a2ce);box-shadow:0 12px 45px -8px rgba(0,120,215,.35)
+    }
+    .sub-banner {
+        padding-top: 40px;
+        padding-bottom: 40px;
+    }
+    .acinfo {
+        margin-top: 14px;
+    }
+    .sbinfo{
+        margin-top: 14px;
+    }
+    .userinfo {
+        margin-top: 0px;
+        margin-bottom: 0px;
+    }
+    .midinfo {
+        font-size: 15px;
+    }
+    .subinfo {
+        color: #96cbed;
+        font-size: 13px;
+    }
+
+    @media screen and (min-width: 768px) {
+        .acinfo {
+            margin-bottom: 38px;
+        }
+        .acminfo {
+            margin-bottom: 38px;
+        }
+        .sub-banner {
+            padding-bottom: 2px;
+        }
+    }
+
+    @media screen and (min-width: 540px) {
+        .acinfo {
+            margin-bottom: 30px;
+        }
+        .acminfo {
+            margin-bottom: 30px;
+        }
+        .sub-banner {
+            padding-bottom: 10px;
+        }
+        
+    }
+    @media screen and (max-width: 539px) {
+        .acinfo {
+            margin-bottom: 40px;
+        }
+        .acminfo {
+            margin-bottom: 40px;
+        }
+        .sub-banner {
+            padding-bottom: 0px;
+        }
+    }
+    /* 하단 card관련 css */
+    .contenttxt {
+        font-size: 14px;
+        padding-top: 8px;
+        line-height: 18px;
+        text-align: center;
+    }
+    .contentsubtit {
+        padding-top: 12px;
+        padding-bottom: 12px;
+        font-size: 15px;
+    }
+    .contentplus {
+        padding-top: 30px;
+        padding-right: 24px;
+        padding-bottom: 30px;
+        padding-left: 24px;
+        height: 100%;
+        display: block;
+        border-radius: 0 0 2px 2px;
+    }
+    .cardimg {
+        max-width: 100%;
+        width: 120px;
+    }
+    .innerinfo {
+        padding-top: 12px;
+    }
+    .innerheader {
+        margin: 8px 0 12px;
+    }
+</style>
