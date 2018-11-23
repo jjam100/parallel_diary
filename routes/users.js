@@ -13,7 +13,7 @@ app.use(require('body-parser').json());
 var client = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: 'password',
+  password: '',
   port: 3306,
   database: 'my_db',
   multipleStatements: true
@@ -158,7 +158,7 @@ router.get('/usersetting', function (req, res, next) {
   //     res.redirect('../users/login');
   // }
   res.render('users/usersetting', {
-    title: '설정'
+    title: '계정'
   });
 })
 

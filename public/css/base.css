@@ -122,12 +122,13 @@ div.row{
     min-height: 650px;
     position: relative;
 
-    background: -ms-linear-gradient(top, #5646C9 1%, #4A459C 50%, #9B46E8 100%);
+    /* background: -ms-linear-gradient(top, #5646C9 1%, #4A459C 50%, #9B46E8 100%);
     background: -moz-linear-gradient(top, #5646C9 1%, #4A459C 50%, #9B46E8 100%);
     background: -o-linear-gradient(top, #5646C9 1%, #4A459C 50%, #9B46E8 100%);
     background: -webkit-gradient(linear, left top, left bottom, color-stop(1, #5646C9), color-stop(50, #4A459C), color-stop(100, #9B46E8));
     background: -webkit-linear-gradient(top, #5646C9 1%, #4A459C 50%, #9B46E8 100%);
-    background: linear-gradient(to bottom, #5646C9 1%, #4A459C 50%, #9B46E8 100%);
+    background: linear-gradient(to bottom, #5646C9 1%, #4A459C 50%, #9B46E8 100%); */
+    background: #f2f2f2;
 
 }
 

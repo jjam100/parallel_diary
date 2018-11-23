@@ -29,6 +29,8 @@ var upload = multer({
 
 // firebase admin 설정 초기화
 admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    databaseURL: "https://parallel-diary.firebaseio.com"
 });
 
 //세션 설정
@@ -48,13 +50,12 @@ moment.tz.setDefault("Asia/Seoul");
 var client = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'password',
+    password: '',
     port: 3306,
     database: 'my_db',
     multipleStatements: true
-  });
-  client.connect();
-  
+});
+client.connect();
 
 // 메인페이지
 router.get('/', function (req, res, next) {
@@ -530,7 +531,8 @@ router.get('/coupleProg', function (req, res, next) {
 router.post('/coupleCnl', function (req, res, next) {
     //session
     var sess = req.session;
-    const couplePid = req.body.couplePid;
+    console.log("취소상대 pid : " + Object.keys(req.body)[0])
+    const couplePid = Object.keys(req.body)[0];
     console.log('\n나의 pid : ' + sess.user_pid + '   커플 pid : ' + couplePid);
     let p = "UPDATE `my_db`.`user`\
     SET `match` = NULL, `is_coupled` = NULL\
@@ -540,7 +542,7 @@ router.post('/coupleCnl', function (req, res, next) {
     WHERE `user_pid` = "+ couplePid +";"  
     client.query(p, function (err, row) {
         if (err) throw err;
-        res.redirect('/');      
+        res.json(req.body);      
     });
 })
 

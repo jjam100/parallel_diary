@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col l4 offset-l4 m8 offset-m2 s12" style="margin-top:10vh;">
             <div class="card c5">
-                <form class="card-content white-text" name="coupleCnl" action="coupleCnl" method="POST">
+                <div class="card-content white-text" name="coupleCnl" action="coupleCnl" method="POST">
                     <div id="dvJoin">
                         <p><i class="medium material-icons">send</i></p>
                         <input type="hidden" id="couplePid" name="couplePid" value=<%- match %>>
@@ -15,7 +15,7 @@
                             </div>      
                         </div>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
     
@@ -55,10 +55,27 @@
             console.log('메세징 권한 획득 중 에러', e);
         });
         
-    // 동작이 안돼 ㅠㅠㅠㅠㅠㅠㅠ
     function button_event(){
-        var result = confirm("정말 취소하시겠습니까??");
-        if(!result){ return false; }
+        if(confirm("정말 취소하시겠습니까??")){
+            console.log(couplePid.value);
+            $.ajax({
+                type: "POST",
+                url: "/main/coupleCnl",
+                data: couplePid.value,
+                dataType: "TEXT",
+                success: function(text){
+                    console.log('취소성공');
+                    alert("취소하였습니다.");
+                    window.location.href = '/';
+                },
+                error: function(xhr, status, error){
+                    console.log(error);
+                }
+            });
+        } else {
+            console.log("취소");
+            return false;
+        }
     }
 
     $(document).ready(function () {
