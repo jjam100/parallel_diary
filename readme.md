@@ -19,14 +19,12 @@
 ## 처음 이용시 유의사항
 * 이용하기 전에 초기 설정이 필요합니다.
     * routes/main.js
-        * Firebase Admin 설정
         * MySQL 연결 설정
     * routes/user.js
         * MySQL 연결 설정
     * views/main/list.ejs
-    * views/main/coupleAcpt.ejs
-    * views/main/coupleProg.ejs
-    * views/main/coupleReq.ejs
+        * Firebase 설정
+    * views/users/usersetting.ejs
         * Firebase 설정
     * public/firebase-messaging-sw.js
         * FCM Sender ID 설정

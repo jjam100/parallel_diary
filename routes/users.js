@@ -87,6 +87,7 @@ router.post('/check', function (req, res, next) {
     //로그인 변수 설정
     let user_pid = row[0].user_pid;
     let nickInDB = row[0].nickname;
+    let email = row[0].email;
     let match = row[0].match;
     let is_coupled = row[0].is_coupled;
     let pwInDB = row[0].password;
@@ -98,18 +99,23 @@ router.post('/check', function (req, res, next) {
       // 세션에 로그인 정보 동적 추가.
       req.session.nickname = nickInDB;
       req.session.user_pid = user_pid;
+      req.session.email = email;
       req.session.couple_pid = match;
 
       //main code
       console.log("로그인 성공");
       console.log(req.session);
       if (is_coupled == null) {
-        res.redirect('../main/coupleReq');
+        // 연인이 없을 경우
+        res.redirect('../users/usersetting');
       } else if (is_coupled == 0) {
-        res.redirect('../main/coupleAcpt')
+        // 요청을 받았을 경우
+        res.redirect('../users/usersetting')
       } else if (is_coupled == 2) {
-        res.redirect('../main/coupleProg')
+        // 요청을 보냈을 경우
+        res.redirect('../users/usersetting')
       } else {
+        // 연인이 있는 경우
         res.redirect('../main/list');
       }
     } else {
@@ -138,29 +144,111 @@ router.get('/usersetting', function (req, res, next) {
   var sess = req.session;
   var nickname = sess.nickname;
   var user_pid = sess.user_pid;
-  var match = null;
-  // if (nickname) {
-  //     let q = "SELECT `match`, `is_coupled` FROM `my_db`.`user` WHERE `user_pid` =" + user_pid;
-  //     client.query(q, function (err, row) {
-  //         if (err) throw err;
-  //         if (row[0].is_coupled != 2) {
-  //             res.redirect('/');
-  //         } else {
-  //             match = row[0].match;
-  //             res.render('main/coupleProg', {
-  //                 title: '요청중',
-  //                 match: match,
-  //                 error : 0
-  //             });
-  //         }
-  //     });
-  // } else {
-  //     res.redirect('../users/login');
-  // }
-  res.render('users/usersetting', {
-    title: '계정'
-  });
+  var user_email = sess.email;
+  if (nickname) {
+    nickname = utf8.decode(base64.decode(sess.nickname));
+    let q = "SELECT * FROM my_db.user WHERE `match` = '"+sess.user_pid+"';";
+    client.query(q, function (err, row) {
+        if (err) throw err;
+        if(row[0] == undefined) {
+          // 0 : 연인이 없는 경우. 커플 요청 필요
+          console.log("0 : 커플요청 필요");
+          res.render('users/usersetting', {
+            state : '0',
+            mypid : user_pid,
+            myNick : nickname,
+            email : user_email,
+            couplePid : null,
+            coupeNick : null,
+            diarycount : null,
+            title: '계정'
+          });
+        } else {
+          let is_coupled = row[0].is_coupled;  // "연인"의 커플상태.
+          let couplePid = row[0].user_pid;  // 연인 유저번호
+          let coupleNick = utf8.decode(base64.decode(row[0].nickname));  // 연인 닉네임
+          if(is_coupled == 0) {
+            // 1 : 내가 커플요청을 보낸경우. 요청 취소가 가능 (coupleProg)
+            console.log("1 : 요청중");
+            res.render('users/usersetting', {
+              state : '1',
+              mypid : user_pid,
+              myNick : nickname,
+              email : user_email,
+              couplePid : couplePid,
+              coupeNick : null,
+              diarycount : null,
+              title: '계정'
+            });
+          } else if(is_coupled == 2) {
+            // 1 : 내가 커플요청을 받았을 경우. 요청 수락이 가능 (coupleAcpt)
+            console.log("2 : 요청수락");
+            res.render('users/usersetting', {
+              state : '2',
+              mypid : user_pid,
+              myNick : nickname,
+              email : user_email,
+              couplePid : couplePid,
+              coupeNick : coupleNick,
+              diarycount : null,
+              title: '계정'
+            });
+          } else {
+            // 3 : 이미 커플인 경우. 그냥 계정설정 페이지
+            console.log("3 : 커플중");
+            let p = "SELECT COUNT(*) diarycount FROM `my_db`.`diary` WHERE `user_pid` = '"+user_pid+"' AND `is_deleted` != 1;"
+            client.query(p, function (err, row) {
+              if (err) throw err;
+              let diarycount = row[0].diarycount;
+              res.render('users/usersetting', {
+                state : '3',
+                mypid : user_pid,
+                myNick : nickname,
+                email : user_email,
+                couplePid : couplePid,
+                coupeNick : coupleNick,
+                diarycount : diarycount,
+                title: '계정'
+              });
+            });
+          }
+        }
+    });
+  } else {
+      res.redirect('../users/login');
+  }
 })
 
+// 이별신청 처리
+router.post('/coupleBrk', function (req, res, next) {
+  //session
+  var sess = req.session;
+  var user_pid = sess.user_pid;
+  const couplePid = Object.keys(req.body)[0];
+  let p =  "DELETE FROM `my_db`.`diary` WHERE `user_pid` = '"+ user_pid +"' OR '"+ couplePid +"';"
+  client.query(p, function (err, row) {
+      if (err) throw err;
+      console.log("일기 삭제 완료");
+      let q = "UPDATE `my_db`.`user`\
+      SET `match` = NULL, `is_coupled` = NULL\
+      WHERE `user_pid` = "+ couplePid +";"
+      client.query(q, function (err, row) {
+        if (err) throw err;
+        console.log("상대 커플상태 초기화");
+        let r = "DELETE FROM `my_db`.`user` WHERE `user_pid` = '"+ user_pid +"';"
+        client.query(r, function (err, row) {
+          if (err) throw err;
+          console.log("내 계정 삭제완료");
+          // 세션 삭제
+          sess.destroy(function (err) {
+            if (err)
+              console.log("session error");
+            else
+              res.json(0);
+          })
+        });
+      });    
+  });
+})
 
 module.exports = router;
