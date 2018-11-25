@@ -299,31 +299,36 @@
     function coupleReq_event(){
         if(confirm("요청을 진행하시겠습니까?")){
             console.log(reqCouplePid.value);
-            $.ajax({
-                type: "POST",
-                url: "/main/coupleMsg",
-                data: reqCouplePid.value,
-                dataType: "TEXT",
-                success: function(text){
-                    console.log(text);
-                    if(text == 1) {
-                        alert("자기자신과 커플을 맺을 수는 없습니다.");
-                        return false;
-                    } else if (text == 2) {
-                        alert("해당 유저번호가 존재하지 않습니다.\n유저번호를 다시 확인해 주세요.");
-                        return false;
-                    } else if (text == 3){
-                        alert("상대방이 이미 커플 요청을 받은 상태이거나, 커플 상태입니다.\n유저번호를 다시 확인해 주세요.");
-                        return false;
-                    } else {
-                        alert("요청하였습니다!\n상대방의 요청 수락을 기다려주세요!");
-                        window.location.href = '/users/usersetting';
+            if(reqCouplePid.value == '' || reqCouplePid.value == ' ' || reqCouplePid.value == null || reqCouplePid.value == 'undefined') {
+                alert("요청을 보낼 분의 유저번호를 입력해주세요!");
+                return false;
+            } else {
+                $.ajax({
+                    type: "POST",
+                    url: "/main/coupleMsg",
+                    data: reqCouplePid.value,
+                    dataType: "TEXT",
+                    success: function(text){
+                        console.log(text);
+                        if(text == 1) {
+                            alert("자기자신과 커플을 맺을 수는 없습니다.");
+                            return false;
+                        } else if (text == 2) {
+                            alert("해당 유저번호가 존재하지 않습니다.\n유저번호를 다시 확인해 주세요.");
+                            return false;
+                        } else if (text == 3){
+                            alert("상대방이 이미 커플 요청을 받은 상태이거나, 커플 상태입니다.\n유저번호를 다시 확인해 주세요.");
+                            return false;
+                        } else {
+                            alert("요청하였습니다!\n상대방의 요청 수락을 기다려주세요!");
+                            window.location.href = '/users/usersetting';
+                        }
+                    },
+                    error: function(xhr, status, error){
+                        console.log(error);
                     }
-                },
-                error: function(xhr, status, error){
-                    console.log(error);
-                }
-            });
+                });
+            }
         } else {
             console.log("취소");
             return false;
