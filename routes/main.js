@@ -50,7 +50,7 @@ moment.tz.setDefault("Asia/Seoul");
 var client = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: '',
+    password: 'hong1128.',
     port: 3306,
     database: 'my_db',
     multipleStatements: true

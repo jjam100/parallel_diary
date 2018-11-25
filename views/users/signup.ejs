@@ -1,67 +1,144 @@
-<div class="row h-100">
-    <div class="col s12 m2"> </div>
-    <div class="col s12 m8">
-        <div style="position: relative; top:10vh;">
-            <!-- 회원가입 폼 시작-->
-            <form action="./register" method="POST">
-                <div class="row">
-                    <!-- nickname -->
-                    <div class="input-field col s6">
-                        <input name="nickname" type="text" class="validate">
-                        <label for="nickname">닉네임</label>
+<div class="row">
+    <div class="col s12 m12 ac-banner center-align white-text">
+        <h1 class='gugi'>회원가입</h1>
+        <p>저희 서비스를 이용해 주셔서 감사합니다.</p>
+    </div>
+</div>
+<div class="row h-100 man">
+    <div class="container">
+        <div class="col s12 m12">
+            <div style="position: relative; top:3vh;">
+                <!-- 회원가입 폼 시작-->
+                <form action="./register" method="POST">
+                    <div class="row woman" style="padding:10px; margin: 10px auto;">
+                        <h2 class="gugi center-align">기본 정보</h2>
+                        <!-- nickname -->
+                        <div class="input-field col s12">
+                            <input name="nickname" type="text" class="validate">
+                            <label for="nickname">닉네임</label>
+                            <span>닉네임은 반드시 기억하고 있어야 합니다.</span>
+                        </div>
+                        <!-- password -->
+                        <div class="input-field col s6">
+                            <input id="password" name="password" type="password" class="validate">
+                            <label for="password">비밀번호</label>
+                        </div>
+                        <div class="input-field col s6">
+                            <input id="password_chk" type="password" class="validate">
+                            <label for="password">비밀번호</label>
+                        </div>
+                        <!-- E-mail -->
+                        <div class="input-field col s12">
+                            <input name="e_mail" id="email" type="email" class="validate">
+                            <label for="e_mail">Email</label>
+                        </div>
                     </div>
-                    <!-- password -->
-                    <div class="input-field col s6">
-                        <input name="password" type="password" class="validate">
-                        <label for="password">비밀번호</label>
+                    <div class="row woman" style="padding:10px; margin: 10px auto;">
+                        <h2 class="gugi center-align">비밀번호 찾기용 Q&A</h2>
+                        <!-- OP1 -->
+                        <div class="input-field col s12">
+                            <span>당신이 가장 좋아하는 </span><input name="op1" type="text" class="validate" style="width:100px;">
+                            <span>은?</span>
+                            <!-- <label for="op1">비밀번호 찾기용 질문1(직접작성)</label> -->
+                        </div>
+                        <div class="input-field col s12">
+                            <input name="answer1" type="text" class="validate">
+                            <label for="answer1">비밀번호 찾기용 답변1</label>
+                        </div>
+                        <!-- OP1 -->
+                        <div class="input-field col s12">
+                            <span>당신이 가장 싫어하는 </span><input name="op2" type="text" class="validate" style="width:100px;">
+                            <span>은?</span>
+                            <!-- <label for="op2">비밀번호 찾기용 질문2(직접작성)</label> -->
+                        </div>
+                        <div class="input-field col s12">
+                            <input name="answer2" type="text" class="validate">
+                            <label for="answer2">비밀번호 찾기용 답변2</label>
+                        </div>
+                        <!-- OP1 -->
+                        <div class="input-field col s12">
+                            <span>당신이 가장 기억에 남는 </span><input name="op3" type="text" class="validate" style="width:100px;">
+                            <span>은?</span>
+                            <!-- <label for="op3">비밀번호 찾기용 질문3(직접작성)</label> -->
+                        </div>
+                        <div class="input-field col s12">
+                            <input name="answer3" type="text" class="validate">
+                            <label for="answer3">비밀번호 찾기용 답변3</label>
+                        </div>
+
                     </div>
-                </div>
-                <div class="row">
-                    <!-- E-mail -->
-                    <div class="input-field col s12">
-                        <input name="e_mail" type="email" class="validate">
-                        <label for="e_mail">Email</label>
+                    <div class="col s12 center-align">
+                        <div class="container">
+                            <div class="left-align jeju" style="background-color: beige; padding:10px; margin:10px auto; border-radius: 10px;">
+                                <h5 style="color:red;">잠깐!</h5>
+                                <p>닉네임과, 비밀번호 찾기용 질문은 가입후에 비밀번호를 찾을 때, 반드시 기억하고 있어야 합니다.<br />아래의 버튼을 누르기 전에 다시한번 확인해
+                                    주세요!</p>
+                                <p>
+                                    <label>
+                                        <input type="checkbox" id="important_chk" />
+                                        <span>예, 반드시 기억하고 있겠습니다.</span>
+                                    </label>
+                                </p>
+                            </div>
+                        </div>
+                        <button class="btn waves-effect waves-light" type="submit" name="action">가입하기
+                            <i class="material-icons right">send</i>
+                        </button>
                     </div>
-                    <!-- OP1 -->
-                    <div class="input-field col s12">
-                        <input name="op1" type="text" class="validate">
-                        <label for="op1">비밀번호 찾기용 질문1(직접작성)</label>
-                    </div>
-                    <div class="input-field col s12">
-                        <input name="answer1" type="text" class="validate">
-                        <label for="answer1">비밀번호 찾기용 답변1</label>
-                    </div>
-                    <!-- OP1 -->
-                    <div class="input-field col s12">
-                        <input name="op2" type="text" class="validate">
-                        <label for="op2">비밀번호 찾기용 질문2(직접작성)</label>
-                    </div>
-                    <div class="input-field col s12">
-                        <input name="answer2" type="text" class="validate">
-                        <label for="answer2">비밀번호 찾기용 답변1</label>
-                    </div>
-                    <!-- OP1 -->
-                    <div class="input-field col s12">
-                        <input name="op3" type="text" class="validate">
-                        <label for="op3">비밀번호 찾기용 질문3(직접작성)</label>
-                    </div>
-                    <div class="input-field col s12">
-                        <input name="answer3" type="text" class="validate">
-                        <label for="answer3">비밀번호 찾기용 답변3</label>
-                    </div>
-                    
-                </div>
-                <button class="btn waves-effect waves-light" type="submit" name="action">Submit
-                    <i class="material-icons right">send</i>
-                </button>
-            </form>
-            <!-- 회원가입 폼 끝-->
+                </form>
+                <!-- 회원가입 폼 끝-->
+            </div>
         </div>
     </div>
-    <div class="col s12 m2"> </div>
 </div>
+<script>
+    $('input:first').focus();
+    $('button:submit').on('click', function (e) {
+        e.preventDefault();
+        //플래그
+        let all_form_filled = false;
+        let password_check = false;
+        let important_check = false;
+
+        // 모든 입력 완료 체크
+        var input_field = $('input:text, input:password, input#email').toArray();
+        let checker;
+        for (checker in input_field) {
+            let text = input_field[checker].value;
+            if (text == '' || text == ' ' || text == null || text == 'undefined') {
+                all_form_filled = false;
+                break;
+            } else {
+                all_form_filled = true;
+            }
+        }
+
+        // 비밀번호 일치 체크
+        if ($('input#password').val() == $('input#password_chk').val()) {
+            password_check = true;
+        }
+
+        // 마지막 당부사항 체크
+        if ($('#important_chk').is(":checked")) {
+            important_check = true;
+        }
+
+        if (!all_form_filled) {
+            alert('모든 입력칸을 채워주세요.');
+        }
+        else if (!password_check) {
+            alert('비밀번호가 서로 일치하지 않습니다. \n 다시 입력해주세요.');
+        }
+        else if (!important_check) { 
+            alert('마지막 당부사항을 반드시 확인해주세요!');
+        }
+        else {
+            $('form').submit();
+        }
+    })
+</script>
 <style>
-    .h-100{
-        min-height: calc(130vh - 64px) !important;
+    .h-100 {
+        min-height: 210vh !important;
     }
 </style>
