@@ -249,7 +249,9 @@ div.row{
     .sub-banner {
         padding-bottom: 10px;
     }
-    
+    #parallel_wrap {
+        min-height: 100vh;
+    }
 }
 @media screen and (max-width: 539px) {
     .acinfo {

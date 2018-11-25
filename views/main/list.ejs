@@ -136,12 +136,10 @@
     <!-- 다른 사람의 일기 끝 -->
 </div>
 <!-- 날짜 선택칸 시작-->
-
 <div class="row cm" >
     <div class="col s10 offset-s1">
             <div class="input-field" >
-                <label for="date_pick">날짜 선택</label>
-                <input id="date_pick" type="text" class="datepicker" value="<%=today%>" />
+                <input id="date_pick" type="text" class="datepicker" value="<%=today%>" style="color: transparent;border-bottom: 0px;margin: 0px;height: 0px;width: 0px;"/>
             </div>
     </div>
 </div>
@@ -164,7 +162,6 @@
 <script>
     // Initialize Firebase
     var config = {
-       
     };
     firebase.initializeApp(config);
     // FCM 메시지 설정 코드
