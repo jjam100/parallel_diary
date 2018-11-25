@@ -25,6 +25,10 @@ textarea {
     font-family: 'Jeju Gothic', cursive;
 }
 
+/*라벨*/
+label {
+    color:black !important;
+}
 
 /* 색상 */
 .c1 { background-color: #8D3AC1; }
