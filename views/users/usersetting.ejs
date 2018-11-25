@@ -13,8 +13,9 @@
                             <p class="userinfo midinfo"><i class="material-icons">favorite</i><br/><b>연인 닉네임</b></p>
                             <% if(coupeNick == null) { %>
                                 <p class="userinfo subinfo">없음</p>
-                            <% } %>
-                            <% if(coupeNick != null) { %>
+                            <% } else if(state == 2) {%>
+                                <p class="userinfo subinfo">없음</p>
+                            <% } else { %>
                                 <p class="userinfo subinfo"><%=coupeNick%></p>
                             <% } %>
                         </div>
