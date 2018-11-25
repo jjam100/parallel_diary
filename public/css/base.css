@@ -2,6 +2,9 @@
 @import url('https://fonts.googleapis.com/css?family=Gugi');
 @import url('https://fonts.googleapis.com/css?family=Poor+Story');
 @import url('http://fonts.googleapis.com/earlyaccess/jejugothic.css');
+html{
+    scroll-behavior: smooth;
+}
 
 /* 노토 산스 폰트 */
 .noto-sans {
@@ -189,9 +192,6 @@ div.row{
     padding-top : 0px;
 }
 
-#date_pick_btn{
-    margin: auto auto;
-}
 
 #parallel_wrap {
     min-height: 50vh;

@@ -246,12 +246,14 @@ router.post('/updateToken', function (req, res, next) {
         if(err) {
             console.log("토큰값 추가 실패1 : " + err);
             throw err;
+            res.redirect('../users/login');
         }
         let p = "UPDATE `my_db`.`user` SET `token` = \'" + token + "\' WHERE `user_pid` =" + sess.user_pid;
         client.query(p,function(err,row){
             if(err) {
                 console.log("토큰값 추가 실패2 : " + err);
                 throw err;
+                res.redirect('../users/login');
             }
             console.log("토큰값 추가 성공2 : " + p);
         });

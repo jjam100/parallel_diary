@@ -116,6 +116,22 @@
             });
             M.textareaAutoResize($('#textarea1'));
             $('select').formSelect();
+                $('.datepicker').datepicker({
+                firstDay: true,
+                format: 'yyyy-mm-dd',
+                i18n: {
+                    months: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
+                    monthsShort: ["1/", "2/", "3/", "4/", "5/", "6/", "7/", "8/", "9/", "10/", "11/",
+                        "12/"
+                    ],
+                    weekdays: ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"],
+                    weekdaysShort: ["일", "월", "화", "수", "목", "금", "토"],
+                    weekdaysAbbrev: ["일", "월", "화", "수", "목", "금", "토"]
+                },
+                maxDate: new Date()
+            });
+            $('.modal').modal();
+            $('.fixed-action-btn').floatingActionButton();
         });
 
         // 수정폼 토글 스크립트 : 순수 JS
@@ -134,7 +150,7 @@
         }
     </script>
 </body>
-<footer class="page-footer dk">
+<footer id="footer" class="page-footer dk">
     <div class="footer-copyright dk">
         <div class="container">
         © 2018 Parallel Diary, All rights reserved. 

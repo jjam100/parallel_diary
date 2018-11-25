@@ -1,6 +1,6 @@
 <div class="row orange lighten-5">
     <!-- 작성칸 시작 -->
-    <div class="container" style="padding:5%;">
+    <div id="write_diary" class="container" style="padding:5%;">
         <form action="./create" method="post" enctype="multipart/form-data">
             <div class="input-field">
                 <label for="textarea1">작성칸</label>
@@ -34,7 +34,7 @@
 <!-- 일기 본체 시작 -->
 <div class="row cm">
     <!-- 자신의 일기 시작 -->
-    <div id="parallel_wrap" class="col s12 m6 man">
+    <div id="parallel_wrap" class="col s12 m5 offset-m1 man">
         <div class="container">
             <h5 class="jeju center-align" style="color: rgb(240,240,240);"><%=nickname%></h5>
             <%
@@ -101,7 +101,7 @@
     </div> <!--/.col .s6-->
     <!-- 자신의 일기 끝 -->
     <!-- 다른 사람의 일기 시작 -->
-    <div id="parallel_wrap" class="col s12 m6 woman">
+    <div id="parallel_wrap" class="col s12 m5 woman">
             <h5 class="jeju center-align" style="color: rgb(240,240,240);"><%=couple%></h5>
             <div class="container">
                 <%
@@ -136,26 +136,35 @@
     <!-- 다른 사람의 일기 끝 -->
 </div>
 <!-- 날짜 선택칸 시작-->
-<div class="row cm">
-    <div class="col s3 m4"></div>
-    <div class="col s6 m4">
-        <div class="card-panel">
-            <div class="input-field">
+
+<div class="row cm" >
+    <div class="col s10 offset-s1">
+            <div class="input-field" >
                 <label for="date_pick">날짜 선택</label>
                 <input id="date_pick" type="text" class="datepicker" value="<%=today%>" />
             </div>
-            <div class="card-action center-align">
-                <button class="btn waves-effect waves-light" id="date_pick_btn">이 날짜 일기로!</button>
-            </div>
-        </div>
     </div>
-    <div class="col s3 m4"></div>
+</div>
+
+<div class="fixed-action-btn">
+    <a class="btn-floating btn-large red">
+        <i class="large material-icons">arrow_drop_up</i>
+    </a>
+    <ul>
+        <!-- 날짜 선택 -->
+        <li><a class="btn-floating red" id="date_pick_open" ><i class="material-icons">today</i></a></li>
+        <!-- 새로고침 -->
+        <li><a class="btn-floating red" onClick="window.location.reload();"><i class="material-icons">autorenew</i></a></li>
+        <!-- 맨 위로 -->
+        <li><a class="btn-floating red" onClick="document.querySelector('#write_diary').scrollIntoView({ behavior: 'smooth' });"><i class="material-icons">arrow_upward</i></a></li>
+    </ul>
 </div>
 <!-- 날짜 선택칸 끝-->
 <!--    FIREBASE SCRIPT     -->
 <script>
     // Initialize Firebase
     var config = {
+       
     };
     firebase.initializeApp(config);
     // FCM 메시지 설정 코드
@@ -187,23 +196,9 @@
     $(document).ready(function () {
         // 데이트 피커 설정
         // $('.datepicker').datepicker();
-        $('.datepicker').datepicker({
-            firstDay: true,
-            format: 'yyyy-mm-dd',
-            i18n: {
-                months: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
-                monthsShort: ["1/", "2/", "3/", "4/", "5/", "6/", "7/", "8/", "9/", "10/", "11/",
-                    "12/"
-                ],
-                weekdays: ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"],
-                weekdaysShort: ["일", "월", "화", "수", "목", "금", "토"],
-                weekdaysAbbrev: ["일", "월", "화", "수", "목", "금", "토"]
-            },
-            maxDate: new Date()
-        });
-
         //오늘 보여주는 포스팅 보이기
         var date_post = $('.date-post').toArray();
+        $('#date_pick').val('<%=today%>');
         var date_pick = $('#date_pick').val();
         if (date_post != 'undefined') {
             $('.card').css('display', 'none');
@@ -213,16 +208,16 @@
                 }
             }
         }
-
-        // 다른 날짜를 선택했을 경우
-        $('button#date_pick_btn').on('click', function (e) {
-            // 버블링 금지
-            e.stopPropagation();
-            //날짜 표지 변경
-            $('#today_diary').text("");
-            // 순회하여 해당날짜 드러내기
+        //값이 바뀔때 마다 변경
+        $("#date_pick").bind("change paste keyup", function() {
             $('.card').css('display', 'none');
-            date_pick = $('#date_pick').val();
+            date_pick = $(this).val();
+            if(date_pick == '<%=today%>'){
+                $('#today_diary').text('오늘의 일기');
+            }
+            else {
+                $('#today_diary').text(date_pick+'에 작성된 일기');
+            }
             let count_p = 0; //카운팅용 변수
             for (i = 0; i < date_post.length; i++) {
                 if (date_post[i].innerText == date_pick) {
@@ -232,9 +227,13 @@
             }
             if(count_p == 0) { //일기가 없는 경우
                 alert('해당 날짜에 작성한 일기가 없습니다!');
+                window.location.reload();
             }
-            
-            
-        }); 
+            count_p = 0;
+        });
+        //달력 표시
+        $('#date_pick_open').click(function(e){
+            $('#date_pick').click();
+        });
     });
 </script>

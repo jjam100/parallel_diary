@@ -89,43 +89,55 @@ router.get('/login', function (req, res, next) {
 router.post('/check', function (req, res, next) {
   let q = "SELECT * FROM `my_db`.`user` WHERE nickname = \'" + base64.encode(utf8.encode(req.body.nickname)) + "\'";
   client.query(q, function (err, row) {
-    //로그인 변수 설정
-    let user_pid = row[0].user_pid;
-    let nickInDB = row[0].nickname;
-    let e_mail = row[0].e_mail;
-    let match = row[0].match;
-    let is_coupled = row[0].is_coupled;
-    let pwInDB = row[0].password;
-    let pwInParams = sha256(req.body.password);
-
-    //로그인 체크 영역
-    if (pwInDB == pwInParams) {
-
-      // 세션에 로그인 정보 동적 추가.
-      req.session.nickname = nickInDB;
-      req.session.user_pid = user_pid;
-      req.session.e_mail = e_mail;
-      req.session.couple_pid = match;
-
-      //main code
-      console.log("로그인 성공");
-      console.log(req.session);
-      if (is_coupled == null) {
-        // 연인이 없을 경우
-        res.redirect('../users/usersetting');
-      } else if (is_coupled == 0) {
-        // 요청을 받았을 경우
-        res.redirect('../users/usersetting')
-      } else if (is_coupled == 2) {
-        // 요청을 보냈을 경우
-        res.redirect('../users/usersetting')
-      } else {
-        // 연인이 있는 경우
-        res.redirect('../main/list');
-      }
-    } else {
+    console.log(row);
+    if(err || !row.length) {
       console.log("로그인 실패");
-      res.redirect('./login');
+      res.send("<script>\
+            window.onload = function(){\
+            alert('계정이 없거나 회원정보가 일치하지 않습니다.'); window.location.replace('/users/login');};\
+            </script>");
+    }
+    else {
+      //로그인 변수 설정
+      let user_pid = row[0].user_pid;
+      let nickInDB = row[0].nickname;
+      let e_mail = row[0].e_mail;
+      let match = row[0].match;
+      let is_coupled = row[0].is_coupled;
+      let pwInDB = row[0].password;
+      let pwInParams = sha256(req.body.password);
+
+      //로그인 체크 영역
+      if (pwInDB == pwInParams) {
+
+        // 세션에 로그인 정보 동적 추가.
+        req.session.nickname = nickInDB;
+        req.session.user_pid = user_pid;
+        req.session.e_mail = e_mail;
+        req.session.couple_pid = match;
+
+        //main code
+        console.log("로그인 성공");
+        console.log(req.session);
+        if (is_coupled == null) {
+          // 연인이 없을 경우
+          res.redirect('../users/usersetting');
+        } else if (is_coupled == 0) {
+          // 요청을 받았을 경우
+          res.redirect('../users/usersetting')
+        } else if (is_coupled == 2) {
+          // 요청을 보냈을 경우
+          res.redirect('../users/usersetting')
+        } else {
+          // 연인이 있는 경우
+          res.redirect('../main/list');
+        }
+      } else {
+        res.send("<script>\
+            window.onload = function(){\
+            alert('비밀번호가 일치하지 않습니다.'); window.location.replace('/users/login');};\
+            </script>");
+      }
     }
   });
 });
