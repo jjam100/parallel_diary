@@ -15,7 +15,7 @@
                     </div>
                 </div>
                 <input name="user_pid" type="text" value="<%=user_pid%>" hidden>
-                <button class="btn-large waves-effect waves-light" type="submit">기록
+                <button id="write_form" class="btn-large waves-effect waves-light" type="submit">기록
                     <i class="material-icons right">send</i>
                 </button>
             </div>
@@ -232,5 +232,15 @@
         $('#date_pick_open').click(function(e){
             $('#date_pick').click();
         });
+        //textarea에 입력 요구
+        $('button:submit:first').on('click', function (e) {
+            e.preventDefault();
+            if ($('textarea:first').val()) {
+                $('form:first').submit();
+            }
+            else {
+                alert('내용은 꼭 적어주세요.');
+            }
+        })
     });
 </script>

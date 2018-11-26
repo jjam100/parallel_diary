@@ -11,6 +11,7 @@ var session = require('express-session');
 const functions = require('firebase-functions');
 var admin = require('firebase-admin');
 var path = require('path');
+var fs = require('fs');
 
 var serviceAccount = require("./path/serviceAccountKey.json")
 var upload = multer({
@@ -131,7 +132,8 @@ router.get('/list', function (req, res, next) {
 });
 
 // 일기 작성
-router.post('/create', upload.single('img_url'), function (req, res) {
+router.post('/create', upload.single('img_url'), function (req, res, err) {
+    var FILE_SIZE = 1024 * 1024; //1MB 이미지 크기 제한
     //응답을 받는 것이므로 res.body 를 사용해야 함.
     // 필수값 : user_pid, text, date
     var sess = req.session;
@@ -143,58 +145,129 @@ router.post('/create', upload.single('img_url'), function (req, res) {
     
     //이미지 쿼리 처리 분기문
     let file_q;
+    console.log(req.file);
     if(req.file) {
-        file_q = '/images/uploads/' + req.file.filename;
+        if(req.file.size > FILE_SIZE) {
+            console.log("pass : 이미지 크기나 넘 크다.");
+            res.end("<meta charset='utf-8' />\
+            <script>\
+            window.onload = function(){\
+            alert('이미지가 너무 큽니다!'); window.location.replace('/main/list');};\
+            </script>");
+        }
+        else if(req.file.mimetype.indexOf('image') == -1) {
+            console.log("pass : 이미지 확장자가 아니다.");
+            res.end("<meta charset='utf-8' />\
+            <script>\
+            window.onload = function(){\
+            alert('이미지만 올릴 수 있습니다!'); window.location.replace('/main/list');};\
+            </script>");
+        }
+        else {
+            console.log("pass : 파일이 정상적 업로드");
+            file_q = '/images/uploads/' + req.file.filename;
+            let q = "INSERT INTO `my_db`.`diary` (`date`, `text`, `img_url`, `user_pid`, `is_deleted`)VALUES('";
+            q += moment().format('YYYY-MM-DD') + "','";
+            q += base64.encode(utf8.encode(req.body.text)) + "','";
+            q += file_q + "',";
+            q += req.body.user_pid + ",";
+            q += "0";
+            q += ")";
+            console.log(q);
+            client.query(q, function (err, row) {
+                if (err) throw err;
+                let p = "SELECT `token` FROM `my_db`.`user` WHERE `user_pid` = " + couplePid;
+                client.query(p, function (err, row) {
+                    if (err) throw err;
+                    coupleUser = row[0].token;
+                    if (coupleUser == null) {
+                        console.log("커플 상대 토큰정보 없음. -- 브라우저 알람 차단")
+                    } else{
+                        const payload = {
+                            notification: {
+                                title: msgTitle,
+                                body: msg,
+                                sound: 'default',
+                                click_action: 'http://127.0.0.1:52273',
+                                icon: '\/icons/android-icon-192x192.png'
+                            }
+                        };
+                        admin.messaging().sendToDevice(coupleUser, payload).then(response => {
+                            response.results.forEach((result, index) => {
+                                const error = result.error;
+                                if (error) {
+                                    console.error('FCM 실패 : ', error.code);
+                                } else {
+                                    console.log('FCM 성공');
+                                }
+                            });
+                        });
+                    }
+                });
+            });
+            res.redirect("./list");            
+        }
     }
     else {
+        console.log("pass : 파일이 아닌 글만 업로드");
         file_q = '';
-    }
-
-    let q = "INSERT INTO `my_db`.`diary` (`date`, `text`, `img_url`, `user_pid`, `is_deleted`)VALUES('";
-    q += moment().format('YYYY-MM-DD') + "','";
-    q += base64.encode(utf8.encode(req.body.text)) + "','";
-    q += file_q + "',";
-    q += req.body.user_pid + ",";
-    q += "0";
-    q += ")";
-    console.log(q);
-    client.query(q, function (err, row) {
-        if (err) throw err;
-        let p = "SELECT `token` FROM `my_db`.`user` WHERE `user_pid` = " + couplePid;
-        client.query(p, function (err, row) {
+        let q = "INSERT INTO `my_db`.`diary` (`date`, `text`, `img_url`, `user_pid`, `is_deleted`)VALUES('";
+        q += moment().format('YYYY-MM-DD') + "','";
+        q += base64.encode(utf8.encode(req.body.text)) + "','";
+        q += file_q + "',";
+        q += req.body.user_pid + ",";
+        q += "0";
+        q += ")";
+        console.log(q);
+        client.query(q, function (err, row) {
             if (err) throw err;
-            coupleUser = row[0].token;
-            if (coupleUser == null) {
-                console.log("커플 상대 토큰정보 없음. -- 브라우저 알람 차단")
-            } else{
-                const payload = {
-                    notification: {
-                        title: msgTitle,
-                        body: msg,
-                        sound: 'default',
-                        click_action: 'http://127.0.0.1:52273',
-                        icon: '\/icons/android-icon-192x192.png'
-                    }
-                };
-                admin.messaging().sendToDevice(coupleUser, payload).then(response => {
-                    response.results.forEach((result, index) => {
-                        const error = result.error;
-                        if (error) {
-                            console.error('FCM 실패 : ', error.code);
-                        } else {
-                            console.log('FCM 성공');
+            let p = "SELECT `token` FROM `my_db`.`user` WHERE `user_pid` = " + couplePid;
+            client.query(p, function (err, row) {
+                if (err) throw err;
+                coupleUser = row[0].token;
+                if (coupleUser == null) {
+                    console.log("커플 상대 토큰정보 없음. -- 브라우저 알람 차단")
+                } else{
+                    const payload = {
+                        notification: {
+                            title: msgTitle,
+                            body: msg,
+                            sound: 'default',
+                            click_action: 'http://127.0.0.1:52273',
+                            icon: '\/icons/android-icon-192x192.png'
                         }
+                    };
+                    admin.messaging().sendToDevice(coupleUser, payload).then(response => {
+                        response.results.forEach((result, index) => {
+                            const error = result.error;
+                            if (error) {
+                                console.error('FCM 실패 : ', error.code);
+                            } else {
+                                console.log('FCM 성공');
+                            }
+                        });
                     });
-                });
-            }
+                }
+            });
         });
-    });
-    res.redirect("./list");
+        res.redirect("./list");
+    }
 })
 
 // 일기 삭제
 router.post('/destroy', function (res, req) {
-    //응답을 받는 것이므로 res.body 를 사용해야 함.
+    
+    //이미지 삭제
+    let r = "SELECT `img_url` FROM `my_db`.`diary` where `diary_pid`=" + res.body.destroy_id;
+    client.query(r, function (err, row) {
+        //지난 이미지 삭제
+        fs.unlink("public/"+row[0].img_url,function(err){ if(err) throw err; });
+        if (err) {
+            throw err;
+        }
+    });
+    
+    //DB삭제
     let q = "UPDATE `diary` SET `is_deleted` = true WHERE (`diary_pid` = '" + res.body.destroy_id + "');";
     console.log(res.body);
     client.query(q, function (err, row) {
@@ -207,21 +280,35 @@ router.post('/destroy', function (res, req) {
 router.post('/update',upload.single('img_url'), function (res, req) {
     //req,res 역순????
     //이미지 처리 분기문
+    console.log("res.sess&&&&&&&&&&&&&&&&&&&&&");
+    console.log(res.session);
     let file_q;
-    if(res.file) 
+    let q;
+    if(res.file != null) {
+        let r = "SELECT `img_url` FROM `my_db`.`diary` where `diary_pid`=" + res.body.update_id;
+        client.query(r, function (err, row) {
+            //지난 이미지 삭제
+            fs.unlink("public/"+row[0].img_url,function(err){ if(err) throw err; });
+            if (err) {
+                throw err;
+            }
+        });
         file_q = '/images/uploads/' + res.file.filename;
-    else 
-        file_q = '';
-
-    //쿼리
-    let q = "UPDATE `diary` SET \
-    `img_url` = '"+ file_q +"', \
-    `text` = '" + base64.encode(utf8.encode(res.body.text)) + "' WHERE (`diary_pid` = '" + res.body.update_id + "');";
-    
+        //쿼리 
+        q = "UPDATE `diary` SET \
+        `img_url` = '"+ file_q +"', \
+        `text` = '" + base64.encode(utf8.encode(res.body.text)) + "' WHERE (`diary_pid` = '" + res.body.update_id + "');";
+    }
+    else {
+        //쿼리
+        q = "UPDATE `diary` SET \
+        `text` = '" + base64.encode(utf8.encode(res.body.text)) + "' WHERE (`diary_pid` = '" + res.body.update_id + "');";
+    }
+        
     client.query(q, function (err, row) {
         if (err) {
-            console.log(q + ":" + err);
             throw err;
+            req.redirect("back");        
         }
     });
     req.redirect("back");

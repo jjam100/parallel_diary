@@ -7,6 +7,7 @@ var utf8 = require('utf8');
 var base64 = require('base-64');
 var sha256 = require('sha256');
 var session = require('express-session');
+var fs = require('fs');
 app.use(require('body-parser').json());
 
 // MYSQL 연결설정
@@ -53,31 +54,42 @@ router.post('/register', function (res, req) {
     //match와 is_coupled 의 경우 디폴트가 각각 NULL, '0' 으로 지정됨.
   };
 
-  let q = "INSERT INTO `my_db`.`user`(\
-    `nickname`,`password`,`e_mail`,\
-    `op1`,`op2`,`op3`,\
-    `answer1`,`answer2`,`answer3`\
-    )VALUES(\
-  ";
-    
-  q += "\'" + info.nickname + "\',";
-  q += "\'" + info.password + "\',";
-  q += "\'" + info.e_mail + "\',";
-  q += "\'" + info.op[0] + "\',";
-  q += "\'" + info.op[1] + "\',";
-  q += "\'" + info.op[2] + "\',";
-  q += "\'" + info.answer[0] + "\',";
-  q += "\'" + info.answer[1] + "\',";
-  q += "\'" + info.answer[2] + "\')";
-  console.log(q);
-  client.query(q, function (err, row) {
-    if (err) req.send("<script>window.onload = function(){\
-      alert('잘못된 입력입니다.'); history.back();};\
-      </script>");
-    else req.send("<script>window.onload = function(){\
-      alert('"+res.body.nickname+"님 회원 가입이 성공하였습니다. '); window.location.replace('/users/login');};\
-      </script>");
+  let qq = "SELECT * FROM `my_db`.`user` WHERE `nickname` = '"+info.nickname+"';";
+  client.query(qq,function(err,row2){
+    if(row2.length == 0) { //새로운 닉네임이라면
+      let q = "INSERT INTO `my_db`.`user`(\
+        `nickname`,`password`,`e_mail`,\
+        `op1`,`op2`,`op3`,\
+        `answer1`,`answer2`,`answer3`\
+        )VALUES(\
+      ";
+        
+      q += "\'" + info.nickname + "\',";
+      q += "\'" + info.password + "\',";
+      q += "\'" + info.e_mail + "\',";
+      q += "\'" + info.op[0] + "\',";
+      q += "\'" + info.op[1] + "\',";
+      q += "\'" + info.op[2] + "\',";
+      q += "\'" + info.answer[0] + "\',";
+      q += "\'" + info.answer[1] + "\',";
+      q += "\'" + info.answer[2] + "\')";
+      console.log(q);
+      client.query(q, function (err, row) {
+        if (err) req.send("<script>window.onload = function(){\
+          alert('잘못된 입력입니다.'); history.back();};\
+          </script>");
+        else req.send("<script>window.onload = function(){\
+          alert('"+res.body.nickname+"님 회원 가입이 성공하였습니다. '); window.location.replace('/users/login');};\
+          </script>");
+      });
+    } else { //이미 존재하는 닉네임 이라면
+      req.send("<script>window.onload = function(){\
+        alert('이미 존재하는 닉네임 입니다. '); window.location.replace('/users/signup')};\
+        </script>");
+    }
   });
+
+  
 
 })
 
@@ -241,6 +253,20 @@ router.post('/coupleBrk', function (req, res, next) {
   var sess = req.session;
   var user_pid = sess.user_pid;
   const couplePid = Object.keys(req.body)[0];
+  
+  //이별시 자신의 모든 이미지 삭제 처리
+  let qq = "SELECT `img_url` FROM `my_db`.`diary` WHERE `user_pid` = " + user_pid + " OR `user_pid` = " + couplePid;
+  client.query(qq,function(err, row){
+    var item;
+    for(item in row) {
+      fs.unlink("public/" + row[item].img_url,function(err){
+        if(err) throw err;
+      });
+    }
+  });
+
+
+  //이별 시 글 삭제 처리
   let p = "DELETE FROM `my_db`.`diary` WHERE `user_pid` = '" + user_pid + "' OR '" + couplePid + "';"
   client.query(p, function (err, row) {
       if (err) throw err;
@@ -300,7 +326,7 @@ router.post('/pwreset_check', function (req, res, next) {
     //로그인 안된 유저일시 쿼리
     is_login = false;
     q = "SELECT `password`,`e_mail`,`op1`,`op2`,`op3`,`answer1`,`answer2`,`answer3` \
-        FROM `my_db`.`user` WHERE `nickname`='" + nickname + "' AND `e_mail`='" + e_mail + "';";
+        FROM `my_db`.`user` WHERE `nickname`='" + nickname + "' AND `e_mail`='" + e_mail + " AND `op1` = '"+op1+" AND `op2` = '"+op2+"';";
     console.log(q);
   } else {
     //로그인이 된 유저일 시 쿼리
