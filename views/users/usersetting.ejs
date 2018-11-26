@@ -267,12 +267,6 @@
 <script type="text/javascript">
     // Initialize Firebase
     var config = {
-        apiKey: "AIzaSyBuJuuw6DvZOvxxYr-CooW7hMoxBy80Nd8",
-        authDomain: "parallel-diary.firebaseapp.com",
-        databaseURL: "https://parallel-diary.firebaseio.com",
-        projectId: "parallel-diary",
-        storageBucket: "parallel-diary.appspot.com",
-        messagingSenderId: "1068220114920"
     };
     firebase.initializeApp(config);
     // FCM 메시지 설정 코드
@@ -316,14 +310,17 @@
                     dataType: "TEXT",
                     success: function(text){
                         console.log(text);
-                        if(text == 1) {
+                        if(text == 0) {
+                            alert("유저번호는 숫자만 존재합니다.\n숫자로 입력해 주세요.");
+                            return false;
+                        } else if(text == 1) {
                             alert("자기자신과 커플을 맺을 수는 없습니다.");
                             return false;
                         } else if (text == 2) {
                             alert("해당 유저번호가 존재하지 않습니다.\n유저번호를 다시 확인해 주세요.");
                             return false;
                         } else if (text == 3){
-                            alert("상대방이 이미 커플 요청을 받은 상태이거나, 커플 상태입니다.\n유저번호를 다시 확인해 주세요.");
+                            alert("상대방이 이미 커플 요청을 보내거나 받은 상태이거나, 커플 상태입니다.\n유저번호를 다시 확인해 주세요.");
                             return false;
                         } else {
                             alert("요청하였습니다!\n상대방의 요청 수락을 기다려주세요!");

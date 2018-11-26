@@ -13,7 +13,7 @@ app.use(require('body-parser').json());
 var client = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: 'hong1128.',
+  password: '',
   port: 3306,
   database: 'my_db',
   multipleStatements: true
@@ -98,46 +98,46 @@ router.post('/check', function (req, res, next) {
             </script>");
     }
     else {
-      //로그인 변수 설정
-      let user_pid = row[0].user_pid;
-      let nickInDB = row[0].nickname;
-      let e_mail = row[0].e_mail;
-      let match = row[0].match;
-      let is_coupled = row[0].is_coupled;
-      let pwInDB = row[0].password;
-      let pwInParams = sha256(req.body.password);
+    //로그인 변수 설정
+    let user_pid = row[0].user_pid;
+    let nickInDB = row[0].nickname;
+    let e_mail = row[0].e_mail;
+    let match = row[0].match;
+    let is_coupled = row[0].is_coupled;
+    let pwInDB = row[0].password;
+    let pwInParams = sha256(req.body.password);
 
-      //로그인 체크 영역
-      if (pwInDB == pwInParams) {
+    //로그인 체크 영역
+    if (pwInDB == pwInParams) {
 
-        // 세션에 로그인 정보 동적 추가.
-        req.session.nickname = nickInDB;
-        req.session.user_pid = user_pid;
-        req.session.e_mail = e_mail;
-        req.session.couple_pid = match;
+      // 세션에 로그인 정보 동적 추가.
+      req.session.nickname = nickInDB;
+      req.session.user_pid = user_pid;
+      req.session.e_mail = e_mail;
+      req.session.couple_pid = match;
 
-        //main code
-        console.log("로그인 성공");
-        console.log(req.session);
-        if (is_coupled == null) {
-          // 연인이 없을 경우
-          res.redirect('../users/usersetting');
-        } else if (is_coupled == 0) {
-          // 요청을 받았을 경우
-          res.redirect('../users/usersetting')
-        } else if (is_coupled == 2) {
-          // 요청을 보냈을 경우
-          res.redirect('../users/usersetting')
-        } else {
-          // 연인이 있는 경우
-          res.redirect('../main/list');
-        }
+      //main code
+      console.log("로그인 성공");
+      console.log(req.session);
+      if (is_coupled == null) {
+        // 연인이 없을 경우
+        res.redirect('../users/usersetting');
+      } else if (is_coupled == 0) {
+        // 요청을 받았을 경우
+        res.redirect('../users/usersetting')
+      } else if (is_coupled == 2) {
+        // 요청을 보냈을 경우
+        res.redirect('../users/usersetting')
       } else {
-        res.send("<script>\
-            window.onload = function(){\
-            alert('비밀번호가 일치하지 않습니다.'); window.location.replace('/users/login');};\
-            </script>");
+        // 연인이 있는 경우
+        res.redirect('../main/list');
       }
+    } else {
+      res.send("<script>\
+      window.onload = function(){\
+      alert('비밀번호가 일치하지 않습니다.'); window.location.replace('/users/login');};\
+      </script>");
+}
     }
   });
 });

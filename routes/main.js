@@ -50,7 +50,7 @@ moment.tz.setDefault("Asia/Seoul");
 var client = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'hong1128.',
+    password: '',
     port: 3306,
     database: 'my_db',
     multipleStatements: true
@@ -275,61 +275,63 @@ router.post('/coupleMsg', function (req, res, next) {
         const msgTitle = utf8.decode(base64.decode(sess.nickname)) + '님으로부터의 커플 요청이 도착했습니다.';
         const msg = utf8.decode(base64.decode(sess.nickname)) + '님이 회원님을 커플로 등록하기를 요청했습니다. 수락하시겠습니까?';
         console.log(couplePid + "  " + msgTitle + "  " + msg);
-        if(!Number(couplePid)) { //커플 피드를 문자로 입력할시 발생하는 에러
-            
-        }
-        let q = "SELECT `nickname`, `is_coupled`, `token` FROM `my_db`.`user` WHERE `user_pid` =" + couplePid;
-        client.query(q, function (err, row) {
-            if (err) throw err;
-            if (!row[0]) {
-                // 2 : 해당 유저가 존재하지 않는 에러
-                res.json(2);
-            } else {
-                console.log('\n상대 닉네임 : ' + row[0].nickname + '  상대 커플 여부 : ' + row[0].is_coupled + '  상대 토큰 : ' + row[0].token);
-                coupleUser = row[0].token;
-                if(row[0].is_coupled != null) {
-                    // 3 : 이미 커플중인 상대에게 요청을 보낸 에러
-                    res.json(3);
+        if(!Number(couplePid)) { 
+            // 0 : 커플 피드를 문자로 입력할시 발생하는 에러
+            res.json(0);
+        } else {
+            let q = "SELECT `nickname`, `is_coupled`, `token` FROM `my_db`.`user` WHERE `user_pid` =" + couplePid;
+            client.query(q, function (err, row) {
+                if (err) throw err;
+                if (!row[0]) {
+                    // 2 : 해당 유저가 존재하지 않는 에러
+                    res.json(2);
                 } else {
-                    console.log('\n나의 pid : ' + sess.user_pid + '   커플 pid : ' + couplePid);
-                    let p = "UPDATE `my_db`.`user`\
-                    SET `match` ="+ couplePid +", `is_coupled` = 2\
-                    WHERE `user_pid` ="+ sess.user_pid +";" + 
-                    "UPDATE `my_db`.`user`\
-                    SET `match` ="+ sess.user_pid +", `is_coupled` = 0\
-                    WHERE `user_pid` = "+ couplePid +";"  
-                    client.query(p, function (err, row) {
-                        if (err) throw err;
-                        if (coupleUser == null) {
-                            // 0 : 요청 성공, Token 값이 없는 경우
-                            res.json(0);
-                        } else {
-                            const payload = {
-                                notification: {
-                                    title: msgTitle,
-                                    body: msg,
-                                    sound: 'default',
-                                    click_action: 'http://127.0.0.1:52273/users/login',
-                                    icon: '\/icons/android-icon-192x192.png'
-                                }
-                            };
-                            admin.messaging().sendToDevice(coupleUser, payload).then(response => {
-                                response.results.forEach((result, index) => {
-                                    const error = result.error;
-                                    if (error) {
-                                        console.error('FCM 실패 : ', error.code);
-                                    } else {
-                                        console.log('FCM 성공');
+                    console.log('\n상대 닉네임 : ' + row[0].nickname + '  상대 커플 여부 : ' + row[0].is_coupled + '  상대 토큰 : ' + row[0].token);
+                    coupleUser = row[0].token;
+                    if(row[0].is_coupled != null) {
+                        // 3 : 이미 커플중인 상대에게 요청을 보낸 에러
+                        res.json(3);
+                    } else {
+                        console.log('\n나의 pid : ' + sess.user_pid + '   커플 pid : ' + couplePid);
+                        let p = "UPDATE `my_db`.`user`\
+                        SET `match` ="+ couplePid +", `is_coupled` = 2\
+                        WHERE `user_pid` ="+ sess.user_pid +";" + 
+                        "UPDATE `my_db`.`user`\
+                        SET `match` ="+ sess.user_pid +", `is_coupled` = 0\
+                        WHERE `user_pid` = "+ couplePid +";"  
+                        client.query(p, function (err, row) {
+                            if (err) throw err;
+                            if (coupleUser == null) {
+                                // 0 : 요청 성공, Token 값이 없는 경우
+                                res.json(0);
+                            } else {
+                                const payload = {
+                                    notification: {
+                                        title: msgTitle,
+                                        body: msg,
+                                        sound: 'default',
+                                        click_action: 'http://127.0.0.1:52273/users/login',
+                                        icon: '\/icons/android-icon-192x192.png'
                                     }
+                                };
+                                admin.messaging().sendToDevice(coupleUser, payload).then(response => {
+                                    response.results.forEach((result, index) => {
+                                        const error = result.error;
+                                        if (error) {
+                                            console.error('FCM 실패 : ', error.code);
+                                        } else {
+                                            console.log('FCM 성공');
+                                        }
+                                    });
                                 });
-                            });
-                            // 0 : 요청 성공. 
-                            res.json(0);
-                        }      
-                    });        
+                                // 0 : 요청 성공. 
+                                res.json(0);
+                            }      
+                        });        
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 })
 
