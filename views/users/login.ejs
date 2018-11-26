@@ -19,12 +19,12 @@
                 <form action="./check" method="POST">
                     <div class="row">
                         <!-- nickname -->
-                        <div class="input-field col s6">
+                        <div class="input-field col s12 m6">
                             <input name="nickname" type="text" class="validate">
                             <label for="nickname">닉네임</label>
                         </div>
                         <!-- password -->
-                        <div class="input-field col s6">
+                        <div class="input-field col s12 m6">
                             <input name="password" type="password" class="validate">
                             <label for="password">비밀번호</label>
                         </div>
@@ -45,3 +45,8 @@
         <div class="col s12 m2"> </div>
     </div>
 </div>
+
+
+<script>
+    $('input:first').focus();
+</script>

@@ -50,7 +50,7 @@ moment.tz.setDefault("Asia/Seoul");
 var client = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: '',
+    password: 'hong1128.',
     port: 3306,
     database: 'my_db',
     multipleStatements: true
@@ -76,11 +76,11 @@ router.get('/list', function (req, res, next) {
         client.query(q, function (err, row) {
             if (err) throw err;
             if (row[0].is_coupled == null) {
-                res.redirect('../main/coupleReq');
+                res.redirect('../users/usersetting');
             } else if (row[0].is_coupled == 0) {
-                res.redirect('../main/coupleAcpt')
+                res.redirect('../users/usersetting')
             } else if (row[0].is_coupled == 2) {
-                res.redirect('../main/coupleProg')
+                res.redirect('../users/usersetting')
             } else {
                 //내부 쿼리 
                 //`user`.`match`추가
@@ -275,6 +275,9 @@ router.post('/coupleMsg', function (req, res, next) {
         const msgTitle = utf8.decode(base64.decode(sess.nickname)) + '님으로부터의 커플 요청이 도착했습니다.';
         const msg = utf8.decode(base64.decode(sess.nickname)) + '님이 회원님을 커플로 등록하기를 요청했습니다. 수락하시겠습니까?';
         console.log(couplePid + "  " + msgTitle + "  " + msg);
+        if(!Number(couplePid)) { //커플 피드를 문자로 입력할시 발생하는 에러
+            
+        }
         let q = "SELECT `nickname`, `is_coupled`, `token` FROM `my_db`.`user` WHERE `user_pid` =" + couplePid;
         client.query(q, function (err, row) {
             if (err) throw err;

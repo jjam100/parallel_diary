@@ -114,7 +114,9 @@
                 coverTrigger: false,
                 alignment: 'right'
             });
-            M.textareaAutoResize($('#textarea1'));
+            if($('#textarea1').length != 0) {
+                M.textareaAutoResize($('#textarea1'));
+            }
             $('select').formSelect();
                 $('.datepicker').datepicker({
                 firstDay: true,

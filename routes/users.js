@@ -13,7 +13,7 @@ app.use(require('body-parser').json());
 var client = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: '',
+  password: 'hong1128.',
   port: 3306,
   database: 'my_db',
   multipleStatements: true
@@ -306,12 +306,13 @@ router.post('/pwreset_check', function (req, res, next) {
     //로그인이 된 유저일 시 쿼리
     is_login = true;
     q = "SELECT `password`,`e_mail`,`op1`,`op2`,`op3`,`answer1`,`answer2`,`answer3` \
-        FROM `my_db`.`user` WHERE `user_pid` = " + user_pid + ";";
+        FROM `my_db`.`user` WHERE `user_pid` = " + user_pid + " AND `e_mail`='" + e_mail + "';";
+        //종진이 디버그(6번) 수정 완료!
     console.log(q);
   }
   client.query(q, function (err, row) {
     console.log(row);
-    if (err || (!row)) { //쿼리 내에서 오류 / 쿼리의 결과가 없는 경우
+    if (err || (row.length == 0)) { //쿼리 내에서 오류 / 쿼리의 결과가 없는 경우
       res.send("<script>window.onload = function(){\
         alert('기본정보를 잘못 입력했습니다.다시한번 입력해주세요.'); history.back();};\
         </script>");

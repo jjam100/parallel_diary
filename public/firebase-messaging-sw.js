@@ -2,7 +2,12 @@ importScripts('https://www.gstatic.com/firebasejs/5.5.2/firebase-app.js');
 importScripts('https://www.gstatic.com/firebasejs/5.5.2/firebase-messaging.js');
 
 firebase.initializeApp({
-    'messagingSenderId': '' //이곳은 자신의 프로젝트 설정 => 클라우드 메세징 => 발신자ID를 기입
+    apiKey: "AIzaSyBuJuuw6DvZOvxxYr-CooW7hMoxBy80Nd8",
+    authDomain: "parallel-diary.firebaseapp.com",
+    databaseURL: "https://parallel-diary.firebaseio.com",
+    projectId: "parallel-diary",
+    storageBucket: "parallel-diary.appspot.com",    
+    'messagingSenderId': '1068220114920' //이곳은 자신의 프로젝트 설정 => 클라우드 메세징 => 발신자ID를 기입
 });
 
 const messaging = firebase.messaging();
