@@ -88,9 +88,6 @@ router.post('/register', function (res, req) {
         </script>");
     }
   });
-
-  
-
 })
 
 // 로그인
@@ -253,7 +250,7 @@ router.post('/coupleBrk', function (req, res, next) {
   var sess = req.session;
   var user_pid = sess.user_pid;
   const couplePid = Object.keys(req.body)[0];
-  
+    
   //이별시 자신의 모든 이미지 삭제 처리
   let qq = "SELECT `img_url` FROM `my_db`.`diary` WHERE `user_pid` = " + user_pid + " OR `user_pid` = " + couplePid;
   client.query(qq,function(err, row){

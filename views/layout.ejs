@@ -24,6 +24,8 @@
     <script src="https://www.gstatic.com/firebasejs/5.5.2/firebase-storage.js"></script>
     <script src="https://www.gstatic.com/firebasejs/5.5.2/firebase-firestore.js"></script>
     <!--    Prograssive Web App     -->
+    <link rel="manifest" href="/manifest.json">
+    <link rel="shortcut icon" href="/icons/favicon.ico">
     <link rel="apple-touch-icon" sizes="57x57" href="/icons/apple-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="/icons/apple-icon-60x60.png">
     <link rel="apple-touch-icon" sizes="72x72" href="/icons/apple-icon-72x72.png">
@@ -37,11 +39,12 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="96x96" href="/icons/favicon-96x96.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png">
-    <link rel="manifest" href="/manifest.json">
-    <link rel="shortcut icon" href="/icons/favicon.ico">
-    <meta name="msapplication-TileColor" content="#E6E6FA">
+    <meta name="msapplication-TileColor" content="#32645a">
     <meta name="msapplication-TileImage" content="/icons/ms-icon-144x144.png">
-    <meta name="theme-color" content="#E6E6FA">
+    <meta name="msapplication-square70x70logo" content="/icons/ms-icon-70x70.png">
+    <meta name="msapplication-square150x150logo" content="/icons/ms-icon-150x150.png">
+    <meta name="msapplication-square310x310logo" content="/icons/ms-icon-310x310.png">
+    <meta name="theme-color" content="#263238">
     <script src="/pwabuilder-sw-register.js"></script>
 </head>
 
@@ -119,7 +122,7 @@
             }
             $('select').formSelect();
                 $('.datepicker').datepicker({
-                firstDay: true,
+                firstDay: false,
                 format: 'yyyy-mm-dd',
                 i18n: {
                     months: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],

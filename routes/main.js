@@ -51,7 +51,7 @@ moment.tz.setDefault("Asia/Seoul");
 var client = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'hong1128.',
+    password: '',
     port: 3306,
     database: 'my_db',
     multipleStatements: true
@@ -195,7 +195,7 @@ router.post('/create', upload.single('img_url'), function (req, res, err) {
                                 title: msgTitle,
                                 body: msg,
                                 sound: 'default',
-                                click_action: 'http://127.0.0.1:52273',
+                                click_action: 'http://127.0.0.1:52273/main/list',
                                 icon: '\/icons/android-icon-192x192.png'
                             }
                         };
@@ -240,7 +240,7 @@ router.post('/create', upload.single('img_url'), function (req, res, err) {
                             title: msgTitle,
                             body: msg,
                             sound: 'default',
-                            click_action: 'http://127.0.0.1:52273',
+                            click_action: 'http://127.0.0.1:52273/main/list',
                             icon: '\/icons/android-icon-192x192.png'
                         }
                     };
