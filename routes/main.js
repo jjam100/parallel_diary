@@ -51,7 +51,7 @@ moment.tz.setDefault("Asia/Seoul");
 var client = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: '',
+    password: 'hong1128.',
     port: 3306,
     database: 'my_db',
     multipleStatements: true
@@ -73,6 +73,7 @@ router.get('/list', function (req, res, next) {
     console.log("유저번호 : " + user_pid);
     console.log(sess);
     if (nickname) {
+        //커플 인증
         let q = "SELECT `is_coupled` FROM `my_db`.`user` WHERE `user_pid` =" + user_pid;
         client.query(q, function (err, row) {
             if (err) throw err;
@@ -107,7 +108,13 @@ router.get('/list', function (req, res, next) {
                     var base64 = require('base-64');
                     row.forEach(e => {
                         e.text = utf8.decode(base64.decode(e.text));
+                        if(e.img_url != '') {
+                            e.have_image = true;
+                        }else {
+                            e.have_image = false;
+                        }
                     });
+                    console.log(row);
                     // 삼중쿼리..... 후덜덜...
                     // 커플 닉네임을 받기위해서 쿼리 추가 : 홍진백
                     let r = "SELECT `nickname` FROM my_db.user WHERE `match` = '"+sess.user_pid+"';";
@@ -259,9 +266,12 @@ router.post('/destroy', function (res, req) {
     
     //이미지 삭제
     let r = "SELECT `img_url` FROM `my_db`.`diary` where `diary_pid`=" + res.body.destroy_id;
+    
     client.query(r, function (err, row) {
         //지난 이미지 삭제
-        fs.unlink("public/"+row[0].img_url,function(err){ if(err) throw err; });
+        if(row[0].img_url != '') {
+            fs.unlink("public/"+row[0].img_url,function(err){ if(err) throw err; });
+        }
         if (err) {
             throw err;
         }
@@ -280,19 +290,20 @@ router.post('/destroy', function (res, req) {
 router.post('/update',upload.single('img_url'), function (res, req) {
     //req,res 역순????
     //이미지 처리 분기문
-    console.log("res.sess&&&&&&&&&&&&&&&&&&&&&");
-    console.log(res.session);
     let file_q;
     let q;
+    let r = "SELECT `img_url` FROM `my_db`.`diary` where `diary_pid`=" + res.body.update_id;
     if(res.file != null) {
-        let r = "SELECT `img_url` FROM `my_db`.`diary` where `diary_pid`=" + res.body.update_id;
         client.query(r, function (err, row) {
             //지난 이미지 삭제
-            fs.unlink("public/"+row[0].img_url,function(err){ if(err) throw err; });
+            if(row[0].img_url != ''){
+                fs.unlink("public/"+row[0].img_url,function(err){ if(err) throw err; });
+            }
             if (err) {
                 throw err;
             }
         });
+        
         file_q = '/images/uploads/' + res.file.filename;
         //쿼리 
         q = "UPDATE `diary` SET \
@@ -300,6 +311,17 @@ router.post('/update',upload.single('img_url'), function (res, req) {
         `text` = '" + base64.encode(utf8.encode(res.body.text)) + "' WHERE (`diary_pid` = '" + res.body.update_id + "');";
     }
     else {
+        client.query(r, function (err, row) {
+            if(row[0].img_url != '') {
+                //사용자 이미지 삭제 체크시
+                if(res.body.image_delete_chk == 'on' && row[0].img_url != '') {
+                    fs.unlink("public/"+row[0].img_url,function(err){ if(err) throw err; });
+                }
+                let qq = "UPDATE `diary` SET `img_url` = '' WHERE (`diary_pid` = '" + res.body.update_id + "');";
+                client.query(qq,function(err,row){if(err){throw err}});
+            }
+            if(err) throw err;
+        });
         //쿼리
         q = "UPDATE `diary` SET \
         `text` = '" + base64.encode(utf8.encode(res.body.text)) + "' WHERE (`diary_pid` = '" + res.body.update_id + "');";
@@ -308,10 +330,9 @@ router.post('/update',upload.single('img_url'), function (res, req) {
     client.query(q, function (err, row) {
         if (err) {
             throw err;
-            req.redirect("back");        
         }
+        else req.redirect("back");
     });
-    req.redirect("back");
 });
 
 // 유저 토큰값 추가

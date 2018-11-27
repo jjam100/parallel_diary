@@ -259,9 +259,11 @@ router.post('/coupleBrk', function (req, res, next) {
   client.query(qq,function(err, row){
     var item;
     for(item in row) {
-      fs.unlink("public/" + row[item].img_url,function(err){
-        if(err) throw err;
-      });
+      if(row[item].img_url != '') {
+        fs.unlink("public/" + row[item].img_url,function(err){
+          if(err) throw err;
+        });
+      }
     }
   });
 

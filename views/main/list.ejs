@@ -83,6 +83,12 @@
                             <input type="hidden" name="update_id" value="<%=row[item].diary_pid%>"/>
                     </div>  
                     <div class="card-action">
+                        <%if(row[item].have_image){%>
+                        <label>
+                            <input type="checkbox" name="image_delete_chk" />
+                            <span>이미지 삭제</span>
+                        </label>
+                        <%}%>
                         <button id="update_btn" class="btn waves-effect waves-light man" type="submit"><span style="color:black">수정</span><i class="material-icons right">send</i></button>
                         </form> 
                         <button onclick="toggleUpdateForm(<%=row[item].diary_pid%>);" class="btn waves-effect waves-light woman"><span style="color:black">취소</span>
@@ -162,6 +168,12 @@
 <script>
     // Initialize Firebase
     var config = {
+        apiKey: "AIzaSyBuJuuw6DvZOvxxYr-CooW7hMoxBy80Nd8",
+        authDomain: "parallel-diary.firebaseapp.com",
+        databaseURL: "https://parallel-diary.firebaseio.com",
+        projectId: "parallel-diary",
+        storageBucket: "parallel-diary.appspot.com",
+        messagingSenderId: "1068220114920"
     };
     firebase.initializeApp(config);
     // FCM 메시지 설정 코드
