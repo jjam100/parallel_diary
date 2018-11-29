@@ -14,7 +14,7 @@ app.use(require('body-parser').json());
 var client = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: '',
+  password: '1q2w3e4r?',
   port: 3306,
   database: 'my_db',
   multipleStatements: true
@@ -29,7 +29,11 @@ router.get('/', function (req, res, next) {
 // 회원가입
 router.get('/signup', function (req, res, next) {
   console.log(req.session);
-  res.render('users/signup');
+  res.render('users/signup', {
+    nickname: null,
+    e_mail: null,
+    is_coupled: 0
+  });
 });
 
 router.post('/register', function (res, req) {
@@ -93,7 +97,11 @@ router.post('/register', function (res, req) {
 // 로그인
 router.get('/login', function (req, res, next) {
   //render
-  res.render('users/login');
+  res.render('users/login', {
+    nickname: null,
+    e_mail: null,
+    is_coupled: 0
+  });
 });
 router.post('/check', function (req, res, next) {
   let q = "SELECT * FROM `my_db`.`user` WHERE nickname = \'" + base64.encode(utf8.encode(req.body.nickname)) + "\'";
@@ -182,7 +190,9 @@ router.get('/usersetting', function (req, res, next) {
             state: '0',
             mypid: user_pid,
             myNick: nickname,
-            email: user_email,
+            nickname: nickname,
+            e_mail: user_email,
+            is_coupled: 0,
             couplePid: null,
             coupeNick: null,
             diarycount: null,
@@ -199,7 +209,9 @@ router.get('/usersetting', function (req, res, next) {
               state: '1',
               mypid: user_pid,
               myNick: nickname,
-              email: user_email,
+              nickname: nickname,
+              e_mail: user_email,
+              is_coupled: 0,
               couplePid: couplePid,
               coupeNick: null,
               diarycount: null,
@@ -212,7 +224,9 @@ router.get('/usersetting', function (req, res, next) {
               state: '2',
               mypid: user_pid,
               myNick: nickname,
-              email: user_email,
+              nickname: nickname,
+              e_mail: user_email,
+              is_coupled: 0,
               couplePid: couplePid,
               coupeNick: coupleNick,
               diarycount: null,
@@ -229,7 +243,9 @@ router.get('/usersetting', function (req, res, next) {
                 state: '3',
                 mypid: user_pid,
                 myNick: nickname,
-                email: user_email,
+                nickname: nickname,
+                e_mail: user_email,
+                is_coupled: 1,
                 couplePid: couplePid,
                 coupeNick: coupleNick,
                 diarycount: diarycount,
@@ -294,15 +310,36 @@ router.post('/coupleBrk', function (req, res, next) {
 
 //비밀번호 재설정 / 찾기
 router.get('/pwreset', function (req, res, next) {
-  if (!req.session.nickname) { //로그인 조차 못할때
+  var sess = req.session;
+  var nickname = sess.nickname;
+  var user_pid = sess.user_pid;
+  var e_mail = sess.e_mail;
+  var is_coupled = null;
+
+  if (nickname) { //로그인이 되어 있을때
+    nickname = utf8.decode(base64.decode(nickname));
+    let q = "SELECT `is_coupled` FROM `my_db`.`user` WHERE `user_pid` =" + user_pid;
+    client.query(q, function (err, row) {
+      if (err) throw err;
+      if (row[0].is_coupled == 1) {
+        is_coupled = 1;
+      } else {
+        is_coupled = 0;
+      }
+      res.render('users/pwreset', {
+        user_pid: user_pid,
+        nickname: nickname,
+        e_mail: e_mail,
+        is_coupled: is_coupled
+      });
+    });
+  } else {  //로그인 조차 못할때
+    is_coupled = 0;
     res.render('users/pwreset', {
       user_pid: null,
-      nickname: null
-    });
-  } else { //로그인이 되어 있을때
-    res.render('users/pwreset', {
-      user_pid: req.session.user_pid,
-      nickname: utf8.decode(base64.decode(req.session.nickname))
+      nickname: null,
+      e_mail: null,
+      is_coupled: is_coupled
     });
   }
 });

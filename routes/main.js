@@ -51,7 +51,7 @@ moment.tz.setDefault("Asia/Seoul");
 var client = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: '',
+    password: '1q2w3e4r?',
     port: 3306,
     database: 'my_db',
     multipleStatements: true
@@ -70,6 +70,7 @@ router.get('/list', function (req, res, next) {
     var sess = req.session;
     var nickname = sess.nickname;
     var user_pid = sess.user_pid;
+    var e_mail = sess.e_mail;
     console.log("유저번호 : " + user_pid);
     console.log(sess);
     if (nickname) {
@@ -125,6 +126,8 @@ router.get('/list', function (req, res, next) {
                             today:moment().format('YYYY-MM-DD'),
                             row: row,
                             couple: c_n,
+                            e_mail: e_mail,
+                            is_coupled: 1,
                             nickname: utf8.decode(base64.decode(req.session.nickname)),
                             user_pid: req.session.user_pid
                         });
@@ -316,9 +319,9 @@ router.post('/update',upload.single('img_url'), function (res, req) {
                 //사용자 이미지 삭제 체크시
                 if(res.body.image_delete_chk == 'on' && row[0].img_url != '') {
                     fs.unlink("public/"+row[0].img_url,function(err){ if(err) throw err; });
+                    let qq = "UPDATE `diary` SET `img_url` = '' WHERE (`diary_pid` = '" + res.body.update_id + "');";
+                    client.query(qq,function(err,row){if(err){throw err}});
                 }
-                let qq = "UPDATE `diary` SET `img_url` = '' WHERE (`diary_pid` = '" + res.body.update_id + "');";
-                client.query(qq,function(err,row){if(err){throw err}});
             }
             if(err) throw err;
         });
@@ -384,8 +387,9 @@ router.post('/coupleMsg', function (req, res, next) {
         const msg = utf8.decode(base64.decode(sess.nickname)) + '님이 회원님을 커플로 등록하기를 요청했습니다. 수락하시겠습니까?';
         console.log(couplePid + "  " + msgTitle + "  " + msg);
         if(!Number(couplePid)) { 
-            // 0 : 커플 피드를 문자로 입력할시 발생하는 에러
-            res.json(0);
+            console.log("여기 걸리는거야??" + Number(couplePid));
+            // 4 : 커플 피드를 문자로 입력할시 발생하는 에러
+            res.json(4);
         } else {
             let q = "SELECT `nickname`, `is_coupled`, `token` FROM `my_db`.`user` WHERE `user_pid` =" + couplePid;
             client.query(q, function (err, row) {

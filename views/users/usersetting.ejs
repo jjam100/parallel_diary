@@ -1,457 +1,608 @@
-<div class="backcol jeju">
-    <div class="ac-banner white-text col-12">
-        <div class="row sub-banner">
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>평행일기</title>
+    <!--    JQuery GOOGLE CDN    -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!--    MATRIALIZE JS    -->
+    <script type="text/javascript" src="/js/materialize.js"></script>
+    <!--    MATRIALIZE CSS    -->
+    <link type="text/css" rel="stylesheet" href="/css/materialize.css" />
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--    BASE CSS FOR GENERAL    -->
+    <link href="/css/base.css" rel="stylesheet">
+    <!--    Firebase API    -->
+    <script src="https://www.gstatic.com/firebasejs/5.5.2/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.5.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.5.2/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.5.2/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.5.2/firebase-messaging.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.5.2/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.5.2/firebase-firestore.js"></script>
+    <!--    Prograssive Web App     -->
+    <link rel="manifest" href="/manifest.json">
+    <link rel="shortcut icon" href="/icons/favicon.ico">
+    <link rel="apple-touch-icon" sizes="57x57" href="/icons/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/icons/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/icons/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/icons/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/icons/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/icons/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/icons/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/icons/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/icons/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/icons/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png">
+    <meta name="msapplication-TileColor" content="#32645a">
+    <meta name="msapplication-TileImage" content="/icons/ms-icon-70x70.png">
+    <meta name="theme-color" content="#263238">
+    <script src="/pwabuilder-sw-register.js"></script>
+</head>
+
+<body>
+    <!--    
+            메인 페이지 레이아웃 작성
+            2018.09.17. 14109388 홍진백
+
+            메인 페이지 레이아웃 보강
+            2018.11.01  14109362 이창재
+        -->
+    <!-- Dropdown Structure -->
+    <ul id="dropdown1" class="dropdown-content">
+        <% if(nickname == null) { %>
+        <li><a class="waves-effect" href="/users/signup"><i class="material-icons">library_add</i>회원가입</a></li>
+        <li><a class="waves-effect" href="/users/login"><i class="material-icons">vpn_key</i>로그인</a></li>
+        <% } %>
+        <% if(nickname != null) { %>
+        <li><a class="waves-effect" href="/users/logout"><i class="material-icons">exit_to_app</i>로그아웃</a></li>
+        <li class="divider"></li>
+        <li><a class="waves-effect" href="/users/usersetting"><i class="material-icons">settings</i>내 계정</a></li>
+        <% } %>  
+    </ul>
+    <!--   NAVIGATION BAR     -->
+    <nav class="dk">
+        <div class="container nav-wrapper dk">
+            <a href="/" class="brand-logo gugi">
+                <%=(typeof title != "undefined" ? title : "평행일기")%></a>
+            <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+            <ul class="right hide-on-med-and-down">
+                <li><a href="/">메인</a></li>
+                <% if(is_coupled == 1) { %>
+                <li><a href="/main">일기쓰기</a></li>
+                <% } %>
+                <li><a class="dropdown-trigger" href="javascript:void(0);" data-target="dropdown1">
+                    <% if(nickname == null) { %>
+                        Guest
+                    <% } else { %>
+                        <%=nickname%>
+                    <% } %>
+                    <i class="material-icons right">arrow_drop_down</i></a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <ul class="sidenav mm4" id="mobile-demo">
+        <li>
+            <div class="user-view">
+                <div class="background">
+                    <img src="../images/userback.png">
+                </div>
+                <a href="#user"><i class="medium material-icons"></i></a>
+                <a href="#name"><span class="white-text name">
+                    <% if(nickname == null) { %>
+                        Guest
+                    <% } else { %>
+                        <%=nickname%>
+                    <% } %>
+                </span></a>
+                <a href="#email"><span class="white-text email">
+                    <% if(e_mail == null) { %>
+                    <% } else { %>
+                        <%=e_mail%>
+                    <% } %>
+                </span></a>
+            </div>
+        </li>
+        <li><a class="subheader">Parallel Diary</a></li>
+        <li><a class="waves-effect" href="/"><i class="material-icons">home</i>홈</a></li>
+        <% if(is_coupled == 1) { %>
+        <li><a class="waves-effect" href="/main"><i class="material-icons">create</i>일기쓰기</a></li>
+        <% } %>
+        <li>
+            <div class="divider"></div>
+        </li>
+        <li><a class="subheader">User</a></li>
+        <% if(nickname == null) { %>
+        <li><a class="waves-effect" href="/users/signup"><i class="material-icons">library_add</i>회원가입</a></li>
+        <li><a class="waves-effect" href="/users/login"><i class="material-icons">vpn_key</i>로그인</a></li>
+        <% } %>
+        <% if(nickname != null) { %>
+        <li><a class="waves-effect" href="/users/logout"><i class="material-icons">exit_to_app</i>로그아웃</a></li>
+        <li><a class="waves-effect" href="/users/usersetting"><i class="material-icons">settings</i>내 계정</a></li>
+        <% } %>
+    </ul>
+    <!--    CONTENT START    -->
+    <div class="backcol jeju">
+        <div class="ac-banner white-text col-12">
+            <div class="row sub-banner">
+                <div class="container">
+                    <div class="col s12 m6 acinfo">
+                        <h4 class="userinfo"><b><%=myNick%></b></h4>
+                        <p class="userinfo subinfo"><%=e_mail%></p>
+                        <p class="userinfo subinfo">유저번호 : <%=mypid%></p>
+                    </div>
+                    <div class="col s12 m6 sbinfo">
+                        <div class="row">
+                            <div class="col s12 m6 acminfo">
+                                <p class="userinfo midinfo"><i class="material-icons">favorite</i><br/><b>연인 닉네임</b></p>
+                                <% if(coupeNick == null) { %>
+                                    <p class="userinfo subinfo">없음</p>
+                                <% } else if(state == 2) {%>
+                                    <p class="userinfo subinfo">없음</p>
+                                <% } else { %>
+                                    <p class="userinfo subinfo"><%=coupeNick%></p>
+                                <% } %>
+                            </div>
+                            <div class="col s12 m6 acminfo">
+                                <p class="userinfo midinfo"><i class="material-icons">book</i><br/><b>작성 일기수</b></p>
+                                <% if(diarycount == null) { %>
+                                    <p class="userinfo subinfo">없음</p>
+                                <% } %>
+                                <% if(diarycount != null) { %>
+                                    <p class="userinfo subinfo"><%=diarycount%></p>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row h-100">
             <div class="container">
-                <div class="col s12 m6 acinfo">
-                    <h4 class="userinfo"><b><%=myNick%></b></h4>
-                    <p class="userinfo subinfo"><%=email%></p>
-                    <p class="userinfo subinfo">유저번호 : <%=mypid%></p>
-                </div>
-                <div class="col s12 m6 sbinfo">
-                    <div class="row">
-                        <div class="col s12 m6 acminfo">
-                            <p class="userinfo midinfo"><i class="material-icons">favorite</i><br/><b>연인 닉네임</b></p>
-                            <% if(coupeNick == null) { %>
-                                <p class="userinfo subinfo">없음</p>
-                            <% } else if(state == 2) {%>
-                                <p class="userinfo subinfo">없음</p>
-                            <% } else { %>
-                                <p class="userinfo subinfo"><%=coupeNick%></p>
-                            <% } %>
-                        </div>
-                        <div class="col s12 m6 acminfo">
-                            <p class="userinfo midinfo"><i class="material-icons">book</i><br/><b>작성 일기수</b></p>
-                            <% if(diarycount == null) { %>
-                                <p class="userinfo subinfo">없음</p>
-                            <% } %>
-                            <% if(diarycount != null) { %>
-                                <p class="userinfo subinfo"><%=diarycount%></p>
-                            <% } %>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row h-100">
-        <div class="container">
-            <div class="innerinfo">
-                <div class="col s12 m4">
-                    <h6 class="innerheader"><b>보안</b></h6>
-                    <div class="card hoverable">
-                        <div class="contentplus">
-                            <div class="center"><img id="security" class="cardimg" src="/images/security.png" /></div>
-                            <div class="center contentsubtit"><b>비밀번호 업데이트</b></div>
-                            <div class="contenttxt">암호를 잊어버렸거나 해킹이 의심되는 경우 최신정보로 업데이트해주세요!</div>
-                        </div>
-                        <div class="cardfooter center">
-                            <a href="./pwreset" style="color: #0067b8; margin-right: 0px;"><b>업데이트&nbsp;〉</b></a>
-                        </div>
-                    </div>
-                </div>
-                <% if(state == 0) { %>
+                <div class="innerinfo">
                     <div class="col s12 m4">
-                        <h6 class="innerheader"><b>새로운 시작</b></h6>
+                        <h6 class="innerheader"><b>보안</b></h6>
                         <div class="card hoverable">
                             <div class="contentplus">
-                                <div class="center"><img id="borken" class="cardimg" src="/images/request.png" /></div>
-                                <div class="center contentsubtit"><b>커플 신청</b></div>
-                                <div class="contenttxt">평행일기의 첫 시작입니다. 상대의 유저번호를 통해 커플을 요청해보세요!</div>
+                                <div class="center"><img id="security" class="cardimg" src="/images/security.png" /></div>
+                                <div class="center contentsubtit"><b>비밀번호 업데이트</b></div>
+                                <div class="contenttxt">암호를 잊어버렸거나 해킹이 의심되는 경우 최신정보로 업데이트해주세요!</div>
                             </div>
                             <div class="cardfooter center">
-                                <a class="modal-trigger" href="#coupleReq" style="color: #0067b8; margin-right: 0px;"><b>커플 요청&nbsp;〉</b></a>
+                                <a href="./pwreset" style="color: #0067b8; margin-right: 0px;"><b>업데이트&nbsp;〉</b></a>
                             </div>
                         </div>
                     </div>
-                <% } %>
-                <% if(state == 1) { %>
+                    <% if(state == 0) { %>
+                        <div class="col s12 m4">
+                            <h6 class="innerheader"><b>새로운 시작</b></h6>
+                            <div class="card hoverable">
+                                <div class="contentplus">
+                                    <div class="center"><img id="borken" class="cardimg" src="/images/request.png" /></div>
+                                    <div class="center contentsubtit"><b>커플 신청</b></div>
+                                    <div class="contenttxt">평행일기의 첫 시작입니다. 상대의 유저번호를 통해 커플을 요청해보세요!</div>
+                                </div>
+                                <div class="cardfooter center">
+                                    <a class="modal-trigger" href="#coupleReq" style="color: #0067b8; margin-right: 0px;"><b>커플 요청&nbsp;〉</b></a>
+                                </div>
+                            </div>
+                        </div>
+                    <% } %>
+                    <% if(state == 1) { %>
+                        <div class="col s12 m4">
+                            <h6 class="innerheader"><b>요청 중</b></h6>
+                            <div class="card hoverable">
+                                <div class="contentplus">
+                                    <div class="center"><img id="borken" class="cardimg" src="/images/waiting.png" /></div>
+                                    <div class="center contentsubtit"><b>커플요청이 진행 중입니다!</b></div>
+                                    <div class="contenttxt">유저번호 <%=couplePid%>번님께 커플요청이 진행 중입니다. 만약 요청이 잘못되었다면 아래 요청 취소를 클릭하세요!</div>
+                                </div>
+                                <div class="cardfooter center">
+                                    <a class="modal-trigger" href="#coupleProg" style="color: #0067b8; margin-right: 0px;"><b>요청 취소&nbsp;〉</b></a>
+                                </div>
+                            </div>
+                        </div>
+                    <% } %>
+                    <% if(state == 2) { %>
+                        <div class="col s12 m4">
+                            <h6 class="innerheader"><b>커플요청 알림</b></h6>
+                            <div class="card hoverable">
+                                <div class="contentplus">
+                                    <div class="center"><img id="borken" class="cardimg" src="/images/response.png" /></div>
+                                    <div class="center contentsubtit"><b>커플요청을 받으셨습니다!</b></div>
+                                    <div class="contenttxt"><%=coupeNick%>님께 커플 요청을 받으셨습니다! 아래 요청 수락을 클릭하셔서 요청에 대한 응답을 해 주세요!</div>
+                                </div>
+                                <div class="cardfooter center">
+                                    <a class="modal-trigger" href="#coupleAcpt" style="color: #0067b8; margin-right: 0px;"><b>요청 수락&nbsp;〉</b></a>
+                                </div>
+                            </div>
+                        </div>
+                    <% } %>
+                    <% if(state == 3) { %>
+                        <div class="col s12 m4">
+                            <h6 class="innerheader"><b>이별</b></h6>
+                            <div class="card hoverable">
+                                <div class="contentplus">
+                                    <div class="center"><img id="borken" class="cardimg" src="/images/broken.png" /></div>
+                                    <div class="center contentsubtit"><b>이별 신청</b></div>
+                                    <div class="contenttxt">지금까지의 모든 추억들이 정말로 삭제됩니다. 정말 이별을 통보하실건가요?</div>
+                                </div>
+                                <div class="cardfooter center">
+                                    <a class="modal-trigger" href="#coupleBrk1" style="color: #0067b8; margin-right: 0px;"><b>이별 신청&nbsp;〉</b></a>
+                                </div>
+                            </div>
+                        </div>
+                    <% } %>
                     <div class="col s12 m4">
-                        <h6 class="innerheader"><b>요청 중</b></h6>
+                        <h6 class="innerheader"><b>Coming Soon</b></h6>
                         <div class="card hoverable">
                             <div class="contentplus">
-                                <div class="center"><img id="borken" class="cardimg" src="/images/waiting.png" /></div>
-                                <div class="center contentsubtit"><b>커플요청이 진행 중입니다!</b></div>
-                                <div class="contenttxt">유저번호 <%=couplePid%>번님께 커플요청이 진행 중입니다. 만약 요청이 잘못되었다면 아래 요청 취소를 클릭하세요!</div>
+                                <div class="center"><img id="borken" class="cardimg" src="/images/develop.png" /></div>
+                                <div class="center contentsubtit"><b>Coming Soon!</b></div>
+                                <div class="contenttxt">여러분들을 위한 더 많은 서비스를 개발하고 있습니다. 조만간 찾아갑니다!</div>
                             </div>
-                            <div class="cardfooter center">
-                                <a class="modal-trigger" href="#coupleProg" style="color: #0067b8; margin-right: 0px;"><b>요청 취소&nbsp;〉</b></a>
-                            </div>
+                            <div class="cardfooter center"><b>Coming Soon</b></div>
                         </div>
-                    </div>
-                <% } %>
-                <% if(state == 2) { %>
-                    <div class="col s12 m4">
-                        <h6 class="innerheader"><b>커플요청 알림</b></h6>
-                        <div class="card hoverable">
-                            <div class="contentplus">
-                                <div class="center"><img id="borken" class="cardimg" src="/images/response.png" /></div>
-                                <div class="center contentsubtit"><b>커플요청을 받으셨습니다!</b></div>
-                                <div class="contenttxt"><%=coupeNick%>님께 커플 요청을 받으셨습니다! 아래 요청 수락을 클릭하셔서 요청에 대한 응답을 해 주세요!</div>
-                            </div>
-                            <div class="cardfooter center">
-                                <a class="modal-trigger" href="#coupleAcpt" style="color: #0067b8; margin-right: 0px;"><b>요청 수락&nbsp;〉</b></a>
-                            </div>
-                        </div>
-                    </div>
-                <% } %>
-                <% if(state == 3) { %>
-                    <div class="col s12 m4">
-                        <h6 class="innerheader"><b>이별</b></h6>
-                        <div class="card hoverable">
-                            <div class="contentplus">
-                                <div class="center"><img id="borken" class="cardimg" src="/images/broken.png" /></div>
-                                <div class="center contentsubtit"><b>이별 신청</b></div>
-                                <div class="contenttxt">지금까지의 모든 추억들이 정말로 삭제됩니다. 정말 이별을 통보하실건가요?</div>
-                            </div>
-                            <div class="cardfooter center">
-                                <a class="modal-trigger" href="#coupleBrk1" style="color: #0067b8; margin-right: 0px;"><b>이별 신청&nbsp;〉</b></a>
-                            </div>
-                        </div>
-                    </div>
-                <% } %>
-                <div class="col s12 m4">
-                    <h6 class="innerheader"><b>Coming Soon</b></h6>
-                    <div class="card hoverable">
-                        <div class="contentplus">
-                            <div class="center"><img id="borken" class="cardimg" src="/images/develop.png" /></div>
-                            <div class="center contentsubtit"><b>Coming Soon!</b></div>
-                            <div class="contenttxt">여러분들을 위한 더 많은 서비스를 개발하고 있습니다. 조만간 찾아갑니다!</div>
-                        </div>
-                        <div class="cardfooter center"><b>Coming Soon</b></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<div id="coupleReq" class="modal jeju">
-    <div class="modal-content">
-        <h5>커플 요청</h5>
-        <input type="text" id="reqCouplePid" name="reqCouplePid" class="validate" placeholder="유저번호">
+    <div id="coupleReq" class="modal jeju">
+        <div class="modal-content">
+            <h5>커플 요청</h5>
+            <input type="text" id="reqCouplePid" name="reqCouplePid" class="validate" placeholder="유저번호">
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-close waves-effect waves-green btn-flat" onclick="coupleReq_event()">요청 보내기!</a>
+        </div>
     </div>
-    <div class="modal-footer">
-        <a href="#!" class="modal-close waves-effect waves-green btn-flat" onclick="coupleReq_event()">요청 보내기!</a>
-    </div>
-</div>
 
-<div id="coupleProg" class="modal jeju">
-    <div class="modal-content">
-        <p><i class="medium material-icons">send</i></p>
-        <input type="hidden" id="couplePid" name="couplePid" value=<%- couplePid %>>
-        <h5>유저번호 <%- couplePid %>번님께 커플요청이 진행중입니다.<br/>취소하시겠습니까?
+    <div id="coupleProg" class="modal jeju">
+        <div class="modal-content">
+            <p><i class="medium material-icons">send</i></p>
+            <input type="hidden" id="couplePid" name="couplePid" value=<%- couplePid %>>
+            <h5>유저번호 <%- couplePid %>번님께 커플요청이 진행중입니다.<br/>취소하시겠습니까?
+        </div>
+        <div class="modal-footer">
+            <a href="#" class="modal-close waves-effect waves-red btn-flat" onclick="coupleCnl_event()">취소합니다</a>
+        </div>
     </div>
-    <div class="modal-footer">
-        <a href="#" class="modal-close waves-effect waves-red btn-flat" onclick="coupleCnl_event()">취소합니다</a>
-    </div>
-</div>
 
-<div id="coupleAcpt" class="modal jeju">
-    <div class="modal-content">
-        <p><i class="medium material-icons">person_add</i></p>
-        <h5><%- coupeNick %>님으로부터 커플요청을 받으셨습니다. <br/>수락하시겠습니까?</h5>
+    <div id="coupleAcpt" class="modal jeju">
+        <div class="modal-content">
+            <p><i class="medium material-icons">person_add</i></p>
+            <h5><%- coupeNick %>님으로부터 커플요청을 받으셨습니다. <br/>수락하시겠습니까?</h5>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-close waves-effect waves-green btn-flat" onclick="coupleAcpt_event()">수락합니다</a>
+            <a href="#!" class="modal-close waves-effect waves-red btn-flat" onclick="coupleRej_event()">거절합니다</a>
+        </div>
     </div>
-    <div class="modal-footer">
-        <a href="#!" class="modal-close waves-effect waves-green btn-flat" onclick="coupleAcpt_event()">수락합니다</a>
-        <a href="#!" class="modal-close waves-effect waves-red btn-flat" onclick="coupleRej_event()">거절합니다</a>
-    </div>
-</div>
 
-<div id="coupleBrk1" class="modal jeju">
-    <div class="modal-content">
-        <p><i class="medium material-icons">error_outline</i></p>
-        <h5>이별 신청을 클릭하셨습니다. <br/>정말 이별을 신청하시겠습니까?</h5>
+    <div id="coupleBrk1" class="modal jeju">
+        <div class="modal-content">
+            <p><i class="medium material-icons">error_outline</i></p>
+            <h5>이별 신청을 클릭하셨습니다. <br/>정말 이별을 신청하시겠습니까?</h5>
+        </div>
+        <div class="modal-footer">
+            <a class="modal-trigger" href="#coupleBrk2" class="modal-close waves-effect waves-green btn-flat" onclick="brk1();">신청합니다</a>
+            <a href="#!" class="modal-close waves-effect waves-red btn-flat">취소합니다</a>
+        </div>
     </div>
-    <div class="modal-footer">
-        <a class="modal-trigger" href="#coupleBrk2" class="modal-close waves-effect waves-green btn-flat" onclick="brk1();">신청합니다</a>
-        <a href="#!" class="modal-close waves-effect waves-red btn-flat">취소합니다</a>
-    </div>
-</div>
 
-<div id="coupleBrk2" class="modal jeju">
-    <div class="modal-content">
-        <p><i class="medium material-icons">error</i></p>
-        <h5>한번 이별 신청이 진행되고 나면 모든 것들이 더 이상 복구가 불가능합니다. <br/>정말 이별을 신청하시겠습니까?</h5>
+    <div id="coupleBrk2" class="modal jeju">
+        <div class="modal-content">
+            <p><i class="medium material-icons">error</i></p>
+            <h5>한번 이별 신청이 진행되고 나면 모든 것들이 더 이상 복구가 불가능합니다. <br/>정말 이별을 신청하시겠습니까?</h5>
+        </div>
+        <div class="modal-footer">
+            <a class="modal-trigger" href="#coupleBrk3" class="modal-close waves-effect waves-green btn-flat" onclick="brk2();">신청합니다</a>
+            <a href="#!" class="modal-close waves-effect waves-red btn-flat">다시 한번 생각해봅니다</a>
+        </div>
     </div>
-    <div class="modal-footer">
-        <a class="modal-trigger" href="#coupleBrk3" class="modal-close waves-effect waves-green btn-flat" onclick="brk2();">신청합니다</a>
-        <a href="#!" class="modal-close waves-effect waves-red btn-flat">다시 한번 생각해봅니다</a>
-    </div>
-</div>
 
-<div id="coupleBrk3" class="modal jeju">
-    <div class="modal-content">
-        <p><i class="medium material-icons">delete_sweep</i></p>
-        <h5>이별 신청이 진행되면 여태까지 작성했던 모든 일기들이 사라집니다. <br/>정말 추억을 지워버리시겠습니까?</h5>
+    <div id="coupleBrk3" class="modal jeju">
+        <div class="modal-content">
+            <p><i class="medium material-icons">delete_sweep</i></p>
+            <h5>이별 신청이 진행되면 여태까지 작성했던 모든 일기들이 사라집니다. <br/>정말 추억을 지워버리시겠습니까?</h5>
+        </div>
+        <div class="modal-footer">
+            <a class="modal-trigger" href="#coupleBrk4" class="modal-close waves-effect waves-green btn-flat" onclick="brk3();">지웁니다</a>
+            <a href="#!" class="modal-close waves-effect waves-red btn-flat">역시 다시 한번 생각해봅니다</a>
+        </div>
     </div>
-    <div class="modal-footer">
-        <a class="modal-trigger" href="#coupleBrk4" class="modal-close waves-effect waves-green btn-flat" onclick="brk3();">지웁니다</a>
-        <a href="#!" class="modal-close waves-effect waves-red btn-flat">역시 다시 한번 생각해봅니다</a>
-    </div>
-</div>
 
-<div id="coupleBrk4" class="modal jeju">
-    <div class="modal-content">
-        <p><i class="medium material-icons">lightbulb_outline</i></p>
-        <h5>함께 했던 날들을 다시 한번 떠올려보세요.<br/>정말 이별을 통보하시겠습니까?</h5>
+    <div id="coupleBrk4" class="modal jeju">
+        <div class="modal-content">
+            <p><i class="medium material-icons">lightbulb_outline</i></p>
+            <h5>함께 했던 날들을 다시 한번 떠올려보세요.<br/>정말 이별을 통보하시겠습니까?</h5>
+        </div>
+        <div class="modal-footer">
+            <a class="modal-trigger" href="#coupleBrk5" class="modal-close waves-effect waves-green btn-flat" onclick="brk4();">통보합니다</a>
+            <a href="#!" class="modal-close waves-effect waves-red btn-flat">정말 역시 다시 한번 생각해봅니다</a>
+        </div>
     </div>
-    <div class="modal-footer">
-        <a class="modal-trigger" href="#coupleBrk5" class="modal-close waves-effect waves-green btn-flat" onclick="brk4();">통보합니다</a>
-        <a href="#!" class="modal-close waves-effect waves-red btn-flat">정말 역시 다시 한번 생각해봅니다</a>
-    </div>
-</div>
 
-<div id="coupleBrk5" class="modal jeju">
-    <div class="modal-content">
-        <h1>:(</h1>
-        <h5>정말 이별을 신청하시겠습니까?</h5>
+    <div id="coupleBrk5" class="modal jeju">
+        <div class="modal-content">
+            <h1>:(</h1>
+            <h5>정말 이별을 신청하시겠습니까?</h5>
+        </div>
+        <div class="modal-footer">
+            <a class="modal-trigger" href="#coupleBrk6" class="modal-close waves-effect waves-green btn-flat" onclick="brk5();">신청합니다</a>
+            <a href="#!" class="modal-close waves-effect waves-red btn-flat">역시 취소합니다!</a>
+        </div>
     </div>
-    <div class="modal-footer">
-        <a class="modal-trigger" href="#coupleBrk6" class="modal-close waves-effect waves-green btn-flat" onclick="brk5();">신청합니다</a>
-        <a href="#!" class="modal-close waves-effect waves-red btn-flat">역시 취소합니다!</a>
+
+    <div id="coupleBrk6" class="modal jeju">
+        <div class="modal-content">
+            <h5>이별을 신청합니다</h5>
+        </div>
+        <div class="modal-footer">
+            <a href="#" class="modal-close waves-effect waves-green btn-flat" onclick="coupleBrk();">예</a>
+        </div>
     </div>
-</div>
 
-<div id="coupleBrk6" class="modal jeju">
-    <div class="modal-content">
-        <h5>이별을 신청합니다</h5>
-    </div>
-    <div class="modal-footer">
-        <a href="#" class="modal-close waves-effect waves-green btn-flat" onclick="coupleBrk();">예</a>
-    </div>
-</div>
+    <style>
+        /* 하단 card관련 css */
+        .card {
+            height: 360px;
+        }
+        .cardfooter {
+            position: absolute;
+            width: 100%;
+            bottom: 24px;
+            color: #0067b8; margin-right: 0px;
+        }
+        .contenttxt {
+            font-size: 14px;
+            padding-top: 8px;
+            line-height: 18px;
+            text-align: center;
+        }
+        .contentsubtit {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            font-size: 15px;
+        }
+        .contentplus {
+            padding-top: 30px;
+            padding-right: 24px;
+            padding-bottom: 30px;
+            padding-left: 24px;
+            height: 100%;
+            display: block;
+            border-radius: 0 0 2px 2px;
+        }
+        .cardimg {
+            max-width: 100%;
+            width: 120px;
+        }
+        .innerinfo {
+            padding-top: 12px;
+        }
+        .innerheader {
+            margin: 8px 0 12px;
+        }
+    </style>
 
-<style>
-    /* 하단 card관련 css */
-    .card {
-        height: 360px;
-    }
-    .cardfooter {
-        position: absolute;
-        width: 100%;
-        bottom: 24px;
-        color: #0067b8; margin-right: 0px;
-    }
-    .contenttxt {
-        font-size: 14px;
-        padding-top: 8px;
-        line-height: 18px;
-        text-align: center;
-    }
-    .contentsubtit {
-        padding-top: 12px;
-        padding-bottom: 12px;
-        font-size: 15px;
-    }
-    .contentplus {
-        padding-top: 30px;
-        padding-right: 24px;
-        padding-bottom: 30px;
-        padding-left: 24px;
-        height: 100%;
-        display: block;
-        border-radius: 0 0 2px 2px;
-    }
-    .cardimg {
-        max-width: 100%;
-        width: 120px;
-    }
-    .innerinfo {
-        padding-top: 12px;
-    }
-    .innerheader {
-        margin: 8px 0 12px;
-    }
-</style>
+    <script type="text/javascript">
+        // Initialize Firebase
+        var config = {
 
-<script type="text/javascript">
-    // Initialize Firebase
-    var config = {
-        
-    };
-    firebase.initializeApp(config);
-    // FCM 메시지 설정 코드
-    var messaging = firebase.messaging();
-    messaging.requestPermission()
-        .then(function(){
-            console.log('메세징 권한 획득');
-            return messaging.getToken();
-        })
-        .then(function(token){
-            console.log('fcm token: ', token);
-            $.ajax({
-                type: "POST",
-                url: "/main/updateToken",
-                data: token,
-                dataType: "TEXT",
-                success: function(text){
-                    console.log('전송성공');
-                },
-                error: function(xhr, status, error){
-                    console.log(error);
-                }
-            });
-        })
-        .catch(function(e){
-            console.log('메세징 권한 획득 중 에러', e);
-        });
-
-    // 커플요청 이벤트
-    function coupleReq_event(){
-        if(confirm("요청을 진행하시겠습니까?")){
-            console.log(reqCouplePid.value);
-            if(reqCouplePid.value == '' || reqCouplePid.value == ' ' || reqCouplePid.value == null || reqCouplePid.value == 'undefined') {
-                alert("요청을 보낼 분의 유저번호를 입력해주세요!");
-                return false;
-            } else {
+        };
+        firebase.initializeApp(config);
+        // FCM 메시지 설정 코드
+        var messaging = firebase.messaging();
+        messaging.requestPermission()
+            .then(function(){
+                console.log('메세징 권한 획득');
+                return messaging.getToken();
+            })
+            .then(function(token){
+                console.log('fcm token: ', token);
                 $.ajax({
                     type: "POST",
-                    url: "/main/coupleMsg",
-                    data: reqCouplePid.value,
+                    url: "/main/updateToken",
+                    data: token,
                     dataType: "TEXT",
                     success: function(text){
-                        console.log(text);
-                        if(text == 0) {
-                            alert("유저번호는 숫자만 존재합니다.\n숫자로 입력해 주세요.");
-                            return false;
-                        } else if(text == 1) {
-                            alert("자기자신과 커플을 맺을 수는 없습니다.");
-                            return false;
-                        } else if (text == 2) {
-                            alert("해당 유저번호가 존재하지 않습니다.\n유저번호를 다시 확인해 주세요.");
-                            return false;
-                        } else if (text == 3){
-                            alert("상대방이 이미 커플 요청을 보내거나 받은 상태이거나, 커플 상태입니다.\n유저번호를 다시 확인해 주세요.");
-                            return false;
-                        } else {
-                            alert("요청하였습니다!\n상대방의 요청 수락을 기다려주세요!");
-                            window.location.href = '/users/usersetting';
-                        }
+                        console.log('전송성공');
                     },
                     error: function(xhr, status, error){
                         console.log(error);
                     }
                 });
+            })
+            .catch(function(e){
+                console.log('메세징 권한 획득 중 에러', e);
+            });
+
+        // 커플요청 이벤트
+        function coupleReq_event(){
+            if(confirm("요청을 진행하시겠습니까?")){
+                console.log(reqCouplePid.value);
+                if(reqCouplePid.value == '' || reqCouplePid.value == ' ' || reqCouplePid.value == null || reqCouplePid.value == 'undefined') {
+                    alert("요청을 보낼 분의 유저번호를 입력해주세요!");
+                    return false;
+                } else {
+                    $.ajax({
+                        type: "POST",
+                        url: "/main/coupleMsg",
+                        data: reqCouplePid.value,
+                        dataType: "TEXT",
+                        success: function(text){
+                            console.log(text);
+                            if(text == 1) {
+                                alert("자기자신과 커플을 맺을 수는 없습니다.");
+                                return false;
+                            } else if (text == 2) {
+                                alert("해당 유저번호가 존재하지 않습니다.\n유저번호를 다시 확인해 주세요.");
+                                return false;
+                            } else if (text == 3){
+                                alert("상대방이 이미 커플 요청을 보내거나 받은 상태이거나, 커플 상태입니다.\n유저번호를 다시 확인해 주세요.");
+                                return false;
+                            } else if (text == 4) {
+                                alert("유저번호는 숫자만 존재합니다.\n숫자로 입력해 주세요.");
+                                return false;
+                            } else {
+                                alert("요청하였습니다!\n상대방의 요청 수락을 기다려주세요!");
+                                window.location.href = '/users/usersetting';
+                            }
+                        },
+                        error: function(xhr, status, error){
+                            console.log(error);
+                        }
+                    });
+                }
+            } else {
+                console.log("취소");
+                return false;
             }
-        } else {
-            console.log("취소");
-            return false;
         }
-    }
 
-    // 커플요청취소 이벤트
-    function coupleCnl_event(){
-        if(confirm("정말 취소하시겠습니까??")){
-            console.log(couplePid.value);
-            $.ajax({
-                type: "POST",
-                url: "/main/coupleCnl",
-                data: couplePid.value,
-                dataType: "TEXT",
-                success: function(text){
-                    console.log('취소성공');
-                    alert("취소하였습니다.");
-                    window.location.href = '/users/usersetting';
-                },
-                error: function(xhr, status, error){
-                    console.log(error);
-                }
-            });
-        } else {
-            console.log("취소");
-            return false;
-        }
-    }
-
-    // 커플요청수락 이벤트
-    function coupleAcpt_event(){
-        if(confirm("수락하시겠습니까??")){
-            console.log(couplePid.value);
-            $.ajax({
-                type: "POST",
-                url: "/main/coupleAcpt",
-                data: couplePid.value,
-                dataType: "TEXT",
-                success: function(text){
-                    console.log('수락성공');
-                    alert("커플요청을 수락하였습니다!\n함께 평행일기를 즐겨주시기 바랍니다!");
-                    window.location.href = '/main/list';
-                },
-                error: function(xhr, status, error){
-                    console.log(error);
-                }
-            });
-        } else {
-            console.log("취소");
-            return false;
-        }
-    }
-
-    // 커플요청거절 이벤트
-    function coupleRej_event(){
-        if(confirm("정말 거절하시겠습니까??")){
-            console.log(couplePid.value);
-            $.ajax({
-                type: "POST",
-                url: "/main/coupleRej",
-                data: couplePid.value,
-                dataType: "TEXT",
-                success: function(text){
-                    console.log('거절성공');
-                    alert("커플요청을 거절하였습니다\n다시 시작해보세요.");
-                    window.location.href = '/users/usersetting';
-                },
-                error: function(xhr, status, error){
-                    console.log(error);
-                }
-            });
-        } else {
-            console.log("취소");
-            return false;
-        }
-    }
-
-    // 이별 신청을 막기 위한 눈물겨운 노력
-    function brk1() {
-        var brk1 = M.Modal.getInstance(coupleBrk1);
-        brk1.close();
-    }
-    function brk2() {
-        var brk2 = M.Modal.getInstance(coupleBrk2);
-        brk2.close();
-    }
-    function brk3() {
-        var brk3 = M.Modal.getInstance(coupleBrk3);
-        brk3.close();
-    }
-    function brk4() {
-        var brk4 = M.Modal.getInstance(coupleBrk4);
-        brk4.close();
-    }
-    function brk5() {
-        var brk5 = M.Modal.getInstance(coupleBrk5);
-        brk5.close();
-    }
-
-    // 이별신청 이벤트
-    function coupleBrk() {
-        $.ajax({
-            type: "POST",
-            url: "/users/coupleBrk",
-            data: couplePid.value,
-            dataType: "TEXT",
-            success: function(text){
-                console.log('이별');
-                alert("이별하셨습니다.");
-                window.location.href = '/';
-            },
-            error: function(xhr, status, error){
-                console.log(error);
+        // 커플요청취소 이벤트
+        function coupleCnl_event(){
+            if(confirm("정말 취소하시겠습니까??")){
+                console.log(couplePid.value);
+                $.ajax({
+                    type: "POST",
+                    url: "/main/coupleCnl",
+                    data: couplePid.value,
+                    dataType: "TEXT",
+                    success: function(text){
+                        console.log('취소성공');
+                        alert("취소하였습니다.");
+                        window.location.href = '/users/usersetting';
+                    },
+                    error: function(xhr, status, error){
+                        console.log(error);
+                    }
+                });
+            } else {
+                console.log("취소");
+                return false;
             }
+        }
+
+        // 커플요청수락 이벤트
+        function coupleAcpt_event(){
+            if(confirm("수락하시겠습니까??")){
+                console.log(couplePid.value);
+                $.ajax({
+                    type: "POST",
+                    url: "/main/coupleAcpt",
+                    data: couplePid.value,
+                    dataType: "TEXT",
+                    success: function(text){
+                        console.log('수락성공');
+                        alert("커플요청을 수락하였습니다!\n함께 평행일기를 즐겨주시기 바랍니다!");
+                        window.location.href = '/main/list';
+                    },
+                    error: function(xhr, status, error){
+                        console.log(error);
+                    }
+                });
+            } else {
+                console.log("취소");
+                return false;
+            }
+        }
+
+        // 커플요청거절 이벤트
+        function coupleRej_event(){
+            if(confirm("정말 거절하시겠습니까??")){
+                console.log(couplePid.value);
+                $.ajax({
+                    type: "POST",
+                    url: "/main/coupleRej",
+                    data: couplePid.value,
+                    dataType: "TEXT",
+                    success: function(text){
+                        console.log('거절성공');
+                        alert("커플요청을 거절하였습니다\n다시 시작해보세요.");
+                        window.location.href = '/users/usersetting';
+                    },
+                    error: function(xhr, status, error){
+                        console.log(error);
+                    }
+                });
+            } else {
+                console.log("취소");
+                return false;
+            }
+        }
+
+        // 이별 신청을 막기 위한 눈물겨운 노력
+        function brk1() {
+            var brk1 = M.Modal.getInstance(coupleBrk1);
+            brk1.close();
+        }
+        function brk2() {
+            var brk2 = M.Modal.getInstance(coupleBrk2);
+            brk2.close();
+        }
+        function brk3() {
+            var brk3 = M.Modal.getInstance(coupleBrk3);
+            brk3.close();
+        }
+        function brk4() {
+            var brk4 = M.Modal.getInstance(coupleBrk4);
+            brk4.close();
+        }
+        function brk5() {
+            var brk5 = M.Modal.getInstance(coupleBrk5);
+            brk5.close();
+        }
+
+        // 이별신청 이벤트
+        function coupleBrk() {
+            $.ajax({
+                type: "POST",
+                url: "/users/coupleBrk",
+                data: couplePid.value,
+                dataType: "TEXT",
+                success: function(text){
+                    console.log('이별');
+                    alert("이별하셨습니다.");
+                    window.location.href = '/';
+                },
+                error: function(xhr, status, error){
+                    console.log(error);
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            $('.modal').modal();
+            $('.sidenav').sidenav();
+            $(".dropdown-trigger").dropdown({
+                inDuration: 300,
+                outDuration: 225,
+                constrainWidth: false,
+                hover: false,
+                gutter: 0,
+                coverTrigger: false,
+                alignment: 'right'
+            });
         });
-    }
-
-    $(document).ready(function () {
-        $('.modal').modal();
-    });
-</script>
+    </script>
+    <!--    CONTENT END    -->
+</body>
+<footer id="footer" class="page-footer dk">
+    <div class="footer-copyright dk">
+        <div class="container">
+        © 2018 Parallel Diary, All rights reserved. 
+        <a class="grey-text text-lighten-4 right" href="#!"></a>
+        </div>
+    </div>
+</footer>
+</html>

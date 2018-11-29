@@ -1,119 +1,175 @@
-<div class="row orange lighten-5">
-    <!-- 작성칸 시작 -->
-    <div id="write_diary" class="container" style="padding:5%;">
-        <form action="./create" method="post" enctype="multipart/form-data">
-            <div class="input-field">
-                <label for="textarea1">작성칸</label>
-                <textarea id="textarea1" class="materialize-textarea" name="text"></textarea>
-                <div class="file-field input-field">
-                    <div class="btn">
-                        <span>이미지 업로드</span>
-                        <input type="file" name="img_url">
-                    </div>
-                    <div class="file-path-wrapper">
-                        <input class="file-path validate" type="text">
-                    </div>
-                </div>
-                <input name="user_pid" type="text" value="<%=user_pid%>" hidden>
-                <button id="write_form" class="btn-large waves-effect waves-light" type="submit">기록
-                    <i class="material-icons right">send</i>
-                </button>
-            </div>
-        </form>
-    </div>
-    <!-- 작성칸 끝 -->
-</div>
+<!DOCTYPE html>
+<html>
 
-<!-- 날짜 표지 시작 -->
-<div class="row middle">
-    <div class="col s12">
-        <h4 id="today_diary" class="gugi center-align" style="color: rgb(50,50,50);">오늘의 일기</h4>
-    </div>
-</div>
-<!-- 날짜 표지 끝 -->
-<!-- 일기 본체 시작 -->
-<div class="row cm">
-    <!-- 자신의 일기 시작 -->
-    <div id="parallel_wrap" class="col s12 m5 offset-m1 man">
-        <div class="container">
-            <h5 class="jeju center-align" style="color: rgb(240,240,240);"><%=nickname%></h5>
-            <%
-                for(var item in row.reverse()) {
-                    if(row[item].user_pid == user_pid) {
-                        if(!row[item].is_deleted) {
-            %>
-            <div class="card hoverable ">
-                    <% if(row[item].img_url != '') { %>
-                <div class="card-image">
-                    <img src="<%=row[item].img_url%>" />
-                </div>
+<head>
+    <meta charset="utf-8" />
+    <title>평행일기</title>
+    <!--    JQuery GOOGLE CDN    -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!--    MATRIALIZE JS    -->
+    <script type="text/javascript" src="/js/materialize.js"></script>
+    <!--    MATRIALIZE CSS    -->
+    <link type="text/css" rel="stylesheet" href="/css/materialize.css" />
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--    BASE CSS FOR GENERAL    -->
+    <link href="/css/base.css" rel="stylesheet">
+    <!--    Firebase API    -->
+    <script src="https://www.gstatic.com/firebasejs/5.5.2/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.5.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.5.2/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.5.2/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.5.2/firebase-messaging.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.5.2/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.5.2/firebase-firestore.js"></script>
+    <!--    Prograssive Web App     -->
+    <link rel="manifest" href="/manifest.json">
+    <link rel="shortcut icon" href="/icons/favicon.ico">
+    <link rel="apple-touch-icon" sizes="57x57" href="/icons/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/icons/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/icons/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/icons/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/icons/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/icons/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/icons/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/icons/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/icons/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/icons/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png">
+    <meta name="msapplication-TileColor" content="#32645a">
+    <meta name="msapplication-TileImage" content="/icons/ms-icon-70x70.png">
+    <meta name="theme-color" content="#263238">
+    <script src="/pwabuilder-sw-register.js"></script>
+</head>
+
+<body>
+    <!--    
+            메인 페이지 레이아웃 작성
+            2018.09.17. 14109388 홍진백
+
+            메인 페이지 레이아웃 보강
+            2018.11.01  14109362 이창재
+        -->
+    <!-- Dropdown Structure -->
+    <ul id="dropdown1" class="dropdown-content">
+        <% if(nickname == null) { %>
+        <li><a class="waves-effect" href="/users/signup"><i class="material-icons">library_add</i>회원가입</a></li>
+        <li><a class="waves-effect" href="/users/login"><i class="material-icons">vpn_key</i>로그인</a></li>
+        <% } %>
+        <% if(nickname != null) { %>
+        <li><a class="waves-effect" href="/users/logout"><i class="material-icons">exit_to_app</i>로그아웃</a></li>
+        <li class="divider"></li>
+        <li><a class="waves-effect" href="/users/usersetting"><i class="material-icons">settings</i>내 계정</a></li>
+        <% } %>  
+    </ul>
+    <!--   NAVIGATION BAR     -->
+    <nav class="dk">
+        <div class="container nav-wrapper dk">
+            <a href="/" class="brand-logo gugi">
+                <%=(typeof title != "undefined" ? title : "평행일기")%></a>
+            <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+            <ul class="right hide-on-med-and-down">
+                <li><a href="/">메인</a></li>
+                <% if(is_coupled == 1) { %>
+                <li><a href="/main">일기쓰기</a></li>
+                <% } %>
+                <li><a class="dropdown-trigger" href="javascript:void(0);" data-target="dropdown1">
+                    <% if(nickname == null) { %>
+                        Guest
+                    <% } else { %>
+                        <%=nickname%>
                     <% } %>
-                <!-- READ CONTENT 시작 : R + pid -->
-                <div id="R<%=row[item].diary_pid%>">
-                    <div class="card-content jeju">
-                        <span class="card-title date-post" style="display: none;"><%=row[item].date%></span>
-                        <p style="white-space: pre-wrap; word-break: break-all"><%=row[item].text%></p>
-                    </div>
-                    <div class="card-action">
-                        <form action="./destroy" method="post" style="display:inline;">
-                            <input type="hidden" name="destroy_id" value="<%=row[item].diary_pid%>"/>
-                            <button class="btn waves-effect waves-light man" type="submit"><span style="color:black">삭제</span></button>
-                        </form>
-                        <button onclick="toggleUpdateForm(<%=row[item].diary_pid%>);" class="btn waves-effect waves-light woman" type="submit"><span style="color:black">수정</span></button>
-                    </div>
-                </div>
-                <!-- READ CONTENT 끝 -->
-                <!-- UPDATE폼 시작 : U + pid -->
-                <div id="<%='U' + row[item].diary_pid%>" style="display:none;">
-                    <div class="card-content jeju" style="display:block">
-                        <form action="./update" method="POST" enctype="multipart/form-data">
-                            <div class="input-field">
-                                <label for="textarea1">작성칸</label>
-                                <textarea id="textarea1" class="materialize-textarea" name="text"><%=row[item].text%></textarea>
-                                <div class="file-field input-field">
-                                    <div class="btn">
-                                        <span>이미지 업로드</span>
-                                        <input type="file" name="img_url">
-                                    </div>
-                                    <div class="file-path-wrapper">
-                                        <input class="file-path validate" type="text">
-                                    </div>
-                                </div>
-                            </div>
-                            <input type="hidden" name="update_id" value="<%=row[item].diary_pid%>"/>
-                    </div>  
-                    <div class="card-action">
-                        <%if(row[item].have_image){%>
-                        <label>
-                            <input type="checkbox" name="image_delete_chk" />
-                            <span>이미지 삭제</span>
-                        </label>
-                        <%}%>
-                        <button id="update_btn" class="btn waves-effect waves-light man" type="submit"><span style="color:black">수정</span><i class="material-icons right">send</i></button>
-                        </form> 
-                        <button onclick="toggleUpdateForm(<%=row[item].diary_pid%>);" class="btn waves-effect waves-light woman"><span style="color:black">취소</span>
-                            <i class="material-icons right">send</i>
-                        </button>
-                    </div>
-                </div>
-                <!-- UPDATE폼 끝 -->
-            </div> <!--/.card-->
-            <%
-                        }
-                    }
-                }
-            %> 
+                    <i class="material-icons right">arrow_drop_down</i></a></li>
+            </ul>
         </div>
-    </div> <!--/.col .s6-->
-    <!-- 자신의 일기 끝 -->
-    <!-- 다른 사람의 일기 시작 -->
-    <div id="parallel_wrap" class="col s12 m5 woman">
-            <h5 class="jeju center-align" style="color: rgb(240,240,240);"><%=couple%></h5>
+    </nav>
+
+    <ul class="sidenav mm4" id="mobile-demo">
+        <li>
+            <div class="user-view">
+                <div class="background">
+                    <img src="../images/userback.png">
+                </div>
+                <a href="#user"><i class="medium material-icons"></i></a>
+                <a href="#name"><span class="white-text name">
+                    <% if(nickname == null) { %>
+                        Guest
+                    <% } else { %>
+                        <%=nickname%>
+                    <% } %>
+                </span></a>
+                <a href="#email"><span class="white-text email">
+                    <% if(e_mail == null) { %>
+                    <% } else { %>
+                        <%=e_mail%>
+                    <% } %>
+                </span></a>
+            </div>
+        </li>
+        <li><a class="subheader">Parallel Diary</a></li>
+        <li><a class="waves-effect" href="/"><i class="material-icons">home</i>홈</a></li>
+        <% if(is_coupled == 1) { %>
+        <li><a class="waves-effect" href="/main"><i class="material-icons">create</i>일기쓰기</a></li>
+        <% } %>
+        <li>
+            <div class="divider"></div>
+        </li>
+        <li><a class="subheader">User</a></li>
+        <% if(nickname == null) { %>
+        <li><a class="waves-effect" href="/users/signup"><i class="material-icons">library_add</i>회원가입</a></li>
+        <li><a class="waves-effect" href="/users/login"><i class="material-icons">vpn_key</i>로그인</a></li>
+        <% } %>
+        <% if(nickname != null) { %>
+        <li><a class="waves-effect" href="/users/logout"><i class="material-icons">exit_to_app</i>로그아웃</a></li>
+        <li><a class="waves-effect" href="/users/usersetting"><i class="material-icons">settings</i>내 계정</a></li>
+        <% } %>
+    </ul>
+    <!--    CONTENT START    -->
+    <div class="row orange lighten-5">
+        <!-- 작성칸 시작 -->
+        <div id="write_diary" class="container" style="padding:5%;">
+            <form action="./create" method="post" enctype="multipart/form-data">
+                <div class="input-field">
+                    <label for="textarea1">작성칸</label>
+                    <textarea id="textarea1" class="materialize-textarea" name="text"></textarea>
+                    <div class="file-field input-field">
+                        <div class="btn">
+                            <span>이미지 업로드</span>
+                            <input type="file" name="img_url">
+                        </div>
+                        <div class="file-path-wrapper">
+                            <input class="file-path validate" type="text">
+                        </div>
+                    </div>
+                    <input name="user_pid" type="text" value="<%=user_pid%>" hidden>
+                    <button id="write_form" class="btn-large waves-effect waves-light" type="submit">기록
+                        <i class="material-icons right">send</i>
+                    </button>
+                </div>
+            </form>
+        </div>
+        <!-- 작성칸 끝 -->
+    </div>
+
+    <!-- 날짜 표지 시작 -->
+    <div class="row middle">
+        <div class="col s12">
+            <h4 id="today_diary" class="gugi center-align" style="color: rgb(50,50,50);">오늘의 일기</h4>
+        </div>
+    </div>
+    <!-- 날짜 표지 끝 -->
+    <!-- 일기 본체 시작 -->
+    <div class="row cm">
+        <!-- 자신의 일기 시작 -->
+        <div id="parallel_wrap" class="col s12 m5 offset-m1 man">
             <div class="container">
+                <h5 class="jeju center-align" style="color: rgb(240,240,240);"><%=nickname%></h5>
                 <%
-                    for(var item in row) {
-                        //MATCH 에 해당하는 사람의 글이 뜸
-                        if(row[item].user_pid != user_pid) {
+                    for(var item in row.reverse()) {
+                        if(row[item].user_pid == user_pid) {
                             if(!row[item].is_deleted) {
                 %>
                 <div class="card hoverable ">
@@ -125,11 +181,52 @@
                     <!-- READ CONTENT 시작 : R + pid -->
                     <div id="R<%=row[item].diary_pid%>">
                         <div class="card-content jeju">
-                            <span class="card-title date-post hidden_elem" style="display: none;"><%=row[item].date%></span>
-                            <p style="white-space: pre-wrap;"><%=row[item].text%></p>
+                            <span class="card-title date-post" style="display: none;"><%=row[item].date%></span>
+                            <p style="white-space: pre-wrap; word-break: break-all"><%=row[item].text%></p>
+                        </div>
+                        <div class="card-action">
+                            <form action="./destroy" method="post" style="display:inline;">
+                                <input type="hidden" name="destroy_id" value="<%=row[item].diary_pid%>"/>
+                                <button class="btn waves-effect waves-light man" type="submit"><span style="color:black">삭제</span></button>
+                            </form>
+                            <button onclick="toggleUpdateForm(<%=row[item].diary_pid%>);" class="btn waves-effect waves-light woman" type="submit"><span style="color:black">수정</span></button>
                         </div>
                     </div>
                     <!-- READ CONTENT 끝 -->
+                    <!-- UPDATE폼 시작 : U + pid -->
+                    <div id="<%='U' + row[item].diary_pid%>" style="display:none;">
+                        <div class="card-content jeju" style="display:block">
+                            <form action="./update" method="POST" enctype="multipart/form-data">
+                                <div class="input-field">
+                                    <label for="textarea1">작성칸</label>
+                                    <textarea id="textarea1" class="materialize-textarea" name="text"><%=row[item].text%></textarea>
+                                    <div class="file-field input-field">
+                                        <div class="btn">
+                                            <span>이미지 업로드</span>
+                                            <input type="file" name="img_url">
+                                        </div>
+                                        <div class="file-path-wrapper">
+                                            <input class="file-path validate" type="text">
+                                        </div>
+                                    </div>
+                                </div>
+                                <input type="hidden" name="update_id" value="<%=row[item].diary_pid%>"/>
+                        </div>  
+                        <div class="card-action">
+                            <%if(row[item].have_image){%>
+                            <label>
+                                <input type="checkbox" name="image_delete_chk" />
+                                <span>이미지 삭제</span>
+                            </label>
+                            <%}%>
+                            <button id="update_btn" class="btn waves-effect waves-light man" type="submit"><span style="color:black">수정</span><i class="material-icons right">send</i></button>
+                            </form> 
+                            <button onclick="toggleUpdateForm(<%=row[item].diary_pid%>);" class="btn waves-effect waves-light woman"><span style="color:black">취소</span>
+                                <i class="material-icons right">send</i>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- UPDATE폼 끝 -->
                 </div> <!--/.card-->
                 <%
                             }
@@ -138,115 +235,209 @@
                 %> 
             </div>
         </div> <!--/.col .s6-->
+        <!-- 자신의 일기 끝 -->
+        <!-- 다른 사람의 일기 시작 -->
+        <div id="parallel_wrap" class="col s12 m5 woman">
+                <h5 class="jeju center-align" style="color: rgb(240,240,240);"><%=couple%></h5>
+                <div class="container">
+                    <%
+                        for(var item in row) {
+                            //MATCH 에 해당하는 사람의 글이 뜸
+                            if(row[item].user_pid != user_pid) {
+                                if(!row[item].is_deleted) {
+                    %>
+                    <div class="card hoverable ">
+                            <% if(row[item].img_url != '') { %>
+                        <div class="card-image">
+                            <img src="<%=row[item].img_url%>" />
+                        </div>
+                            <% } %>
+                        <!-- READ CONTENT 시작 : R + pid -->
+                        <div id="R<%=row[item].diary_pid%>">
+                            <div class="card-content jeju">
+                                <span class="card-title date-post hidden_elem" style="display: none;"><%=row[item].date%></span>
+                                <p style="white-space: pre-wrap;"><%=row[item].text%></p>
+                            </div>
+                        </div>
+                        <!-- READ CONTENT 끝 -->
+                    </div> <!--/.card-->
+                    <%
+                                }
+                            }
+                        }
+                    %> 
+                </div>
+            </div> <!--/.col .s6-->
+        </div>
+        <!-- 다른 사람의 일기 끝 -->
     </div>
-    <!-- 다른 사람의 일기 끝 -->
-</div>
-<!-- 날짜 선택칸 시작-->
-<div class="row cm" >
-    <div class="col s10 offset-s1">
-            <div class="input-field" >
-                <input id="date_pick" type="text" class="datepicker" value="<%=today%>" style="color: transparent;border-bottom: 0px;margin: 0px;height: 0px;width: 0px;"/>
-            </div>
+    <!-- 날짜 선택칸 시작-->
+    <div class="row cm" >
+        <div class="col s10 offset-s1">
+                <div class="input-field" >
+                    <input id="date_pick" type="text" class="datepicker" value="<%=today%>" style="color: transparent;border-bottom: 0px;margin: 0px;height: 0px;width: 0px;"/>
+                </div>
+        </div>
     </div>
-</div>
 
-<div class="fixed-action-btn">
-    <a class="btn-floating btn-large red">
-        <i class="large material-icons">arrow_drop_up</i>
-    </a>
-    <ul>
-        <!-- 날짜 선택 -->
-        <li><a class="btn-floating red" id="date_pick_open" ><i class="material-icons">today</i></a></li>
-        <!-- 새로고침 -->
-        <li><a class="btn-floating red" onClick="window.location.reload();"><i class="material-icons">autorenew</i></a></li>
-        <!-- 맨 위로 -->
-        <li><a class="btn-floating red" onClick="document.querySelector('#write_diary').scrollIntoView({ behavior: 'smooth' });"><i class="material-icons">arrow_upward</i></a></li>
-    </ul>
-</div>
-<!-- 날짜 선택칸 끝-->
-<!--    FIREBASE SCRIPT     -->
-<script>
-    // Initialize Firebase
-    var config = {
-    };
-    firebase.initializeApp(config);
-    // FCM 메시지 설정 코드
-    var messaging = firebase.messaging();
-    messaging.requestPermission()
-        .then(function(){
-            console.log('메세징 권한 획득');
-            return messaging.getToken();
-        })
-        .then(function(token){
-            console.log('fcm token: ', token);
-            $.ajax({
-                type: "POST",
-                url: "/main/updateToken",
-                data: token,
-                dataType: "TEXT",
-                success: function(text){
-                    console.log('전송성공');
-                },
-                error: function(xhr, status, error){
-                    console.log(error);
-                }
+    <div class="fixed-action-btn">
+        <a class="btn-floating btn-large red">
+            <i class="large material-icons">arrow_drop_up</i>
+        </a>
+        <ul>
+            <!-- 날짜 선택 -->
+            <li><a class="btn-floating red" id="date_pick_open" ><i class="material-icons">today</i></a></li>
+            <!-- 새로고침 -->
+            <li><a class="btn-floating red" onClick="window.location.reload();"><i class="material-icons">autorenew</i></a></li>
+            <!-- 맨 위로 -->
+            <li><a class="btn-floating red" onClick="document.querySelector('#write_diary').scrollIntoView({ behavior: 'smooth' });"><i class="material-icons">arrow_upward</i></a></li>
+        </ul>
+    </div>
+    <!-- 날짜 선택칸 끝-->
+    <!--    FIREBASE SCRIPT     -->
+    <script>
+        // Initialize Firebase
+        var config = {
+        };
+        firebase.initializeApp(config);
+        // FCM 메시지 설정 코드
+        var messaging = firebase.messaging();
+        messaging.requestPermission()
+            .then(function(){
+                console.log('메세징 권한 획득');
+                return messaging.getToken();
+            })
+            .then(function(token){
+                console.log('fcm token: ', token);
+                $.ajax({
+                    type: "POST",
+                    url: "/main/updateToken",
+                    data: token,
+                    dataType: "TEXT",
+                    success: function(text){
+                        console.log('전송성공');
+                    },
+                    error: function(xhr, status, error){
+                        console.log(error);
+                    }
+                });
+            })
+            .catch(function(e){
+                console.log('메세징 권한 획득 중 에러', e);
             });
-        })
-        .catch(function(e){
-            console.log('메세징 권한 획득 중 에러', e);
+            
+        $(document).ready(function () {
+            // 데이트 피커 설정
+            // $('.datepicker').datepicker();
+            //오늘 보여주는 포스팅 보이기
+            var date_post = $('.date-post').toArray();
+            $('#date_pick').val('<%=today%>');
+            var date_pick = $('#date_pick').val();
+            if (date_post != 'undefined') {
+                $('.card').css('display', 'none');
+                for (let i = 0; i < date_post.length; i++) {
+                    if (date_post[i].innerText == date_pick) {
+                        date_post[i].parentNode.parentNode.parentNode.style.display = "block";
+                    }
+                }
+            }
+            //값이 바뀔때 마다 변경
+            $("#date_pick").bind("change paste keyup", function() {
+                $('.card').css('display', 'none');
+                date_pick = $(this).val();
+                if(date_pick == '<%=today%>'){
+                    $('#today_diary').text('오늘의 일기');
+                }
+                else {
+                    $('#today_diary').text(date_pick+'에 작성된 일기');
+                }
+                let count_p = 0; //카운팅용 변수
+                for (i = 0; i < date_post.length; i++) {
+                    if (date_post[i].innerText == date_pick) {
+                        date_post[i].parentNode.parentNode.parentNode.style.display = "block";
+                        count_p++;
+                    }
+                }
+                if(count_p == 0) { //일기가 없는 경우
+                    alert('해당 날짜에 작성한 일기가 없습니다!');
+                    window.location.reload();
+                }
+                count_p = 0;
+            });
+            //달력 표시
+            $('#date_pick_open').click(function(e){
+                $('#date_pick').click();
+            });
+            //textarea에 입력 요구
+            $('button:submit:first').on('click', function (e) {
+                e.preventDefault();
+                if ($('textarea:first').val()) {
+                    $('form:first').submit();
+                }
+                else {
+                    alert('내용은 꼭 적어주세요.');
+                }
+            })
         });
-        
-    $(document).ready(function () {
-        // 데이트 피커 설정
-        // $('.datepicker').datepicker();
-        //오늘 보여주는 포스팅 보이기
-        var date_post = $('.date-post').toArray();
-        $('#date_pick').val('<%=today%>');
-        var date_pick = $('#date_pick').val();
-        if (date_post != 'undefined') {
-            $('.card').css('display', 'none');
-            for (let i = 0; i < date_post.length; i++) {
-                if (date_post[i].innerText == date_pick) {
-                    date_post[i].parentNode.parentNode.parentNode.style.display = "block";
+    </script>
+    <!--    CONTENT END    -->
+    <!--    JS CODE FOR NAVBAR    -->
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.sidenav').sidenav();
+            $(".dropdown-trigger").dropdown({
+                inDuration: 300,
+                outDuration: 225,
+                constrainWidth: false,
+                hover: false,
+                gutter: 0,
+                coverTrigger: false,
+                alignment: 'right'
+            });
+            if($('#textarea1').length != 0) {
+                M.textareaAutoResize($('#textarea1'));
+            }
+            $('select').formSelect();
+                $('.datepicker').datepicker({
+                firstDay: false,
+                format: 'yyyy-mm-dd',
+                i18n: {
+                    months: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
+                    monthsShort: ["1/", "2/", "3/", "4/", "5/", "6/", "7/", "8/", "9/", "10/", "11/",
+                        "12/"
+                    ],
+                    weekdays: ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"],
+                    weekdaysShort: ["일", "월", "화", "수", "목", "금", "토"],
+                    weekdaysAbbrev: ["일", "월", "화", "수", "목", "금", "토"]
+                },
+                maxDate: new Date()
+            });
+            $('.modal').modal();
+            $('.fixed-action-btn').floatingActionButton();
+        });
+
+        // 수정폼 토글 스크립트 : 순수 JS
+        var toggleUpdateForm = function (pid) {
+            let U_target = document.getElementById('U' + pid).style;
+            let R_target = document.getElementById('R' + pid).style;
+            if (U_target.display == "none") { //수정폼을 연다.
+                U_target.display = "block";
+                R_target.display = "none";
+            } else {
+                if (R_target.display == "none") {
+                    U_target.display = "none";
+                    R_target.display = "block";
                 }
             }
         }
-        //값이 바뀔때 마다 변경
-        $("#date_pick").bind("change paste keyup", function() {
-            $('.card').css('display', 'none');
-            date_pick = $(this).val();
-            if(date_pick == '<%=today%>'){
-                $('#today_diary').text('오늘의 일기');
-            }
-            else {
-                $('#today_diary').text(date_pick+'에 작성된 일기');
-            }
-            let count_p = 0; //카운팅용 변수
-            for (i = 0; i < date_post.length; i++) {
-                if (date_post[i].innerText == date_pick) {
-                    date_post[i].parentNode.parentNode.parentNode.style.display = "block";
-                    count_p++;
-                }
-            }
-            if(count_p == 0) { //일기가 없는 경우
-                alert('해당 날짜에 작성한 일기가 없습니다!');
-                window.location.reload();
-            }
-            count_p = 0;
-        });
-        //달력 표시
-        $('#date_pick_open').click(function(e){
-            $('#date_pick').click();
-        });
-        //textarea에 입력 요구
-        $('button:submit:first').on('click', function (e) {
-            e.preventDefault();
-            if ($('textarea:first').val()) {
-                $('form:first').submit();
-            }
-            else {
-                alert('내용은 꼭 적어주세요.');
-            }
-        })
-    });
-</script>
+    </script>
+</body>
+<footer id="footer" class="page-footer dk">
+    <div class="footer-copyright dk">
+        <div class="container">
+        © 2018 Parallel Diary, All rights reserved. 
+        <a class="grey-text text-lighten-4 right" href="#!"></a>
+        </div>
+    </div>
+</footer>
+</html>

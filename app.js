@@ -5,7 +5,6 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var logger = require('morgan');
 var session = require('express-session');
-const expressLayouts = require('express-ejs-layouts');
 
 var app = express();
 app.use(bodyParser.urlencoded({
@@ -33,7 +32,6 @@ app.use(express.urlencoded({
 }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(expressLayouts);
 
 app.use('/', require('./routes/index'));
 app.use('/users', require('./routes/users'));
