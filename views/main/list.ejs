@@ -68,7 +68,7 @@
     <!--   NAVIGATION BAR     -->
     <nav class="dk">
         <div class="container nav-wrapper dk">
-            <a href="/" class="brand-logo gugi">
+            <a href="/" class="brand-logo">
                 <%=(typeof title != "undefined" ? title : "평행일기")%></a>
             <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
             <ul class="right hide-on-med-and-down">
@@ -256,7 +256,7 @@
                         <div id="R<%=row[item].diary_pid%>">
                             <div class="card-content jeju">
                                 <span class="card-title date-post hidden_elem" style="display: none;"><%=row[item].date%></span>
-                                <p style="white-space: pre-wrap;"><%=row[item].text%></p>
+                                <p style="white-space: pre-wrap; word-break: break-all"><%=row[item].text%></p>
                             </div>
                         </div>
                         <!-- READ CONTENT 끝 -->
@@ -294,39 +294,39 @@
         </ul>
     </div>
     <!-- 날짜 선택칸 끝-->
-    <!--    FIREBASE SCRIPT     -->
-    <script>
-        // Initialize Firebase
-        var config = {
-        };
-        firebase.initializeApp(config);
-        // FCM 메시지 설정 코드
-        var messaging = firebase.messaging();
-        messaging.requestPermission()
-            .then(function(){
-                console.log('메세징 권한 획득');
-                return messaging.getToken();
-            })
-            .then(function(token){
-                console.log('fcm token: ', token);
-                $.ajax({
-                    type: "POST",
-                    url: "/main/updateToken",
-                    data: token,
-                    dataType: "TEXT",
-                    success: function(text){
-                        console.log('전송성공');
-                    },
-                    error: function(xhr, status, error){
-                        console.log(error);
-                    }
-                });
-            })
-            .catch(function(e){
-                console.log('메세징 권한 획득 중 에러', e);
-            });
-            
+    <script type="text/javascript">
         $(document).ready(function () {
+            $('.sidenav').sidenav();
+            $(".dropdown-trigger").dropdown({
+                inDuration: 300,
+                outDuration: 225,
+                constrainWidth: false,
+                hover: false,
+                gutter: 0,
+                coverTrigger: false,
+                alignment: 'right'
+            });
+            if($('#textarea1').length != 0) {
+                M.textareaAutoResize($('#textarea1'));
+            }
+            $('select').formSelect();
+                $('.datepicker').datepicker({
+                firstDay: false,
+                format: 'yyyy-mm-dd',
+                i18n: {
+                    months: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
+                    monthsShort: ["1/", "2/", "3/", "4/", "5/", "6/", "7/", "8/", "9/", "10/", "11/",
+                        "12/"
+                    ],
+                    weekdays: ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"],
+                    weekdaysShort: ["일", "월", "화", "수", "목", "금", "토"],
+                    weekdaysAbbrev: ["일", "월", "화", "수", "목", "금", "토"]
+                },
+                maxDate: new Date()
+            });
+            $('.modal').modal();
+            $('.fixed-action-btn').floatingActionButton();
+            
             // 데이트 피커 설정
             // $('.datepicker').datepicker();
             //오늘 보여주는 포스팅 보이기
@@ -379,42 +379,6 @@
                 }
             })
         });
-    </script>
-    <!--    CONTENT END    -->
-    <!--    JS CODE FOR NAVBAR    -->
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $('.sidenav').sidenav();
-            $(".dropdown-trigger").dropdown({
-                inDuration: 300,
-                outDuration: 225,
-                constrainWidth: false,
-                hover: false,
-                gutter: 0,
-                coverTrigger: false,
-                alignment: 'right'
-            });
-            if($('#textarea1').length != 0) {
-                M.textareaAutoResize($('#textarea1'));
-            }
-            $('select').formSelect();
-                $('.datepicker').datepicker({
-                firstDay: false,
-                format: 'yyyy-mm-dd',
-                i18n: {
-                    months: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
-                    monthsShort: ["1/", "2/", "3/", "4/", "5/", "6/", "7/", "8/", "9/", "10/", "11/",
-                        "12/"
-                    ],
-                    weekdays: ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"],
-                    weekdaysShort: ["일", "월", "화", "수", "목", "금", "토"],
-                    weekdaysAbbrev: ["일", "월", "화", "수", "목", "금", "토"]
-                },
-                maxDate: new Date()
-            });
-            $('.modal').modal();
-            $('.fixed-action-btn').floatingActionButton();
-        });
 
         // 수정폼 토글 스크립트 : 순수 JS
         var toggleUpdateForm = function (pid) {
@@ -430,6 +394,36 @@
                 }
             }
         }
+
+        // Initialize Firebase
+        var config = {
+        };
+        firebase.initializeApp(config);
+        // FCM 메시지 설정 코드
+        var messaging = firebase.messaging();
+        messaging.requestPermission()
+            .then(function(){
+                console.log('메세징 권한 획득');
+                return messaging.getToken();
+            })
+            .then(function(token){
+                console.log('fcm token: ', token);
+                $.ajax({
+                    type: "POST",
+                    url: "/main/updateToken",
+                    data: token,
+                    dataType: "TEXT",
+                    success: function(text){
+                        console.log('전송성공');
+                    },
+                    error: function(xhr, status, error){
+                        console.log(error);
+                    }
+                });
+            })
+            .catch(function(e){
+                console.log('메세징 권한 획득 중 에러', e);
+            });
     </script>
 </body>
 <footer id="footer" class="page-footer dk">

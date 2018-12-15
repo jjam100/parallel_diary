@@ -53,80 +53,12 @@
             메인 페이지 레이아웃 보강
             2018.11.01  14109362 이창재
         -->
-    <!-- Dropdown Structure -->
-    <ul id="dropdown1" class="dropdown-content">
-        <% if(nickname == null) { %>
-        <li><a class="waves-effect" href="/users/signup"><i class="material-icons">library_add</i>회원가입</a></li>
-        <li><a class="waves-effect" href="/users/login"><i class="material-icons">vpn_key</i>로그인</a></li>
-        <% } %>
-        <% if(nickname != null) { %>
-        <li><a class="waves-effect" href="/users/logout"><i class="material-icons">exit_to_app</i>로그아웃</a></li>
-        <li class="divider"></li>
-        <li><a class="waves-effect" href="/users/usersetting"><i class="material-icons">settings</i>내 계정</a></li>
-        <% } %>  
-    </ul>
     <!--   NAVIGATION BAR     -->
     <nav class="dk">
         <div class="container nav-wrapper dk">
-            <a href="/" class="brand-logo gugi">
-                <%=(typeof title != "undefined" ? title : "평행일기")%></a>
-            <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
-            <ul class="right hide-on-med-and-down">
-                <li><a href="/">메인</a></li>
-                <% if(is_coupled == 1) { %>
-                <li><a href="/main">일기쓰기</a></li>
-                <% } %>
-                <li><a class="dropdown-trigger" href="javascript:void(0);" data-target="dropdown1">
-                    <% if(nickname == null) { %>
-                        Guest
-                    <% } else { %>
-                        <%=nickname%>
-                    <% } %>
-                    <i class="material-icons right">arrow_drop_down</i></a></li>
-            </ul>
+            <a href="/" class="brand-logo">평행일기</a>
         </div>
     </nav>
-
-    <ul class="sidenav mm4" id="mobile-demo">
-        <li>
-            <div class="user-view">
-                <div class="background">
-                    <img src="../images/userback.png">
-                </div>
-                <a href="#user"><i class="medium material-icons"></i></a>
-                <a href="#name"><span class="white-text name">
-                    <% if(nickname == null) { %>
-                        Guest
-                    <% } else { %>
-                        <%=nickname%>
-                    <% } %>
-                </span></a>
-                <a href="#email"><span class="white-text email">
-                    <% if(e_mail == null) { %>
-                    <% } else { %>
-                        <%=e_mail%>
-                    <% } %>
-                </span></a>
-            </div>
-        </li>
-        <li><a class="subheader">Parallel Diary</a></li>
-        <li><a class="waves-effect" href="/"><i class="material-icons">home</i>홈</a></li>
-        <% if(is_coupled == 1) { %>
-        <li><a class="waves-effect" href="/main"><i class="material-icons">create</i>일기쓰기</a></li>
-        <% } %>
-        <li>
-            <div class="divider"></div>
-        </li>
-        <li><a class="subheader">User</a></li>
-        <% if(nickname == null) { %>
-        <li><a class="waves-effect" href="/users/signup"><i class="material-icons">library_add</i>회원가입</a></li>
-        <li><a class="waves-effect" href="/users/login"><i class="material-icons">vpn_key</i>로그인</a></li>
-        <% } %>
-        <% if(nickname != null) { %>
-        <li><a class="waves-effect" href="/users/logout"><i class="material-icons">exit_to_app</i>로그아웃</a></li>
-        <li><a class="waves-effect" href="/users/usersetting"><i class="material-icons">settings</i>내 계정</a></li>
-        <% } %>
-    </ul>
     <!--    CONTENT START    -->
     <div class="row cm h-100">
         <div class="col m2"></div>

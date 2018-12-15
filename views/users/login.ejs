@@ -68,7 +68,7 @@
     <!--   NAVIGATION BAR     -->
     <nav class="dk">
         <div class="container nav-wrapper dk">
-            <a href="/" class="brand-logo gugi">
+            <a href="/" class="brand-logo">
                 <%=(typeof title != "undefined" ? title : "평행일기")%></a>
             <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
             <ul class="right hide-on-med-and-down">
@@ -144,7 +144,7 @@
         <div class="row">
             <div class="col s12 m2"> </div>
             <div class="col s12 m8">
-                <div style="position: relative; top:10vh;">
+                <div style="position: relative; top:10vh; margin-bottom: 10vh;">
                     <!-- 로그인 폼 시작-->
                     <form action="./check" method="POST">
                         <div class="row">
@@ -165,9 +165,11 @@
                         <div style="padding-bottom: 30px;">
                             비밀번호를 잊으셨나요? <a href="/users/pwreset">비밀번호를 재설정해보세요!</a>
                         </div>
-                        <button class="btn waves-effect waves-light right" type="submit" name="action">Submit
-                            <i class="material-icons right">send</i>
-                        </button>
+                        <div class="row">
+                            <button class="btn waves-effect waves-light right" type="submit" name="action">로그인
+                                <i class="material-icons right">send</i>
+                            </button>
+                        </div>
                     </form>
                     <!-- 로그인 폼 끝-->
                 </div>
@@ -197,12 +199,14 @@
         });
     </script>
 </body>
-<footer id="footer" class="page-footer dk">
-    <div class="footer-copyright dk">
-        <div class="container">
-        © 2018 Parallel Diary, All rights reserved. 
-        <a class="grey-text text-lighten-4 right" href="#!"></a>
+<div class="row">
+    <footer id="footer" class="page-footer dk col s12">
+        <div class="footer-copyright dk">
+            <div class="container">
+            © 2018 Parallel Diary, All rights reserved. 
+            <a class="grey-text text-lighten-4 right" href="#!"></a>
+            </div>
         </div>
-    </div>
-</footer>
+    </footer>
+</div>
 </html>

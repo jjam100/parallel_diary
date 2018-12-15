@@ -1,16 +1,21 @@
 @import url('https://fonts.googleapis.com/css?family=Noto+Sans+KR');
 @import url('https://fonts.googleapis.com/css?family=Gugi');
 @import url('https://fonts.googleapis.com/css?family=Poor+Story');
-@import url('http://fonts.googleapis.com/earlyaccess/jejugothic.css');
+@font-face {
+    font-family: 'Jeju Gothic';
+    font-style: normal;
+    font-weight: 400;
+    src: url(/fonts/JejuGothic-Regular.eot);
+    src: url(/fonts/JejuGothic-Regular.woff2) format('woff2'),
+         url(/fonts/JejuGothic-Regular.woff) format('woff'),
+         url(/fonts/JejuGothic-Regular.ttf) format('truetype');
+}
+
 html{
     scroll-behavior: smooth;
 }
 
-/* 노토 산스 폰트 */
-.noto-sans {
-    font-family: 'Noto Sans KR', sans-serif;
-}
-/* 제주고딕 */
+/* 구제주고딕 */
 .jeju {
     font-family: 'Jeju Gothic', cursive;
 }
@@ -70,12 +75,20 @@ div.row{
 }
 .stretch{
     /* 애니메이션 */
-    animation-name : stretch_ani;
-    animation-duration: 1s;
+    -webkit-animation-name : stretch_ani;
+            animation-name : stretch_ani;
+    -webkit-animation-duration: 1s;
+            animation-duration: 1s;
 }
 #mobile-demo > li > a {
     color:white;
     font-size:15px;
+}
+
+@-webkit-keyframes stretch_ani {
+    0%      {letter-spacing: 0px}
+    50%     {letter-spacing: 9px}
+    /* 100%    {letter-spacing: 0px} */
 }
 
 @keyframes stretch_ani {
@@ -94,33 +107,49 @@ div.row{
     position: relative;
     
     /* 우르릉쾅쾅 우주 애니메이션 */
-    animation-name: universe;
-    animation-duration: 1s;
-    animation-iteration-count: infinite;
-
-    background: -ms-linear-gradient(top, #ea9e9f 1%, #FFAAAB 50%, #FFAAAB 100%);
-    background: -moz-linear-gradient(top, #ea9e9f 1%, #FFAAAB 50%, #FFAAAB 100%);
+    -webkit-animation-name: universe;
+            animation-name: universe;
+    -webkit-animation-duration: 1s;
+            animation-duration: 1s;
+    -webkit-animation-iteration-count: infinite;
+            animation-iteration-count: infinite;
     background: -o-linear-gradient(top, #ea9e9f 1%, #FFAAAB 50%, #FFAAAB 100%);
     background: -webkit-gradient(linear, left top, left bottom, color-stop(1, #ea9e9f), color-stop(50, #FFAAAB), color-stop(100, #FFAAAB));
     background: -webkit-linear-gradient(top, #ea9e9f 1%, #FFAAAB 50%, #FFAAAB 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(1%, #ea9e9f), color-stop(50%, #FFAAAB), to(#FFAAAB));
     background: linear-gradient(to bottom, #ea9e9f 1%, #FFAAAB 50%, #FFAAAB 100%);
+}
+
+@-webkit-keyframes universe {
+    from{
+        background: -o-linear-gradient(top, #ea9e9f 1%, #FFAAAB 50%, #FFAAAB 100%);
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(1, #ea9e9f), color-stop(50, #FFAAAB), color-stop(100, #FFAAAB));
+        background: -webkit-linear-gradient(top, #ea9e9f 1%, #FFAAAB 50%, #FFAAAB 100%);
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(1%, #ea9e9f), color-stop(50%, #FFAAAB), to(#FFAAAB));
+        background: linear-gradient(to bottom, #ea9e9f 1%, #FFAAAB 50%, #FFAAAB 100%);
+    }
+    to {
+        background: -o-linear-gradient(top, #ea9e9f 1%, #FFAAAB 50%, #FFAAAB 100%);
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(1, #ea9e9f), color-stop(50, #FFAAAB), color-stop(100, #FFAAAB));
+        background: -webkit-linear-gradient(top, #ea9e9f 1%, #FFAAAB 50%, #FFAAAB 100%);
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(1%, #ea9e9f), color-stop(50%, #FFAAAB), to(#FFAAAB));
+        background: linear-gradient(to bottom, #ea9e9f 1%, #FFAAAB 50%, #FFAAAB 100%);
+    }
 }
 
 @keyframes universe {
     from{
-        background: -ms-linear-gradient(top, #ea9e9f 1%, #FFAAAB 50%, #FFAAAB 100%);
-        background: -moz-linear-gradient(top, #ea9e9f 1%, #FFAAAB 50%, #FFAAAB 100%);
         background: -o-linear-gradient(top, #ea9e9f 1%, #FFAAAB 50%, #FFAAAB 100%);
         background: -webkit-gradient(linear, left top, left bottom, color-stop(1, #ea9e9f), color-stop(50, #FFAAAB), color-stop(100, #FFAAAB));
         background: -webkit-linear-gradient(top, #ea9e9f 1%, #FFAAAB 50%, #FFAAAB 100%);
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(1%, #ea9e9f), color-stop(50%, #FFAAAB), to(#FFAAAB));
         background: linear-gradient(to bottom, #ea9e9f 1%, #FFAAAB 50%, #FFAAAB 100%);
     }
     to {
-        background: -ms-linear-gradient(top, #ea9e9f 1%, #FFAAAB 50%, #FFAAAB 100%);
-        background: -moz-linear-gradient(top, #ea9e9f 1%, #FFAAAB 50%, #FFAAAB 100%);
         background: -o-linear-gradient(top, #ea9e9f 1%, #FFAAAB 50%, #FFAAAB 100%);
         background: -webkit-gradient(linear, left top, left bottom, color-stop(1, #ea9e9f), color-stop(50, #FFAAAB), color-stop(100, #FFAAAB));
         background: -webkit-linear-gradient(top, #ea9e9f 1%, #FFAAAB 50%, #FFAAAB 100%);
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(1%, #ea9e9f), color-stop(50%, #FFAAAB), to(#FFAAAB));
         background: linear-gradient(to bottom, #ea9e9f 1%, #FFAAAB 50%, #FFAAAB 100%);
     }
 }
@@ -165,7 +194,7 @@ div.row{
     top:0;
     bottom:0;
     display: absolute !important;
-    min-height: calc(100vh - 64px) !important;
+    min-height: 105vh !important;
 }
 
 
@@ -175,7 +204,8 @@ div.row{
     position : relative;
 }
 .input-text{
-    box-sizing: border-box!important;
+    -webkit-box-sizing: border-box!important;
+            box-sizing: border-box!important;
     display: block;
     width: 100%!important;
     padding: 0 17px!important;
@@ -203,7 +233,10 @@ div.row{
 }
 /* 상단 배너관련 css */
 .ac-banner {
-    background: linear-gradient(to bottom,#0078d7 0%,#09a2ce);box-shadow:0 12px 45px -8px rgba(0,120,215,.35)
+    background: -webkit-gradient(linear,left top, left bottom,from(#0078d7),to(#09a2ce));
+    background: -webkit-linear-gradient(top,#0078d7 0%,#09a2ce);
+    background: -o-linear-gradient(top,#0078d7 0%,#09a2ce);
+    background: linear-gradient(to bottom,#0078d7 0%,#09a2ce);-webkit-box-shadow:0 12px 45px -8px rgba(0,120,215,.35);box-shadow:0 12px 45px -8px rgba(0,120,215,.35)
 }
 .sub-banner {
     padding-top: 40px;

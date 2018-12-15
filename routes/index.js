@@ -5,16 +5,19 @@ var utf8 = require('utf8');
 var base64 = require('base-64');
 var router = express.Router();
 
-// MYSQL 연결설정
-var client = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '1q2w3e4r?',
-  port: 3306,
-  database: 'my_db',
-  multipleStatements: true
+// MYSQL(clearDB) 연결설정
+var dbConfig = {
+};
+
+var client = mysql.createPool(dbConfig);
+
+client.getConnection(function(err, con){
+  if(!err){
+      console.log("Connected ClearDB");
+  }
+  // 커넥션을 풀에 반환
+  con.release();
 });
-client.connect();
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
@@ -27,7 +30,7 @@ router.get('/', function (req, res, next) {
 
   if (nickname) {
     nickname = utf8.decode(base64.decode(nickname));
-    let q = "SELECT `is_coupled` FROM `my_db`.`user` WHERE `user_pid` =" + user_pid;
+    let q = "SELECT `is_coupled` FROM `heroku_7e0ddf49a41647e`.`user` WHERE `user_pid` =" + user_pid;
     client.query(q, function (err, row) {
       if (err) throw err;
       if (row[0].is_coupled == 1) {

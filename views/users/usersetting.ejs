@@ -68,7 +68,7 @@
     <!--   NAVIGATION BAR     -->
     <nav class="dk">
         <div class="container nav-wrapper dk">
-            <a href="/" class="brand-logo gugi">
+            <a href="/" class="brand-logo">
                 <%=(typeof title != "undefined" ? title : "평행일기")%></a>
             <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
             <ul class="right hide-on-med-and-down">
@@ -395,37 +395,20 @@
     </style>
 
     <script type="text/javascript">
-        // Initialize Firebase
-        var config = {
-
-        };
-        firebase.initializeApp(config);
-        // FCM 메시지 설정 코드
-        var messaging = firebase.messaging();
-        messaging.requestPermission()
-            .then(function(){
-                console.log('메세징 권한 획득');
-                return messaging.getToken();
-            })
-            .then(function(token){
-                console.log('fcm token: ', token);
-                $.ajax({
-                    type: "POST",
-                    url: "/main/updateToken",
-                    data: token,
-                    dataType: "TEXT",
-                    success: function(text){
-                        console.log('전송성공');
-                    },
-                    error: function(xhr, status, error){
-                        console.log(error);
-                    }
-                });
-            })
-            .catch(function(e){
-                console.log('메세징 권한 획득 중 에러', e);
+        $(document).ready(function () {
+            $('.modal').modal();
+            $('.sidenav').sidenav();
+            $(".dropdown-trigger").dropdown({
+                inDuration: 300,
+                outDuration: 225,
+                constrainWidth: false,
+                hover: false,
+                gutter: 0,
+                coverTrigger: false,
+                alignment: 'right'
             });
-
+        });
+        
         // 커플요청 이벤트
         function coupleReq_event(){
             if(confirm("요청을 진행하시겠습니까?")){
@@ -581,19 +564,35 @@
             });
         }
 
-        $(document).ready(function () {
-            $('.modal').modal();
-            $('.sidenav').sidenav();
-            $(".dropdown-trigger").dropdown({
-                inDuration: 300,
-                outDuration: 225,
-                constrainWidth: false,
-                hover: false,
-                gutter: 0,
-                coverTrigger: false,
-                alignment: 'right'
+        // Initialize Firebase
+        var config = {
+        };
+        firebase.initializeApp(config);
+        // FCM 메시지 설정 코드
+        var messaging = firebase.messaging();
+        messaging.requestPermission()
+            .then(function(){
+                console.log('메세징 권한 획득');
+                return messaging.getToken();
+            })
+            .then(function(token){
+                console.log('fcm token: ', token);
+                $.ajax({
+                    type: "POST",
+                    url: "/main/updateToken",
+                    data: token,
+                    dataType: "TEXT",
+                    success: function(text){
+                        console.log('전송성공');
+                    },
+                    error: function(xhr, status, error){
+                        console.log(error);
+                    }
+                });
+            })
+            .catch(function(e){
+                console.log('메세징 권한 획득 중 에러', e);
             });
-        });
     </script>
     <!--    CONTENT END    -->
 </body>

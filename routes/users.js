@@ -10,16 +10,19 @@ var session = require('express-session');
 var fs = require('fs');
 app.use(require('body-parser').json());
 
-// MYSQL 연결설정
-var client = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '1q2w3e4r?',
-  port: 3306,
-  database: 'my_db',
-  multipleStatements: true
+// MYSQL(clearDB) 연결설정
+var dbConfig = {
+};
+
+var client = mysql.createPool(dbConfig);
+
+client.getConnection(function(err, con){
+  if(!err){
+      console.log("Connected ClearDB");
+  }
+  // 커넥션을 풀에 반환
+  con.release();
 });
-client.connect();
 
 /* GET users listing. */
 router.get('/', function (req, res, next) {
@@ -58,10 +61,10 @@ router.post('/register', function (res, req) {
     //match와 is_coupled 의 경우 디폴트가 각각 NULL, '0' 으로 지정됨.
   };
 
-  let qq = "SELECT * FROM `my_db`.`user` WHERE `nickname` = '"+info.nickname+"';";
+  let qq = "SELECT * FROM `heroku_7e0ddf49a41647e`.`user` WHERE `nickname` = '"+info.nickname+"';";
   client.query(qq,function(err,row2){
     if(row2.length == 0) { //새로운 닉네임이라면
-      let q = "INSERT INTO `my_db`.`user`(\
+      let q = "INSERT INTO `heroku_7e0ddf49a41647e`.`user`(\
         `nickname`,`password`,`e_mail`,\
         `op1`,`op2`,`op3`,\
         `answer1`,`answer2`,`answer3`\
@@ -104,7 +107,7 @@ router.get('/login', function (req, res, next) {
   });
 });
 router.post('/check', function (req, res, next) {
-  let q = "SELECT * FROM `my_db`.`user` WHERE nickname = \'" + base64.encode(utf8.encode(req.body.nickname)) + "\'";
+  let q = "SELECT * FROM `heroku_7e0ddf49a41647e`.`user` WHERE nickname = \'" + base64.encode(utf8.encode(req.body.nickname)) + "\'";
   client.query(q, function (err, row) {
     console.log(row);
     if(err || !row.length) {
@@ -180,7 +183,7 @@ router.get('/usersetting', function (req, res, next) {
   var user_email = sess.e_mail;
   if (nickname) {
     nickname = utf8.decode(base64.decode(sess.nickname));
-    let q = "SELECT * FROM my_db.user WHERE `match` = '" + sess.user_pid + "';";
+    let q = "SELECT * FROM heroku_7e0ddf49a41647e.user WHERE `match` = '" + sess.user_pid + "';";
     client.query(q, function (err, row) {
         if (err) throw err;
         if (row[0] == undefined) {
@@ -235,7 +238,7 @@ router.get('/usersetting', function (req, res, next) {
           } else {
             // 3 : 이미 커플인 경우. 그냥 계정설정 페이지
             console.log("3 : 커플중");
-            let p = "SELECT COUNT(*) diarycount FROM `my_db`.`diary` WHERE `user_pid` = '" + user_pid + "' AND `is_deleted` != 1;"
+            let p = "SELECT COUNT(*) diarycount FROM `heroku_7e0ddf49a41647e`.`diary` WHERE `user_pid` = '" + user_pid + "' AND `is_deleted` != 1;"
             client.query(p, function (err, row) {
               if (err) throw err;
               let diarycount = row[0].diarycount;
@@ -268,7 +271,7 @@ router.post('/coupleBrk', function (req, res, next) {
   const couplePid = Object.keys(req.body)[0];
     
   //이별시 자신의 모든 이미지 삭제 처리
-  let qq = "SELECT `img_url` FROM `my_db`.`diary` WHERE `user_pid` = " + user_pid + " OR `user_pid` = " + couplePid;
+  let qq = "SELECT `img_url` FROM `heroku_7e0ddf49a41647e`.`diary` WHERE `user_pid` = " + user_pid + " OR `user_pid` = " + couplePid;
   client.query(qq,function(err, row){
     var item;
     for(item in row) {
@@ -282,17 +285,17 @@ router.post('/coupleBrk', function (req, res, next) {
 
 
   //이별 시 글 삭제 처리
-  let p = "DELETE FROM `my_db`.`diary` WHERE `user_pid` = '" + user_pid + "' OR '" + couplePid + "';"
+  let p = "DELETE FROM `heroku_7e0ddf49a41647e`.`diary` WHERE `user_pid` = '" + user_pid + "' OR '" + couplePid + "';"
   client.query(p, function (err, row) {
       if (err) throw err;
       console.log("일기 삭제 완료");
-      let q = "UPDATE `my_db`.`user`\
+      let q = "UPDATE `heroku_7e0ddf49a41647e`.`user`\
       SET `match` = NULL, `is_coupled` = NULL\
       WHERE `user_pid` = " + couplePid + ";"
       client.query(q, function (err, row) {
         if (err) throw err;
         console.log("상대 커플상태 초기화");
-        let r = "DELETE FROM `my_db`.`user` WHERE `user_pid` = '" + user_pid + "';"
+        let r = "DELETE FROM `heroku_7e0ddf49a41647e`.`user` WHERE `user_pid` = '" + user_pid + "';"
         client.query(r, function (err, row) {
           if (err) throw err;
           console.log("내 계정 삭제완료");
@@ -318,7 +321,7 @@ router.get('/pwreset', function (req, res, next) {
 
   if (nickname) { //로그인이 되어 있을때
     nickname = utf8.decode(base64.decode(nickname));
-    let q = "SELECT `is_coupled` FROM `my_db`.`user` WHERE `user_pid` =" + user_pid;
+    let q = "SELECT `is_coupled` FROM `heroku_7e0ddf49a41647e`.`user` WHERE `user_pid` =" + user_pid;
     client.query(q, function (err, row) {
       if (err) throw err;
       if (row[0].is_coupled == 1) {
@@ -362,13 +365,13 @@ router.post('/pwreset_check', function (req, res, next) {
     //로그인 안된 유저일시 쿼리
     is_login = false;
     q = "SELECT `password`,`e_mail`,`op1`,`op2`,`op3`,`answer1`,`answer2`,`answer3` \
-        FROM `my_db`.`user` WHERE `nickname`='" + nickname + "' AND `e_mail`='" + e_mail + " AND `op1` = '"+op1+" AND `op2` = '"+op2+"';";
+        FROM `heroku_7e0ddf49a41647e`.`user` WHERE `nickname`='" + nickname + "' AND `e_mail`='" + e_mail + "\' AND `op1` = '"+op1+"\' AND `op2` = '"+op2+"';";
     console.log(q);
   } else {
     //로그인이 된 유저일 시 쿼리
     is_login = true;
     q = "SELECT `password`,`e_mail`,`op1`,`op2`,`op3`,`answer1`,`answer2`,`answer3` \
-        FROM `my_db`.`user` WHERE `user_pid` = " + user_pid + " AND `e_mail`='" + e_mail + "';";
+        FROM `heroku_7e0ddf49a41647e`.`user` WHERE `user_pid` = " + user_pid + " AND `e_mail`='" + e_mail + "';";
         //종진이 디버그(6번) 수정 완료!
     console.log(q);
   }
@@ -385,7 +388,7 @@ router.post('/pwreset_check', function (req, res, next) {
           </script>");
       }
       else { //모든 부분이 정확히 입력된 경우
-        let r = "UPDATE `my_db`.`user` SET `password` = '"+new_password+"' ";
+        let r = "UPDATE `heroku_7e0ddf49a41647e`.`user` SET `password` = '"+new_password+"' ";
         if(is_login) { //로그인 된 경우
           r += " WHERE `user_pid` = " + user_pid + ";";
         }
