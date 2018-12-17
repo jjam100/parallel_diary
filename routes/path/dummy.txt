@@ -1,1 +1,1 @@
-This is dummy file for prevent distory this location.
+This is dummy file to prevent destory this location.
