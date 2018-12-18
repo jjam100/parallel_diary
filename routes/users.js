@@ -10,8 +10,14 @@ var session = require('express-session');
 var fs = require('fs');
 app.use(require('body-parser').json());
 
-// MYSQL(clearDB) 연결설정
+// MYSQL(ClearDB) 연결설정
 var dbConfig = {
+  host: '',
+  user: '',
+  password: '',
+  port: ,
+  database: '',
+  multipleStatements: 
 };
 
 var client = mysql.createPool(dbConfig);

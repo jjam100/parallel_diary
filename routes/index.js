@@ -5,8 +5,14 @@ var utf8 = require('utf8');
 var base64 = require('base-64');
 var router = express.Router();
 
-// MYSQL(clearDB) 연결설정
+// MYSQL(ClearDB) 연결설정
 var dbConfig = {
+  host: '',
+  user: '',
+  password: '',
+  port: ,
+  database: '',
+  multipleStatements: 
 };
 
 var client = mysql.createPool(dbConfig);

@@ -33,8 +33,6 @@ var upload = multer({
 
 // firebase admin 설정 초기화
 admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-    databaseURL: ""
 });
 
 //세션 설정
@@ -50,8 +48,14 @@ app.use(require('body-parser').json());
 require('moment-timezone');
 moment.tz.setDefault("Asia/Seoul");
 
-// MYSQL(clearDB) 연결설정
+// MYSQL(ClearDB) 연결설정
 var dbConfig = {
+  host: '',
+  user: '',
+  password: '',
+  port: ,
+  database: '',
+  multipleStatements: 
 };
 
 var client = mysql.createPool(dbConfig);
@@ -472,6 +476,7 @@ router.post('/coupleMsg', function (req, res, next) {
 router.post('/coupleAcpt', function (req, res, next) {
     //session
     var sess = req.session;
+    var coupleUser = null;
     const couplePid = Object.keys(req.body)[0];
     const msgTitle = utf8.decode(base64.decode(sess.nickname)) + '님이 커플요청을 수락하였습니다!';
     const msg = utf8.decode(base64.decode(sess.nickname)) + '님이 회원님의 커플요청을 수락하였습니다. 평행일기를 시작해 보세요!';
@@ -479,6 +484,7 @@ router.post('/coupleAcpt', function (req, res, next) {
     let q = "SELECT `token` FROM `heroku_7e0ddf49a41647e`.`user` WHERE `user_pid` =" + couplePid;
     client.query(q, function (err, row) {
         if (err) throw err;
+        coupleUser = row[0].token;
         console.log('\n나의 pid : ' + sess.user_pid + '   커플 pid : ' + couplePid);
         let p = "UPDATE `heroku_7e0ddf49a41647e`.`user`\
         SET `is_coupled` = 1\
@@ -488,12 +494,11 @@ router.post('/coupleAcpt', function (req, res, next) {
         WHERE `user_pid` = "+ couplePid +";"  
         client.query(p, function (err, row) {
             if (err) throw err;
-            if (row[0] == undefined || row[0].token == null) {
+            if (coupleUser == null) {
                 // 수락 성공! Token 값이 없는 경우
                 res.json(0);
             } else {
-                console.log('상대 토큰 : ' + row[0].token);
-                coupleUser = row[0].token;
+                console.log('상대 토큰 : ' + coupleUser);
                 const payload = {
                     notification: {
                         title: msgTitle,
@@ -524,6 +529,7 @@ router.post('/coupleAcpt', function (req, res, next) {
 router.post('/coupleRej', function (req, res, next) {
     //session
     var sess = req.session;
+    var coupleUser = null;
     const couplePid = Object.keys(req.body)[0];
     const msgTitle = utf8.decode(base64.decode(sess.nickname)) + '님이 커플요청을 거절하였습니다.';
     const msg = utf8.decode(base64.decode(sess.nickname)) + '님이 회원님의 커플요청을 거절하였습니다. 다시 시작해 보세요.';
@@ -532,6 +538,7 @@ router.post('/coupleRej', function (req, res, next) {
     let q = "SELECT `token` FROM `heroku_7e0ddf49a41647e`.`user` WHERE `user_pid` =" + couplePid;
     client.query(q, function (err, row) {
         if (err) throw err;
+        coupleUser = row[0].token;
         console.log('\n나의 pid : ' + sess.user_pid + '   커플 pid : ' + couplePid);
         let p = "UPDATE `heroku_7e0ddf49a41647e`.`user`\
         SET `match` = NULL, `is_coupled` = NULL\
@@ -541,12 +548,11 @@ router.post('/coupleRej', function (req, res, next) {
         WHERE `user_pid` = "+ couplePid +";"  
         client.query(p, function (err, row) {
             if (err) throw err;
-            if (row[0] == undefined || row[0].token == null) {
+            if (coupleUser == null) {
                 // 거절 성공. Token 값이 없는 경우
                 res.json(0);
             } else {
-                console.log('상대 토큰 : ' + row[0].token);
-                coupleUser = row[0].token;
+                console.log('상대 토큰 : ' + coupleUser);
                 const payload = {
                     notification: {
                         title: msgTitle,

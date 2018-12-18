@@ -39,8 +39,8 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="96x96" href="/icons/favicon-96x96.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png">
-    <meta name="msapplication-TileColor" content="#32645a">
-    <meta name="msapplication-TileImage" content="/icons/ms-icon-70x70.png">
+    <meta name="msapplication-TileColor" content="#263238">
+    <meta name="msapplication-TileImage" content="/icons/ms-icon-144x144.png">
     <meta name="theme-color" content="#263238">
     <script src="/pwabuilder-sw-register.js"></script>
 </head>
@@ -399,6 +399,7 @@
         var config = {
         };
         firebase.initializeApp(config);
+
         // FCM 메시지 설정 코드
         var messaging = firebase.messaging();
         messaging.requestPermission()
@@ -424,6 +425,18 @@
             .catch(function(e){
                 console.log('메세징 권한 획득 중 에러', e);
             });
+            // FCM Foreground Receive Message
+            // self.addEventListener('push', function(event) {
+            //     const payload = event.data.json();
+            //     const title = payload.notification.title;
+            //     const options = {
+            //         body: payload.notification.body,
+            //         icon: payload.notification.icon,
+            //         data: payload.notification.click_action
+            //     };
+
+            //     event.waitUntil(self.registration.showNotification(title, options));
+            // });
     </script>
 </body>
 <footer id="footer" class="page-footer dk">
